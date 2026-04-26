@@ -8,6 +8,7 @@
     "runtime:bridge": "node server/runtime/server.mjs",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
+    "test": "playwright test",
     "preview": "vite preview"
   },
   "dependencies": {
