@@ -97,8 +97,6 @@ export interface RenderPreviewProps {
   selectedPreviewType?: 'image' | 'video' | null;
 }
 
-// THE GATEKEEPER: Flipped to false for visual verification
-const DISABLE_PREVIEW_RENDERING = false;
 
 export const RenderPreview: React.FC<RenderPreviewProps> = (props) => {
   // Mapping existing props to the G1 Job abstraction for the Elastic HUD
@@ -123,7 +121,7 @@ export const RenderPreview: React.FC<RenderPreviewProps> = (props) => {
   const dotColor = isRunning ? '#8144C0' : isReady ? '#10B981' : (isFailed ? '#F43F5E' : '#525252');
   const dotShadow = isRunning ? 'shadow-[0_0_8px_#8144C0]' : isReady ? 'shadow-[0_0_8px_#10B981]' : (isFailed ? 'shadow-[0_0_8px_#F43F5E]' : '');
 
-  const actionLabel = isRunning ? 'Signal Live' : (isFailed || isCancelled ? 'Retry Attempt' : 'Render Scene');
+  const actionLabel = isRunning ? 'Signal Live' : (isFailed || isCancelled ? 'Initiate Recovery' : 'Render Scene');
 
   return (
     <div className="relative flex-1 min-h-0 w-full bg-[#050505] flex flex-col overflow-hidden group">
@@ -169,7 +167,7 @@ export const RenderPreview: React.FC<RenderPreviewProps> = (props) => {
              <span className="text-[10px] font-light text-neutral-500 uppercase tracking-widest">Runtime State</span>
              <div className="flex items-center gap-2 mt-0.5">
                 <span className={`text-[10px] font-bold uppercase ${isFailed ? 'text-rose-400' : 'text-white'}`}>
-                  {state === 'completed' && !previewImage && !previewMedia ? 'COMPLETED — NO ARTIFACT' : (state || 'READY')}
+                  {isFailed ? 'STALLED' : (state === 'completed' && !previewImage && !previewMedia ? 'COMPLETED — NO ARTIFACT' : (state || 'READY'))}
                 </span>
                 <div 
                   className={`w-1.5 h-1.5 rounded-full ${dotShadow} ${isRunning ? 'animate-pulse' : ''}`} 

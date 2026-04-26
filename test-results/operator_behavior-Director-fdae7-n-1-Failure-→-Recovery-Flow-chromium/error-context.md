@@ -14,14 +14,14 @@
 ```
 Error: expect(locator).toBeVisible() failed
 
-Locator: locator('text=Open command console → dry-run retry')
+Locator: locator('text=/Open command console for dry-run recovery/i')
 Expected: visible
 Timeout: 5000ms
 Error: element(s) not found
 
 Call log:
   - Expect "toBeVisible" with timeout 5000ms
-  - waiting for locator('text=Open command console → dry-run retry')
+  - waiting for locator('text=/Open command console for dry-run recovery/i')
 
 ```
 
@@ -75,21 +75,21 @@ Call log:
   45  |     // Check if failed job appears
   46  |     const jobCard = page.locator('button').filter({ hasText: shotId });
   47  |     await expect(jobCard).toBeVisible({ timeout: 10000 });
-  48  |     await expect(jobCard).toContainText('Failed');
+  48  |     await expect(jobCard).toContainText('Stalled');
   49  | 
   50  |     // Step 2: Check for retry affordance
   51  |     await jobCard.click();
   52  |     // Actual text found in App.tsx:4746
-> 53  |     await expect(page.locator('text=Open command console → dry-run retry')).toBeVisible();
-      |                                                                             ^ Error: expect(locator).toBeVisible() failed
+> 53  |     await expect(page.locator('text=/Open command console for dry-run recovery/i')).toBeVisible();
+      |                                                                                     ^ Error: expect(locator).toBeVisible() failed
   54  | 
   55  |     // Step 3: Verify retry action remains visually dominant
   56  |     await page.click('button:has-text("Console")');
-  57  |     const retryBtn = page.locator('button:has-text("retry")');
+  57  |     const retryBtn = page.locator('button:has-text("recovery")');
   58  |     await expect(retryBtn).toBeVisible();
   59  |     
   60  |     await retryBtn.click();
-  61  |     await expect(page.locator('text=Retry eligible for selected failed job.')).toBeVisible();
+  61  |     await expect(page.locator('text=/Recovery initialized for selected stalled job/i')).toBeVisible();
   62  |   });
   63  | 
   64  |   test('2. Decision Speed Under Pressure', async ({ page }) => {
@@ -129,7 +129,7 @@ Call log:
   98  | 
   99  |     // Verification of tab switching stability
   100 |     await page.click('button:has-text("Workspace")');
-  101 |     await expect(page.locator('text=Review Inbox')).toBeVisible();
+  101 |     await expect(page.locator('text=/Review Inbox/i')).toBeVisible();
   102 |     
   103 |     await page.click('button:has-text("Live Runs")');
   104 |     await expect(jobCard).toBeVisible();
@@ -154,11 +154,11 @@ Call log:
   123 |     // Verify jobs are present
   124 |     await expect(page.locator('button').filter({ hasText: 'S1' })).toBeVisible();
   125 |     await expect(page.locator('button').filter({ hasText: 'S3' })).toBeVisible();
-  126 |     await expect(page.locator('button').filter({ hasText: 'S3' })).toContainText('Failed');
+  126 |     await expect(page.locator('button').filter({ hasText: 'S3' })).toContainText('Stalled');
   127 | 
   128 |     // Selection check
   129 |     await page.locator('button').filter({ hasText: 'S3' }).click();
-  130 |     await expect(page.locator('text=Inspector')).toBeVisible();
+  130 |     await expect(page.locator('text=/Inspector/i')).toBeVisible();
   131 |   });
   132 | 
   133 | });

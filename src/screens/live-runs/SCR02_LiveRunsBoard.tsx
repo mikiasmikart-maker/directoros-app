@@ -1,4 +1,5 @@
 import { DeliveryRegistry } from '../../components/review/DeliveryRegistry';
+import { mapTechnicalState } from '../../utils/operationalLanguage';
 type RunLane = 'active' | 'queued' | 'attention';
 type RunMode = 'cinematic' | 'studio_run' | 'all' | 'delivery';
 
@@ -73,7 +74,7 @@ const getDetailLabels = (canonicalState: string) =>
     ? { summaryLabel: 'Reason', summaryFallback: 'Cancelled by operator.', actionLabel: 'Action', actionFallback: 'Run again when ready.' }
     : canonicalState === 'completed'
       ? { summaryLabel: 'Reason', summaryFallback: 'Output is ready.', actionLabel: 'Action', actionFallback: 'Open output.' }
-      : { summaryLabel: 'Reason', summaryFallback: 'Execution failed.', actionLabel: 'Action', actionFallback: 'Retry or inspect output.' };
+      : { summaryLabel: 'Reason', summaryFallback: 'Runtime stalled.', actionLabel: 'Action', actionFallback: 'Initiate recovery or inspect output.' };
 
 export const SCR02_LiveRunsBoard = ({
   modeFilter = 'all',
@@ -251,10 +252,8 @@ export const SCR02_LiveRunsBoard = ({
                         runsByLane[lane].map((run) => {
                           const selected = run.id === selectedRunId;
                           const isActive = lane === 'active';
-                          const isFailed = run.canonicalState === 'failed';
                           const isCompleted = run.canonicalState === 'completed';
-                          
-                          const title = run.canonicalState === 'completed' ? 'Completed' : run.canonicalState === 'failed' ? 'Failed' : run.canonicalState === 'cancelled' ? 'Cancelled' : run.canonicalState;
+                          const title = run.canonicalState === 'completed' ? 'Completed' : run.canonicalState === 'failed' ? 'Stalled' : run.canonicalState === 'cancelled' ? 'Halted' : run.canonicalState;
                           
                           return (
                             <button 
@@ -319,7 +318,7 @@ export const SCR02_LiveRunsBoard = ({
                         <div className="flex items-center justify-between">
                           <span className="text-[9px] font-mono uppercase text-neutral-500 tracking-tight">System State</span>
                           <span className={`px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wider ${getCanonicalStateTone(selectedRun.canonicalState)}`}>
-                            {selectedRun.canonicalState}
+                            {mapTechnicalState(selectedRun.canonicalState)}
                           </span>
                         </div>
                         <div className="flex items-center justify-between">

@@ -68,8 +68,8 @@ export const resolveSelectedJobNextAction = ({
     return retryEligible
       ? {
           primaryActionKey: 'retry_latest_attempt',
-          primaryActionLabel: 'Retry',
-          primaryActionReason: 'Selected job is failed and retry-eligible.',
+          primaryActionLabel: 'Initiate Recovery',
+          primaryActionReason: 'Selected job is stalled. Resume to recover with current parameters.',
           secondaryActions: [
             { key: 'inspect_historical_artifact', label: 'Inspect Output' },
           ],
@@ -77,7 +77,7 @@ export const resolveSelectedJobNextAction = ({
       : {
           primaryActionKey: 'inspect_failure',
           primaryActionLabel: 'Inspect Output',
-          primaryActionReason: 'Selected job is failed but retry is blocked.',
+          primaryActionReason: 'Selected job is stalled and recovery is blocked by dependency health.',
           secondaryActions: [
             { key: 'inspect_historical_artifact', label: 'Inspect Output' },
           ],
@@ -88,8 +88,8 @@ export const resolveSelectedJobNextAction = ({
     return retryEligible
       ? {
           primaryActionKey: 'retry_latest_attempt',
-          primaryActionLabel: 'Retry',
-          primaryActionReason: 'Selected job was intentionally cancelled and can be launched again.',
+          primaryActionLabel: 'Initiate Recovery',
+          primaryActionReason: 'Selected job was halted and can be re-initialized.',
           secondaryActions: [
             { key: 'inspect_historical_artifact', label: 'Inspect Output' },
           ],
@@ -97,7 +97,7 @@ export const resolveSelectedJobNextAction = ({
       : {
           primaryActionKey: 'inspect_cancelled_run',
           primaryActionLabel: 'Inspect Output',
-          primaryActionReason: 'Selected job was intentionally cancelled and remains distinct from failure state.',
+          primaryActionReason: 'Selected job was halted and remains distinct from stalled state.',
           secondaryActions: [
             { key: 'inspect_historical_artifact', label: 'Inspect Output' },
           ],

@@ -321,7 +321,7 @@ const buildJobQuickActions = (
   if (job.state === 'failed' || job.state === 'cancelled') {
     primary = {
       key: job.state === 'failed' ? 'retry_failed' : 'retry_cancelled',
-      label: 'Retry Attempt',
+      label: 'Initiate Recovery',
       intent: 'primary',
       tone: 'brand',
       disabled: false,
@@ -347,7 +347,6 @@ const buildJobQuickActions = (
         onTrigger: () => handlers.onSubmitM5('finalize_shot'),
       };
     } else {
-      const hasArtifact = Boolean(job.previewImage || job.previewMedia || (job.resultPaths && job.resultPaths.length > 0));
       primary = {
         key: 'open_output',
         label: 'Open Output',
@@ -431,7 +430,7 @@ function App() {
   const [isRendering, setIsRendering] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [streamState, setStreamState] = useState<'connected' | 'degraded' | 'offline'>('offline');
-  const [runtimeControlMode, setRuntimeControlMode] = useState<'running' | 'paused'>(getQueueState().mode);
+  const [runtimeControlMode] = useState<'running' | 'paused'>(getQueueState().mode);
   const lastUIProgressUpdateAt = useRef<number>(0);
   const queueMode = runtimeControlMode;
   const [lastStreamEventAt, setLastStreamEventAt] = useState<number | undefined>(undefined);
@@ -458,7 +457,7 @@ function App() {
   const [interventionVersion, setInterventionVersion] = useState(0);
   const [selectedInterventionId, setSelectedInterventionId] = useState<string>();
   const [operatorFeedback, setOperatorFeedback] = useState<OperatorFeedbackState>(initialOperatorFeedback);
-  const [jobRuntimeSignals, setJobRuntimeSignals] = useState<JobRuntimeSignalState>({ lastTransitionByJobId: {}, lastSignalAtByJobId: {} });
+  const [jobRuntimeSignals] = useState<JobRuntimeSignalState>({ lastTransitionByJobId: {}, lastSignalAtByJobId: {} });
   const [dismissedFailureIds, setDismissedFailureIds] = useState<Set<string>>(new Set());
   const [dismissedInboxItemIds, setDismissedInboxItemIds] = useState<Set<string>>(new Set());
   const [shootout, setShootout] = useState<ShootoutState>({
@@ -1892,7 +1891,7 @@ function App() {
 
     if (dryRun) {
       if (parsed.intent === 'retry') {
-        setCommandValidationPreview(canRetrySelectedJob ? 'Retry eligible for selected failed job.' : 'Retry blocked: select a failed job with complete historical metadata.');
+        setCommandValidationPreview(canRetrySelectedJob ? 'Recovery initialized for selected stalled job.' : 'Recovery blocked: select a stalled job with complete historical metadata.');
         setCommandTrustImpactPreview(canRetrySelectedJob ? 'Will enqueue a lineage-safe retry job and append durable events.' : 'No state mutation.');
         return;
       }
@@ -3553,8 +3552,8 @@ function App() {
       pushOperatorFeedback('Retry failed: target job context lost', 'error', 'review');
       return;
     }
-    broadcastIntent(item.lineageRootId, 'retrying', 'Retry Attempt');
-    pushOperatorFeedback(`Retrying failed attempt for ${item.label}`, 'info', 'review', 'waiting');
+    broadcastIntent(item.lineageRootId, 'retrying', 'Initiate Recovery');
+    pushOperatorFeedback(`Initiating recovery for ${item.label}`, 'info', 'review', 'waiting');
     setIsRendering(true);
     try {
       await runRenderPipelineFromBridgeJob(job, {
@@ -3564,7 +3563,7 @@ function App() {
           setRenderJobs(() => jobs);
         },
       });
-      pushOperatorFeedback(`Retry enqueued for ${item.label}`, 'ok', 'review', 'transition');
+      pushOperatorFeedback(`Recovery enqueued for ${item.label}`, 'ok', 'review', 'transition');
     } catch (err: any) {
       pushOperatorFeedback(`Retry failed: ${err.message}`, 'error', 'review');
     } finally {
@@ -3659,10 +3658,10 @@ function App() {
   const quickActionHandlers = useMemo<QuickActionHandlers>(() => ({
     onRetry: async (job: RenderQueueJob) => {
       const familyRootId = findLineageRootId(job, renderJobs);
-      broadcastIntent(familyRootId, 'retrying', 'Retry Attempt');
+      broadcastIntent(familyRootId, 'retrying', 'Initiate Recovery');
       setIsRendering(true);
       try {
-        const result = await runRenderPipelineFromBridgeJob(job, {
+        await runRenderPipelineFromBridgeJob(job, {
           onQueueUpdate: (newJob) => {
             const jobs = listRenderJobs();
             const counts = getRenderJobCounts();
@@ -3735,8 +3734,8 @@ function App() {
         if (failedJobId) {
           // Stamp guidanceOutcome onto the job receipt after retry enqueue
           if (guidanceOutcome && failedJobId) {
-            pushInlineJobReceipt(failedJobId, { tone: 'info', message: 'Retry enqueued', next: 'Next: Monitor recovery', guidanceOutcome });
-            pushInlineFamilyReceipt(lineageRootId, { tone: 'info', message: 'Retry enqueued', next: 'Next: Monitor recovery', guidanceOutcome });
+            pushInlineJobReceipt(failedJobId, { tone: 'info', message: 'Recovery enqueued', next: 'Next: Monitor recovery', guidanceOutcome });
+            pushInlineFamilyReceipt(lineageRootId, { tone: 'info', message: 'Recovery enqueued', next: 'Next: Monitor recovery', guidanceOutcome });
           }
           handleRetryInboxItem({ lineageRootId, targetJobId: failedJobId } as InboxItem);
         }
@@ -4737,13 +4736,13 @@ function App() {
       const diagnostics = canonical.diagnostics ?? 'No diagnostics';
       const failureSummary =
         job.state === 'failed'
-          ? `Run failed at ${job.failedStage ?? 'unknown stage'}: ${diagnostics}`
+          ? `Run stalled at ${job.failedStage ?? 'unknown stage'}: ${diagnostics}`
           : canonical.unresolvedAttention
             ? `Run requires attention: ${canonical.canonicalState}`
             : 'No active failure signals.';
       const actionSuggestion =
         job.state === 'failed'
-          ? 'Open command console → dry-run retry; escalate intervention if retry is blocked.'
+          ? 'Open command console for dry-run recovery; escalate intervention if recovery is blocked.'
           : canonical.canonicalState === 'needs_revision'
             ? 'Send to intervention rail for assign/resolve quick path.'
             : canonical.unresolvedAttention
@@ -4814,10 +4813,10 @@ function App() {
           ? 'Suggestion: validate provider credentials then reconcile.'
           : lower.includes('cancel')
             ? 'Suggestion: verify operator intent and rerun if cancellation was accidental.'
-            : 'Suggestion: open manifest, inspect trace, then enqueue a lineage-safe retry.';
+            : 'Suggestion: open manifest, inspect trace, then enqueue a lineage-safe recovery.';
 
     return {
-      summary: `Failure: ${selectedJob.error || 'Unknown error code'}`,
+      summary: `Stall: ${selectedJob.error || 'Unknown error code'}`,
       suggestion,
     };
   }, [selectedJob]);
@@ -4839,7 +4838,7 @@ function App() {
           canonicalStateLabel={selectedJobReview?.actionState ?? selectedJobReview?.decisionOutputs.approvalStatus ?? 'pending'}
           nextStepLabel={postPipelineSummary?.activeStage ?? 'monitor'}
           throughputSeries={renderJobs.slice(-12).map((job, idx) => (job.state === 'completed' ? 60 + idx * 2 : job.state === 'failed' ? 20 : 40))}
-          alerts={renderJobs.filter((j) => j.state === 'failed').slice(0, 4).map((job) => ({ id: job.id, label: `${job.engine.toUpperCase()} failed`, detail: job.error, severity: 'high' as const }))}
+          alerts={renderJobs.filter((j) => j.state === 'failed').slice(0, 4).map((job) => ({ id: job.id, label: `${job.engine.toUpperCase()} stalled`, detail: job.error, severity: 'high' as const }))}
           blockedDecisions={shotQueueSummary.filter((s) => shotProjectionByShotId.get(s.id)?.approvalStatus === 'needs_revision').slice(0, 4).map((shot) => ({ id: shot.id, label: shot.title, detail: 'Needs revision', severity: 'medium' as const }))}
           interventions={interventionItems.slice(0, 4).map((item) => ({ id: item.id, label: item.title, detail: item.canonicalStateLabel, severity: item.priority === 'urgent' ? 'high' as const : item.priority === 'high' ? 'medium' as const : 'low' as const }))}
           events={(reviewSnapshot.eventLog ?? []).slice(-6).reverse().map((event) => ({ id: event.eventId, message: event.eventType, occurredAtLabel: new Date(event.occurredAt).toLocaleTimeString() }))}

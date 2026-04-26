@@ -109,7 +109,7 @@ const getOperatorStateLabel = (job?: RenderQueueJob) => {
   if (job.state === 'packaging') return 'Finalizing • Preparing preview';
   if (job.state === 'failed') {
     const failedBeforeStart = (job.failedStage === 'queued' || job.failedStage === 'preflight');
-    return failedBeforeStart ? 'Blocked at startup' : `Failed during ${mapTechnicalState(job.failedStage ?? 'running')}`;
+    return failedBeforeStart ? 'Blocked at startup' : `Stalled at ${mapTechnicalState(job.failedStage ?? 'running')}`;
   }
   return mapTechnicalState(job.state);
 };
@@ -176,7 +176,7 @@ const getSelectedJobDecisionMicrocopy = (params: {
 
   if (['queued', 'preflight'].includes(selectedJob.state)) nextStep = 'Await execution or cancel attempt.';
   else if (['running', 'packaging'].includes(selectedJob.state)) nextStep = 'Monitor progress or stop active run.';
-  else if (selectedJob.state === 'failed') nextStep = selectedJobPrimaryControlLabel ? `${selectedJobPrimaryControlLabel} to recover.` : 'Inspect failure.';
+  else if (selectedJob.state === 'failed') nextStep = "Initiate recovery sequence to resolve the stall.";
   else if (selectedJob.state === 'completed') {
     if (primaryAction?.disabled) {
        // nextStep is already set above
@@ -926,8 +926,6 @@ export const CenterWorkspace = ({
               shotReviewById={shotReviewById}
               selectedShotId={selectedShotNodeId}
               onSelectShot={(shotId) => onSelectGraphNode(shotId)}
-              renderJobs={renderJobs}
-              dismissedFailureIds={dismissedFailureIds}
             />
           </div>
 

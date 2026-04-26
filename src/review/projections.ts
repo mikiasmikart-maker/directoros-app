@@ -1,10 +1,11 @@
 import type { ReviewEventEnvelope, ShotReviewProjection } from './types';
-import { projectionChecksum, replayApprovalStateFromEvents, type JobApprovalProjection } from './reducers';
+import { projectionChecksum, type JobApprovalProjection } from './reducers';
 
 const shotProjectionByShotId = new Map<string, ShotReviewProjection>();
 const jobProjectionByJobId = new Map<string, JobApprovalProjection>();
 const appliedEvents: ReviewEventEnvelope[] = [];
 
+/*
 const rebuildFrom = (events: ReviewEventEnvelope[]) => {
   const rebuilt = replayApprovalStateFromEvents(events);
   shotProjectionByShotId.clear();
@@ -12,6 +13,7 @@ const rebuildFrom = (events: ReviewEventEnvelope[]) => {
   rebuilt.shots.forEach((value, key) => shotProjectionByShotId.set(key, value));
   rebuilt.jobs.forEach((value, key) => jobProjectionByJobId.set(key, value));
 };
+*/
 
 export const applyReviewEventToProjection = (event: ReviewEventEnvelope) => {
   appliedEvents.push(event);

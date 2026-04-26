@@ -14,6 +14,6 @@ export const SELECTED_JOB_SECONDARY_ACTIONS: SelectedJobSecondaryActionContractI
   { id: 'open_approved_output', label: 'Open Output' },
   { id: 'open_current_winner', label: 'Open Output' },
   { id: 'jump_to_replacement', label: 'Open Output' },
-  { id: 'retry_latest_attempt', label: 'Retry' },
+  { id: 'retry_latest_attempt', label: 'Initiate Recovery' },
   { id: 'inspect_historical_artifact', label: 'Inspect Output' },
 ];

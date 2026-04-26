@@ -41,11 +41,6 @@ interface SCR05InterventionQueueProps {
   onCreateQuickIntervention?: () => void;
 }
 
-const priorityTone: Record<InterventionPriority, string> = {
-  urgent: 'border-[var(--m6-state-critical-border)] bg-[var(--m6-state-critical-bg)] text-[var(--m6-state-critical-fg)]',
-  high: 'border-[var(--m6-state-warn-border)] bg-[var(--m6-state-warn-bg)] text-[var(--m6-state-warn-fg)]',
-  normal: 'border-[var(--m6-state-focus-border)]/20 bg-cyan-500/10 text-cyan-100',
-};
 
 export const SCR05_InterventionQueue = ({
   queueHealthLabel,

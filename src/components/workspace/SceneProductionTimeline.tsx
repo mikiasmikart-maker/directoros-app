@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useRef } from 'react';
 
 interface ShotTimelineItem {
   id: string;
@@ -16,8 +16,6 @@ interface SceneProductionTimelineProps {
   shotReviewById?: Record<string, { reviewStatus?: string; approvalStatus?: string; actionState?: string; bestKnownJobId?: string; riskLevel?: 'low' | 'medium' | 'high'; reason?: string }>;
   selectedShotId?: string;
   onSelectShot?: (shotId?: string) => void;
-  renderJobs?: import('../../render/jobQueue').RenderQueueJob[];
-  dismissedFailureIds?: Set<string>;
 }
 
 const normalizeState = (state: string) => {
@@ -43,7 +41,7 @@ const toneByState: Record<string, string> = {
 const getCanonicalTimelineState = (shotState: string, review?: { actionState?: string; approvalStatus?: string }) =>
   review?.actionState ?? review?.approvalStatus ?? normalizeState(shotState);
 
-export const SceneProductionTimeline = ({ sceneName, shots, shotReviewById, selectedShotId, onSelectShot, renderJobs, dismissedFailureIds }: SceneProductionTimelineProps) => {
+export const SceneProductionTimeline = ({ sceneName, shots, shotReviewById, selectedShotId, onSelectShot }: SceneProductionTimelineProps) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const rowRefs = useRef<Record<string, HTMLButtonElement | null>>({});
 

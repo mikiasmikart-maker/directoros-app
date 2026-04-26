@@ -18,7 +18,6 @@ export const SceneGraph = ({ scenes, selectedSceneId, onSelectScene }: SceneGrap
         .filter((s) => s.type === 'scene')
         .map((scene) => {
           const isSelected = selectedSceneId === scene.id;
-          const accentColor = isSelected ? protocolColors.active : protocolColors.neutral;
 
           return (
             <li key={scene.id}>

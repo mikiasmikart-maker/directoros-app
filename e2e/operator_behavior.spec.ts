@@ -45,20 +45,20 @@ test.describe('DirectorOS Operator Behavior Validation', () => {
     // Check if failed job appears
     const jobCard = page.locator('button').filter({ hasText: shotId });
     await expect(jobCard).toBeVisible({ timeout: 10000 });
-    await expect(jobCard).toContainText('Failed');
+    await expect(jobCard).toContainText('Stalled');
 
     // Step 2: Check for retry affordance
     await jobCard.click();
     // Actual text found in App.tsx:4746
-    await expect(page.locator('text=Open command console → dry-run retry')).toBeVisible();
+    await expect(page.locator('text=/Open command console for dry-run recovery/i')).toBeVisible();
 
     // Step 3: Verify retry action remains visually dominant
     await page.click('button:has-text("Console")');
-    const retryBtn = page.locator('button:has-text("retry")');
+    const retryBtn = page.locator('button:has-text("recovery")');
     await expect(retryBtn).toBeVisible();
     
     await retryBtn.click();
-    await expect(page.locator('text=Retry eligible for selected failed job.')).toBeVisible();
+    await expect(page.locator('text=/Recovery initialized for selected stalled job/i')).toBeVisible();
   });
 
   test('2. Decision Speed Under Pressure', async ({ page }) => {
@@ -98,7 +98,7 @@ test.describe('DirectorOS Operator Behavior Validation', () => {
 
     // Verification of tab switching stability
     await page.click('button:has-text("Workspace")');
-    await expect(page.locator('text=Review Inbox')).toBeVisible();
+    await expect(page.locator('text=/Review Inbox/i')).toBeVisible();
     
     await page.click('button:has-text("Live Runs")');
     await expect(jobCard).toBeVisible();
@@ -123,11 +123,11 @@ test.describe('DirectorOS Operator Behavior Validation', () => {
     // Verify jobs are present
     await expect(page.locator('button').filter({ hasText: 'S1' })).toBeVisible();
     await expect(page.locator('button').filter({ hasText: 'S3' })).toBeVisible();
-    await expect(page.locator('button').filter({ hasText: 'S3' })).toContainText('Failed');
+    await expect(page.locator('button').filter({ hasText: 'S3' })).toContainText('Stalled');
 
     // Selection check
     await page.locator('button').filter({ hasText: 'S3' }).click();
-    await expect(page.locator('text=Inspector')).toBeVisible();
+    await expect(page.locator('text=/Inspector/i')).toBeVisible();
   });
 
 });

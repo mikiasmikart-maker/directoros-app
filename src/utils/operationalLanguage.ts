@@ -10,8 +10,8 @@ export const mapTechnicalState = (state: string): string => {
     'packaging': 'Finalizing',
     'queued': 'Queued',
     'completed': 'Ready',
-    'failed': 'Failed',
-    'cancelled': 'Stopped',
+    'failed': 'Runtime Stalled',
+    'cancelled': 'Halted',
     'stale': 'Out of sync',
     'unavailable': 'Temporarily unavailable',
     'ready': 'Ready',
@@ -27,11 +27,12 @@ export const mapIntentType = (type: string): string => {
     'reviewing': 'Reviewing',
     'comparing': 'Comparing',
     'preparing_commit': 'Finalizing',
-    'retrying': 'Retrying',
+    'retrying': 'Recovery Active',
     'viewing': 'Viewing',
   };
   return mapping[type.toLowerCase()] || type.replace('_', ' ');
 };
+
 
 /**
  * Formats IDs for human display only when disambiguation is required.
