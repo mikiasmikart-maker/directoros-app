@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://directoros/schemas/command_events/v001",
+  "title": "DirectorOS Command Events v001",
+  "allOf": [
+    { "$ref": "https://directoros/schemas/event_envelope/v001" },
+    {
+      "type": "object",
+      "properties": {
+        "event_name": {
+          "enum": [
+            "command.execution.requested",
+            "command.execution.validated",
+            "command.execution.started",
+            "command.execution.completed",
+            "command.execution.rolled_back",
+            "command.explainability.provided"
+          ]
+        },
+        "subject": {
+          "type": "object",
+          "properties": { "type": { "const": "command" } },
+          "required": ["type"]
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "mutation_count": { "type": "integer", "minimum": 0 },
+            "reconciled": { "type": "boolean" },
+            "error_type": { "type": "string" },
+            "error_detail": { "type": "string" },
+            "explainability_tokens": { "type": "integer", "minimum": 0 }
+          }
+        }
+      }
+    }
+  ]
+}

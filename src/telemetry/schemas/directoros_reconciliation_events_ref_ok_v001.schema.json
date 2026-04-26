@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://directoros/schemas/reconciliation_events/v001",
+  "title": "DirectorOS Reconciliation Events v001",
+  "allOf": [
+    { "$ref": "https://directoros/schemas/event_envelope/v001" },
+    {
+      "type": "object",
+      "properties": {
+        "event_name": {
+          "enum": [
+            "reconciliation.cycle.started",
+            "reconciliation.cycle.completed",
+            "reconciliation.repair.attempted",
+            "reconciliation.repair.completed"
+          ]
+        },
+        "subject": {
+          "type": "object",
+          "properties": { "type": { "enum": ["reconciliation_cycle", "reconciliation_repair"] } },
+          "required": ["type"]
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "drift_detected": { "type": "boolean" },
+            "drift_count": { "type": "integer", "minimum": 0 },
+            "repaired_count": { "type": "integer", "minimum": 0 },
+            "snapshot_hash": { "type": "string" }
+          }
+        }
+      }
+    }
+  ]
+}

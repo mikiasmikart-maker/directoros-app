@@ -1,0 +1,1521 @@
+{
+  "eval": {
+    "title": "directoros-app",
+    "readyState": "complete",
+    "bodyText": "MIKART DIRECTOROS\nCinematic AI Production System\nHEALTH: HEALTHY\nSTREAM: CONNECTED\nQUEUE: RUNNING\nCONTEXT: OPENING - ADDIS DAWN\nattention 0\nOverview\nLive Runs\nWorkspace\nConsole\nInterventions\nAudit\nM6 CONTROL ROOM\nSCR-03 Workspace\n\nGraph-first cinematic production surface\n\nWORKSPACE OPERATIONS\nLIVE / CONNECTED\nLast event: --\nSYSTEM READY\nRender Preview\nSCENES\n‹\nOpening - Addis Dawn\nCinematic sunrise over Addis skyline, warm haze, slow dolly push....\nMarket Energy\nEnergetic marketplace, rich textiles, rhythmic motion, handheld realism....\nWORKSPACE\nOpening - Addis Dawn\n\nCinematic sunrise over Addis skyline, warm haze, slow dolly push.\n\nSCENE PRODUCTION TIMELINE\nOpening - Addis Dawn • 0/2 shots rendered\nShot-state view only, artifact identity is resolved in family and inspector surfaces.\n0% COMPLETE\nShot 01 Dawn Push\nLIVE\nRUNNING\nRISK LOW\nShot 02 Street Reveal\nQUEUED\nRISK LOW\nFit\nReset\nHide Links\nShow Labels\nFocus Shot\n86%\nLoad Template\nOpening Addis Dawn\nMarket Energy\nProduct Hero\nROUTE ",
+    "bodyHtml": "\n    <div id=\"root\"><div class=\"min-h-screen bg-bg text-text\"><header class=\"sticky top-0 z-40 border-b border-white/[0.035] bg-[rgba(8,12,20,0.86)] backdrop-blur-[12px] shadow-[0_8px_24px_rgba(2,6,23,0.14)]\"><div class=\"mx-auto w-full max-w-[1880px] px-4 py-2.5\"><div class=\"flex flex-wrap items-start justify-between gap-3\"><div class=\"flex items-center gap-2.5\"><img alt=\"Mikart\" class=\"h-[24px] w-[24px] shrink-0 object-contain opacity-90\" src=\"/mikart-logo.png\"><div><div class=\"text-[11px] font-semibold uppercase tracking-[0.16em] text-textMuted/82\">MIKART DIRECTOROS</div><div class=\"text-[10px] tracking-[0.06em] text-textMuted/75\">Cinematic AI Production System</div></div></div><div class=\"flex flex-wrap items-center gap-1.5 text-[10px] uppercase tracking-[0.08em] opacity-[0.9]\"><span class=\"m6-surface-quiet rounded px-2 py-1 text-textMuted/62\">health: <span class=\"font-medium text-text/92\">healthy</span></span><span class=\"m6-surface-quiet rounded px-2 py-1 text-textMuted/62\">stream",
+    "rootExists": true,
+    "rootHtml": "<div class=\"min-h-screen bg-bg text-text\"><header class=\"sticky top-0 z-40 border-b border-white/[0.035] bg-[rgba(8,12,20,0.86)] backdrop-blur-[12px] shadow-[0_8px_24px_rgba(2,6,23,0.14)]\"><div class=\"mx-auto w-full max-w-[1880px] px-4 py-2.5\"><div class=\"flex flex-wrap items-start justify-between gap-3\"><div class=\"flex items-center gap-2.5\"><img alt=\"Mikart\" class=\"h-[24px] w-[24px] shrink-0 object-contain opacity-90\" src=\"/mikart-logo.png\"><div><div class=\"text-[11px] font-semibold uppercase ",
+    "rootText": "MIKART DIRECTOROSCinematic AI Production Systemhealth: healthystream: connectedqueue: runningcontext: Opening - Addis Dawnattention 0OverviewLive RunsWorkspaceConsoleInterventionsAuditM6 Control RoomSCR-03 WorkspaceGraph-first cinematic production surfaceWorkspace OperationsLive / ConnectedLast event: --System ReadyRender PreviewScenes‹Opening - Addis DawnCinematic sunrise over Addis skyline, warm haze, slow dolly push....Market EnergyEnergetic marketplace, rich textiles, rhythmic motion, handheld realism....WorkspaceOpening - Addis DawnCinematic sunrise over Addis skyline, warm haze, slow dolly push.Scene Production TimelineOpening - Addis Dawn • 0/2 shots renderedShot-state view only, artifact identity is resolved in family and inspector surfaces.0% completeShot 01 Dawn Pushliverunningrisk lowShot 02 Street Revealqueuedrisk lowFitResetHide LinksShow LabelsFocus Shot86%Load TemplateOpening Addis DawnMarket EnergyProduct HeroRoute Presetstill_image_routecinematic_video_routerefine_then_render_routerunway_motion_routePost: Collapsed+ shot+ environment+ lighting+ product+ engine_target+ review_node+ edit_node+ export_node+ delivery_nodeUndoRedoScene SourcesShot LogicPrompt CompilerEngine Router + TargetsPost Pipeline (Folded)×CharacterLead Characteractivesource: story-bibletag: archetypeprofile: Ethiopian Urban Protagonist×ProductProduct Slotstandbysource: systemtag: hero featureprofile: none×EnvironmentAddis Environmentactivesource: location-scouttag: time of dayprofile: Addis Early Morning District×LightingLighting Logicactivesource: cinema-referencetag: contrastprofile: Soft Contrast Cinematic Lighting×CameraCamera Languageactivesource: director-notetag: framingprofile: DirectorOS Dolly Language×ShotShot 01: Dawn Pushcurrentactiveactiveorder: 1focus: currentsource: systemtag: framing overrideprofile: noneprogress: 8%×ShotShot 02: Street Revealwaitingwaitingorder: 2focus: queuedsource: systemtag: timeline noteprofile: noneprogress: 0%×CompilerPrompt Compileractiveidlesource: systemtag: compile stateprofile: noneprogress: 0%compile: stale×RouterEngine Routeractiveidlesource: systemtag: route modeprofile: noneprogress: 0%route: multistrategy: cinematic_videotargets: 2×ImageFLUX Targetstandbywaitingsource: systemtag: engine branchprofile: noneprogress: 0%engine: fluxsource: engine_router×WorkflowComfyUI Targetstandbywaitingsource: systemtag: engine branchprofile: noneprogress: 0%engine: comfyuisource: engine_router×VideoVeo Targetactivewaitingsource: systemtag: engine branchprofile: noneprogress: 0%engine: veo(active route)source: engine_router×VideoRunway Targetactivewaitingsource: systemtag: engine branchprofile: noneprogress: 0%engine: runway(active route)source: engine_router×OutputRender Outputactiveidlesource: systemtag: render statusprofile: noneprogress: 0%render: ready[veo]PostPost Pipelineactive0/4 completewaitingExecutionRender Monitorreadyno job focusno artifact focusOpening - Addis DawnReady to launch current sceneReady to launch selected sceneRender SceneShot 01shot-1•Shot 01: Dawn PushEngineVEORoutederive from graphStrategyscene defaultStatusReadyReasonAll execution checks passed.NextLaunch the selected scene.FocusNo selected jobReady0%Ready to launch. All execution checks passed.Decision Surfaceactive0queued0running0cinematic lanes: 0studio_run lanes: 0queue: runningPause QueueResume QueueClear QueueProduction FamilyShot 01: Dawn PushCanonical Stateready to launchAuthoritative Outputnone yet • launch pendingRecommendationRender sceneLast Meaningful ChangeSystem ready for launchRender Jobsactive firstqueued firstfailed firstnewest firstCinematicStudio RunAllTotal0Rendering0Queued0No jobs for all mode yet.READYProduction Family Detailnone selectedPick a production family card above to operate at family level, or open a job for evidence detail.Inspector›PipelineIntelligenceDecisionActivityNo active selection. Select a shot, node, or production family to inspect.Empty state is stable. Queue empty-click or Esc clears job focus.Post Pipeline SummaryfoldedReviewpendingEditwaitingExportwaitingDeliverywaitingActive StagenoneCompleted0/4OverallwaitingExportmp4Deliveryinternal screeningAdvancedFail ExportReset Post WorkflowPrompt PreviewCompiled PromptEngine PayloadActive Routecinematic_video_routeTarget Engineveotemporal continuity-first cinematic video direction | Cinematic sunrise over Addis skyline, warm haze, slow dolly push. | Anchor the opening in pride, calm momentum, and authentic local detail. | memory context -> character: Grounded lead with calm confidence and subtle expressive reactions.; environment: Soft urban dawn atmosphere with active street life.; lighting: Directional warm key with controlled shadow falloff.; camera: Steady cinematic camera language prioritizing confident push-ins. | timeline override -> Hold sunrise for emotional breath before motion picks up. | shot graph -> Shot 01: Dawn Push(wide, slow dolly-in) | route -> multi/cinematic_video -> veo, runway | scene intensity: calm | movement: slow cinematic pushTimelinePlayback · Frame 0Track HeaderEdit LaneV1Addis Dawnf0 · 144frV2Market Energyf160 · 192fr",
+    "rootChildren": 1,
+    "bodyBg": "rgba(0, 0, 0, 0)",
+    "rootBg": "rgba(0, 0, 0, 0)",
+    "location": "http://127.0.0.1:5173/",
+    "localStorage": {
+      "directoros.runtimeControlState.v1": "{\"mode\":\"running\",\"stagedJobIds\":[],\"queuedJobIds\":[],\"activeJobIds\":[],\"policy\":{\"maxConcurrentJobs\":2,\"maxQueueLength\":25,\"duplicateShotGuard\":true,\"gpuLockProtection\":false}}"
+    },
+    "sessionStorageKeys": []
+  },
+  "hardRefresh": {
+    "readyState": "complete",
+    "bodyText": "MIKART DIRECTOROS\nCinematic AI Production System\nHEALTH: HEALTHY\nSTREAM: CONNECTED\nQUEUE: RUNNING\nCONTEXT: OPENING - ADDIS DAWN\nattention 0\nOverview\nLive Runs\nWorkspace\nConsole\nInterventions\nAudit\nM6 CONTROL ROOM\nSCR-03 Workspace\n\nGraph-first cinematic production surface\n\nWORKSPACE OPERATIONS\nLIVE / CONNECTED\nLast event: --\nSYSTEM READY\nRender Preview\nSCENES\n‹\nOpening - Addis Dawn\nCinematic sunrise over Addis skyline, warm haze, slow dolly push....\nMarket Energy\nEnergetic marketplace, rich textiles, rhythmic motion, handheld realism....\nWORKSPACE\nOpening - Addis Dawn\n\nCinematic sunrise over Addis skyline, warm haze, slow dolly push.\n\nSCENE PRODUCTION TIMELINE\nOpening - Addis Dawn • 0/2 shots rendered\nShot-state view only, artifact identity is resolved in family and inspector surfaces.\n0% COMPLETE\nShot 01 Dawn Push\nLIVE\nRUNNING\nRISK LOW\nShot 02 Street Reveal\nQUEUED\nRISK LOW\nFit\nReset\nHide Links\nShow Labels\nFocus Shot\n86%\nLoad Template\nOpening Addis Dawn\nMarket Energy\nProduct Hero\nROUTE ",
+    "bodyHtml": "\n    <div id=\"root\"><div class=\"min-h-screen bg-bg text-text\"><header class=\"sticky top-0 z-40 border-b border-white/[0.035] bg-[rgba(8,12,20,0.86)] backdrop-blur-[12px] shadow-[0_8px_24px_rgba(2,6,23,0.14)]\"><div class=\"mx-auto w-full max-w-[1880px] px-4 py-2.5\"><div class=\"flex flex-wrap items-start justify-between gap-3\"><div class=\"flex items-center gap-2.5\"><img alt=\"Mikart\" class=\"h-[24px] w-[24px] shrink-0 object-contain opacity-90\" src=\"/mikart-logo.png\"><div><div class=\"text-[11px] font-semibold uppercase tracking-[0.16em] text-textMuted/82\">MIKART DIRECTOROS</div><div class=\"text-[10px] tracking-[0.06em] text-textMuted/75\">Cinematic AI Production System</div></div></div><div class=\"flex flex-wrap items-center gap-1.5 text-[10px] uppercase tracking-[0.08em] opacity-[0.9]\"><span class=\"m6-surface-quiet rounded px-2 py-1 text-textMuted/62\">health: <span class=\"font-medium text-text/92\">healthy</span></span><span class=\"m6-surface-quiet rounded px-2 py-1 text-textMuted/62\">stream",
+    "rootExists": true,
+    "rootHtml": "<div class=\"min-h-screen bg-bg text-text\"><header class=\"sticky top-0 z-40 border-b border-white/[0.035] bg-[rgba(8,12,20,0.86)] backdrop-blur-[12px] shadow-[0_8px_24px_rgba(2,6,23,0.14)]\"><div class=\"mx-auto w-full max-w-[1880px] px-4 py-2.5\"><div class=\"flex flex-wrap items-start justify-between gap-3\"><div class=\"flex items-center gap-2.5\"><img alt=\"Mikart\" class=\"h-[24px] w-[24px] shrink-0 object-contain opacity-90\" src=\"/mikart-logo.png\"><div><div class=\"text-[11px] font-semibold uppercase ",
+    "rootChildren": 1,
+    "localStorageKeys": [
+      "directoros.runtimeControlState.v1"
+    ]
+  },
+  "console": [
+    {
+      "type": "debug",
+      "args": [
+        {
+          "type": "string",
+          "value": "[vite] connecting..."
+        }
+      ],
+      "executionContextId": 1,
+      "timestamp": 1775842787672.18,
+      "stackTrace": {
+        "callFrames": [
+          {
+            "functionName": "",
+            "scriptId": "6",
+            "url": "http://127.0.0.1:5173/@vite/client",
+            "lineNumber": 732,
+            "columnNumber": 8
+          }
+        ]
+      }
+    },
+    {
+      "type": "debug",
+      "args": [
+        {
+          "type": "string",
+          "value": "[vite] connected."
+        }
+      ],
+      "executionContextId": 1,
+      "timestamp": 1775842787682.927,
+      "stackTrace": {
+        "callFrames": [
+          {
+            "functionName": "handleMessage",
+            "scriptId": "6",
+            "url": "http://127.0.0.1:5173/@vite/client",
+            "lineNumber": 826,
+            "columnNumber": 11
+          }
+        ]
+      }
+    },
+    {
+      "type": "info",
+      "args": [
+        {
+          "type": "string",
+          "value": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools"
+        },
+        {
+          "type": "string",
+          "value": "font-weight:bold"
+        }
+      ],
+      "executionContextId": 1,
+      "timestamp": 1775842787778.932,
+      "stackTrace": {
+        "callFrames": [
+          {
+            "functionName": "",
+            "scriptId": "11",
+            "url": "http://127.0.0.1:5173/node_modules/.vite/deps/react-dom_client.js?v=afd10981",
+            "lineNumber": 20102,
+            "columnNumber": 53
+          }
+        ]
+      }
+    },
+    {
+      "type": "debug",
+      "args": [
+        {
+          "type": "string",
+          "value": "[vite] connecting..."
+        }
+      ],
+      "executionContextId": 2,
+      "timestamp": 1775842828412.92,
+      "stackTrace": {
+        "callFrames": [
+          {
+            "functionName": "",
+            "scriptId": "6",
+            "url": "http://127.0.0.1:5173/@vite/client",
+            "lineNumber": 732,
+            "columnNumber": 8
+          }
+        ]
+      }
+    },
+    {
+      "type": "debug",
+      "args": [
+        {
+          "type": "string",
+          "value": "[vite] connected."
+        }
+      ],
+      "executionContextId": 2,
+      "timestamp": 1775842828416.504,
+      "stackTrace": {
+        "callFrames": [
+          {
+            "functionName": "handleMessage",
+            "scriptId": "6",
+            "url": "http://127.0.0.1:5173/@vite/client",
+            "lineNumber": 826,
+            "columnNumber": 11
+          },
+          {
+            "functionName": "",
+            "scriptId": "6",
+            "url": "http://127.0.0.1:5173/@vite/client",
+            "lineNumber": 457,
+            "columnNumber": 41
+          },
+          {
+            "functionName": "dequeue",
+            "scriptId": "6",
+            "url": "http://127.0.0.1:5173/@vite/client",
+            "lineNumber": 479,
+            "columnNumber": 7
+          },
+          {
+            "functionName": "",
+            "scriptId": "6",
+            "url": "http://127.0.0.1:5173/@vite/client",
+            "lineNumber": 471,
+            "columnNumber": 8
+          },
+          {
+            "functionName": "enqueue",
+            "scriptId": "6",
+            "url": "http://127.0.0.1:5173/@vite/client",
+            "lineNumber": 465,
+            "columnNumber": 9
+          },
+          {
+            "functionName": "",
+            "scriptId": "6",
+            "url": "http://127.0.0.1:5173/@vite/client",
+            "lineNumber": 457,
+            "columnNumber": 27
+          },
+          {
+            "functionName": "onMessage",
+            "scriptId": "6",
+            "url": "http://127.0.0.1:5173/@vite/client",
+            "lineNumber": 304,
+            "columnNumber": 5
+          },
+          {
+            "functionName": "",
+            "scriptId": "6",
+            "url": "http://127.0.0.1:5173/@vite/client",
+            "lineNumber": 412,
+            "columnNumber": 4
+          }
+        ]
+      }
+    },
+    {
+      "type": "info",
+      "args": [
+        {
+          "type": "string",
+          "value": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools"
+        },
+        {
+          "type": "string",
+          "value": "font-weight:bold"
+        }
+      ],
+      "executionContextId": 2,
+      "timestamp": 1775842828548.673,
+      "stackTrace": {
+        "callFrames": [
+          {
+            "functionName": "",
+            "scriptId": "11",
+            "url": "http://127.0.0.1:5173/node_modules/.vite/deps/react-dom_client.js?v=afd10981",
+            "lineNumber": 20102,
+            "columnNumber": 53
+          },
+          {
+            "functionName": "node_modules/react-dom/cjs/react-dom-client.development.js",
+            "scriptId": "11",
+            "url": "http://127.0.0.1:5173/node_modules/.vite/deps/react-dom_client.js?v=afd10981",
+            "lineNumber": 20176,
+            "columnNumber": 6
+          },
+          {
+            "functionName": "__require",
+            "scriptId": "16",
+            "url": "http://127.0.0.1:5173/node_modules/.vite/deps/chunk-BUSYA2B4.js?v=afd10981",
+            "lineNumber": 2,
+            "columnNumber": 49
+          },
+          {
+            "functionName": "node_modules/react-dom/client.js",
+            "scriptId": "11",
+            "url": "http://127.0.0.1:5173/node_modules/.vite/deps/react-dom_client.js?v=afd10981",
+            "lineNumber": 20187,
+            "columnNumber": 23
+          },
+          {
+            "functionName": "__require",
+            "scriptId": "16",
+            "url": "http://127.0.0.1:5173/node_modules/.vite/deps/chunk-BUSYA2B4.js?v=afd10981",
+            "lineNumber": 2,
+            "columnNumber": 49
+          },
+          {
+            "functionName": "",
+            "scriptId": "11",
+            "url": "http://127.0.0.1:5173/node_modules/.vite/deps/react-dom_client.js?v=afd10981",
+            "lineNumber": 20191,
+            "columnNumber": 15
+          }
+        ]
+      }
+    },
+    {
+      "type": "debug",
+      "args": [
+        {
+          "type": "string",
+          "value": "[vite] connecting..."
+        }
+      ],
+      "executionContextId": 3,
+      "timestamp": 1775842830958.409,
+      "stackTrace": {
+        "callFrames": [
+          {
+            "functionName": "",
+            "scriptId": "6",
+            "url": "http://127.0.0.1:5173/@vite/client",
+            "lineNumber": 732,
+            "columnNumber": 8
+          }
+        ]
+      }
+    },
+    {
+      "type": "debug",
+      "args": [
+        {
+          "type": "string",
+          "value": "[vite] connected."
+        }
+      ],
+      "executionContextId": 3,
+      "timestamp": 1775842830965.848,
+      "stackTrace": {
+        "callFrames": [
+          {
+            "functionName": "handleMessage",
+            "scriptId": "6",
+            "url": "http://127.0.0.1:5173/@vite/client",
+            "lineNumber": 826,
+            "columnNumber": 11
+          },
+          {
+            "functionName": "",
+            "scriptId": "6",
+            "url": "http://127.0.0.1:5173/@vite/client",
+            "lineNumber": 457,
+            "columnNumber": 41
+          },
+          {
+            "functionName": "dequeue",
+            "scriptId": "6",
+            "url": "http://127.0.0.1:5173/@vite/client",
+            "lineNumber": 479,
+            "columnNumber": 7
+          },
+          {
+            "functionName": "",
+            "scriptId": "6",
+            "url": "http://127.0.0.1:5173/@vite/client",
+            "lineNumber": 471,
+            "columnNumber": 8
+          },
+          {
+            "functionName": "enqueue",
+            "scriptId": "6",
+            "url": "http://127.0.0.1:5173/@vite/client",
+            "lineNumber": 465,
+            "columnNumber": 9
+          },
+          {
+            "functionName": "",
+            "scriptId": "6",
+            "url": "http://127.0.0.1:5173/@vite/client",
+            "lineNumber": 457,
+            "columnNumber": 27
+          },
+          {
+            "functionName": "onMessage",
+            "scriptId": "6",
+            "url": "http://127.0.0.1:5173/@vite/client",
+            "lineNumber": 304,
+            "columnNumber": 5
+          },
+          {
+            "functionName": "",
+            "scriptId": "6",
+            "url": "http://127.0.0.1:5173/@vite/client",
+            "lineNumber": 412,
+            "columnNumber": 4
+          }
+        ]
+      }
+    },
+    {
+      "type": "info",
+      "args": [
+        {
+          "type": "string",
+          "value": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools"
+        },
+        {
+          "type": "string",
+          "value": "font-weight:bold"
+        }
+      ],
+      "executionContextId": 3,
+      "timestamp": 1775842831163.839,
+      "stackTrace": {
+        "callFrames": [
+          {
+            "functionName": "",
+            "scriptId": "11",
+            "url": "http://127.0.0.1:5173/node_modules/.vite/deps/react-dom_client.js?v=afd10981",
+            "lineNumber": 20102,
+            "columnNumber": 53
+          },
+          {
+            "functionName": "node_modules/react-dom/cjs/react-dom-client.development.js",
+            "scriptId": "11",
+            "url": "http://127.0.0.1:5173/node_modules/.vite/deps/react-dom_client.js?v=afd10981",
+            "lineNumber": 20176,
+            "columnNumber": 6
+          },
+          {
+            "functionName": "__require",
+            "scriptId": "16",
+            "url": "http://127.0.0.1:5173/node_modules/.vite/deps/chunk-BUSYA2B4.js?v=afd10981",
+            "lineNumber": 2,
+            "columnNumber": 49
+          },
+          {
+            "functionName": "node_modules/react-dom/client.js",
+            "scriptId": "11",
+            "url": "http://127.0.0.1:5173/node_modules/.vite/deps/react-dom_client.js?v=afd10981",
+            "lineNumber": 20187,
+            "columnNumber": 23
+          },
+          {
+            "functionName": "__require",
+            "scriptId": "16",
+            "url": "http://127.0.0.1:5173/node_modules/.vite/deps/chunk-BUSYA2B4.js?v=afd10981",
+            "lineNumber": 2,
+            "columnNumber": 49
+          },
+          {
+            "functionName": "",
+            "scriptId": "11",
+            "url": "http://127.0.0.1:5173/node_modules/.vite/deps/react-dom_client.js?v=afd10981",
+            "lineNumber": 20191,
+            "columnNumber": 15
+          }
+        ]
+      }
+    }
+  ],
+  "exceptions": [],
+  "failures": [],
+  "responses": [],
+  "requests": [
+    {
+      "url": "http://127.0.0.1:5173/",
+      "method": "GET",
+      "type": "Document"
+    },
+    {
+      "url": "http://127.0.0.1:5173/@vite/client",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/main.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/@react-refresh",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/node_modules/.vite/deps/react_jsx-dev-runtime.js?v=afd10981",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/node_modules/.vite/deps/react.js?v=afd10981",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/node_modules/.vite/deps/react-dom_client.js?v=afd10981",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/index.css",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/App.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/node_modules/.vite/deps/chunk-PYPE4BMF.js?v=afd10981",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/node_modules/.vite/deps/chunk-BUSYA2B4.js?v=afd10981",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/node_modules/.vite/deps/chunk-AIQQI3PJ.js?v=afd10981",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/node_modules/vite/dist/client/env.mjs",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/components/layout/LeftSidebar.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/components/layout/TopBar.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/components/layout/CenterWorkspace.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/components/layout/BottomTimeline.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/components/layout/RightInspector.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/screens/shared/M6_AppShell.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/screens/control-room/SCR01_ControlRoom.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/screens/live-runs/SCR02_LiveRunsBoard.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/screens/command-console/SCR04_CommandConsole.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/screens/intervention-queue/SCR05_InterventionQueue.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/screens/audit-replay/SCR06_AuditReplayTimeline.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/data/engineRoutes.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/data/memoryProfiles.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/data/mockScenes.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/data/mockInspectorFields.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/data/mockGraphState.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/stores/appStore.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/stores/timelineStore.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/stores/selectionStore.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/utils/promptCompiler.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/render/jobQueue.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/render/jobEvents.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/render/renderManager.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/runtime/sync.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/runtime/api.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/render/queueActions.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/render/renderQueueController.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/render/queueState.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/review/runtime.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/review/guardReasons.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/review/reviewLineageTruth.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/interventions/runtime.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/utils/shotExecution.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/telemetry/index.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/utils/familyPreviewAuthority.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/utils/selectedJobNextAction.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/components/shared/Panel.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/components/timeline/TimelineTrack.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/components/scene/SceneGraph.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/components/shared/StatusBadge.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/components/telemetry/TelemetryKpiStrip.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/data/graphTemplates.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/data/mockTimeline.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/utils/engineFormatter.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/utils/graphCompiler.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/render/queuePolicy.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/review/lineage.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/review/eventStore.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/review/projections.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/review/actionContract.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/review/scorer.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/components/inspector/CompiledPromptPanel.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/components/inspector/InspectorFields.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/components/inspector/ProfileBindingSection.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/utils/selectedJobSecondaryActions.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/bridge/renderBridge.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/data/renderCache.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/engines/adapter.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/engines/comfyConnector.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/engines/fluxConnector.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/engines/runwayConnector.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/engines/veoConnector.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/components/workspace/RenderPreview.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/components/workspace/SceneProductionTimeline.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/components/graph/SceneGraphCanvas.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/telemetry/types/directoros_event_types_cod_ok_v001.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/telemetry/types/directoros_event_guards_cod_ok_v001.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/telemetry/validators/directoros_ajv_validators_cod_ok_v001.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/telemetry/core/directoros_event_emitter_cod_ok_v001.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/telemetry/core/directoros_trace_utils_cod_ok_v001.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/node_modules/.vite/deps/clsx.js?v=afd10981",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/components/telemetry/TelemetryKpiCard.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/telemetry/selectors/directoros_kpi_selectors_cod_wip_v001.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/node_modules/.vite/deps/alasql.js?v=afd10981",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/review/reducers.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/components/graph/GraphCanvasGrid.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/components/graph/GraphConnection.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/components/graph/GraphMiniToolbar.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/components/graph/GraphNode.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/node_modules/.vite/deps/ajv_dist_2020.js?v=afd10981",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/node_modules/.vite/deps/ajv-formats.js?v=afd10981",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/telemetry/schemas/directoros_event_envelope_ref_ok_v001.schema.json?import",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/telemetry/schemas/directoros_command_events_ref_ok_v001.schema.json?import",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/telemetry/schemas/directoros_intervention_events_ref_ok_v001.schema.json?import",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/telemetry/schemas/directoros_reconciliation_events_ref_ok_v001.schema.json?import",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/telemetry/schemas/directoros_projection_events_ref_ok_v001.schema.json?import",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/node_modules/.vite/deps/chunk-5AEVEFUX.js?v=afd10981",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/node_modules/.vite/deps/chunk-AZ7TYMAC.js?v=afd10981",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/mikart-logo.png",
+      "method": "GET",
+      "type": "Image"
+    },
+    {
+      "url": "http://localhost:8787/api/runtime/jobs?limit=100",
+      "method": "OPTIONS",
+      "type": "Other"
+    },
+    {
+      "url": "http://localhost:8787/api/runtime/jobs?limit=100",
+      "method": "GET",
+      "type": "Fetch"
+    },
+    {
+      "url": "http://localhost:8787/api/runtime/recent-renders?limit=12",
+      "method": "GET",
+      "type": "Fetch"
+    },
+    {
+      "url": "http://localhost:8787/api/runtime/timeline?limit=40",
+      "method": "GET",
+      "type": "Fetch"
+    },
+    {
+      "url": "http://localhost:8787/api/runtime/jobs?limit=100",
+      "method": "GET",
+      "type": "Fetch"
+    },
+    {
+      "url": "http://localhost:8787/api/runtime/recent-renders?limit=12",
+      "method": "GET",
+      "type": "Fetch"
+    },
+    {
+      "url": "http://localhost:8787/api/runtime/timeline?limit=40",
+      "method": "GET",
+      "type": "Fetch"
+    },
+    {
+      "url": "http://localhost:8787/api/runtime/recent-renders?limit=12",
+      "method": "OPTIONS",
+      "type": "Other"
+    },
+    {
+      "url": "http://localhost:8787/api/runtime/timeline?limit=40",
+      "method": "OPTIONS",
+      "type": "Other"
+    },
+    {
+      "url": "http://127.0.0.1:5173/vite.svg",
+      "method": "GET",
+      "type": "Other"
+    },
+    {
+      "url": "http://127.0.0.1:5173/",
+      "method": "GET",
+      "type": "Document"
+    },
+    {
+      "url": "http://127.0.0.1:5173/@vite/client",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/main.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/@react-refresh",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/node_modules/.vite/deps/react_jsx-dev-runtime.js?v=afd10981",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/node_modules/.vite/deps/react.js?v=afd10981",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/node_modules/.vite/deps/react-dom_client.js?v=afd10981",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/index.css",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/App.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/node_modules/vite/dist/client/env.mjs",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/node_modules/.vite/deps/chunk-PYPE4BMF.js?v=afd10981",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/node_modules/.vite/deps/chunk-BUSYA2B4.js?v=afd10981",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/node_modules/.vite/deps/chunk-AIQQI3PJ.js?v=afd10981",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/components/layout/LeftSidebar.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/components/layout/TopBar.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/components/layout/CenterWorkspace.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/components/layout/BottomTimeline.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/components/layout/RightInspector.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/screens/shared/M6_AppShell.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/screens/control-room/SCR01_ControlRoom.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/screens/live-runs/SCR02_LiveRunsBoard.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/screens/command-console/SCR04_CommandConsole.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/screens/intervention-queue/SCR05_InterventionQueue.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/screens/audit-replay/SCR06_AuditReplayTimeline.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/data/engineRoutes.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/data/memoryProfiles.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/data/mockScenes.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/data/mockInspectorFields.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/data/mockGraphState.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/stores/appStore.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/stores/timelineStore.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/stores/selectionStore.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/utils/promptCompiler.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/render/jobQueue.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/render/jobEvents.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/render/renderManager.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/runtime/sync.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/runtime/api.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/render/queueActions.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/render/renderQueueController.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/render/queueState.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/review/runtime.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/review/guardReasons.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/review/reviewLineageTruth.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/interventions/runtime.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/utils/shotExecution.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/telemetry/index.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/utils/familyPreviewAuthority.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/utils/selectedJobNextAction.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/components/shared/StatusBadge.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/components/scene/SceneGraph.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/components/shared/Panel.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/components/timeline/TimelineTrack.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/components/telemetry/TelemetryKpiStrip.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/components/inspector/CompiledPromptPanel.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/components/inspector/InspectorFields.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/components/inspector/ProfileBindingSection.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/utils/selectedJobSecondaryActions.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/components/workspace/RenderPreview.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/components/workspace/SceneProductionTimeline.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/components/graph/SceneGraphCanvas.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/data/graphTemplates.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/data/mockTimeline.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/utils/engineFormatter.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/utils/graphCompiler.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/bridge/renderBridge.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/data/renderCache.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/render/queuePolicy.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/engines/adapter.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/engines/comfyConnector.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/engines/fluxConnector.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/engines/runwayConnector.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/engines/veoConnector.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/review/lineage.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/review/eventStore.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/review/projections.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/review/actionContract.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/review/scorer.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/telemetry/types/directoros_event_types_cod_ok_v001.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/telemetry/types/directoros_event_guards_cod_ok_v001.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/telemetry/validators/directoros_ajv_validators_cod_ok_v001.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/telemetry/core/directoros_event_emitter_cod_ok_v001.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/telemetry/core/directoros_trace_utils_cod_ok_v001.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/node_modules/.vite/deps/clsx.js?v=afd10981",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/components/telemetry/TelemetryKpiCard.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/telemetry/selectors/directoros_kpi_selectors_cod_wip_v001.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/components/graph/GraphCanvasGrid.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/components/graph/GraphConnection.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/components/graph/GraphMiniToolbar.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/components/graph/GraphNode.tsx",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/review/reducers.ts",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/node_modules/.vite/deps/alasql.js?v=afd10981",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/node_modules/.vite/deps/ajv_dist_2020.js?v=afd10981",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/node_modules/.vite/deps/ajv-formats.js?v=afd10981",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/telemetry/schemas/directoros_event_envelope_ref_ok_v001.schema.json?import",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/telemetry/schemas/directoros_command_events_ref_ok_v001.schema.json?import",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/telemetry/schemas/directoros_intervention_events_ref_ok_v001.schema.json?import",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/telemetry/schemas/directoros_reconciliation_events_ref_ok_v001.schema.json?import",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/src/telemetry/schemas/directoros_projection_events_ref_ok_v001.schema.json?import",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/node_modules/.vite/deps/chunk-5AEVEFUX.js?v=afd10981",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/node_modules/.vite/deps/chunk-AZ7TYMAC.js?v=afd10981",
+      "method": "GET",
+      "type": "Script"
+    },
+    {
+      "url": "http://127.0.0.1:5173/mikart-logo.png",
+      "method": "GET",
+      "type": "Image"
+    },
+    {
+      "url": "http://localhost:8787/api/runtime/jobs?limit=100",
+      "method": "GET",
+      "type": "Fetch"
+    },
+    {
+      "url": "http://localhost:8787/api/runtime/recent-renders?limit=12",
+      "method": "GET",
+      "type": "Fetch"
+    },
+    {
+      "url": "http://localhost:8787/api/runtime/timeline?limit=40",
+      "method": "GET",
+      "type": "Fetch"
+    },
+    {
+      "url": "http://localhost:8787/api/runtime/jobs?limit=100",
+      "method": "GET",
+      "type": "Fetch"
+    },
+    {
+      "url": "http://localhost:8787/api/runtime/recent-renders?limit=12",
+      "method": "GET",
+      "type": "Fetch"
+    },
+    {
+      "url": "http://localhost:8787/api/runtime/timeline?limit=40",
+      "method": "GET",
+      "type": "Fetch"
+    },
+    {
+      "url": "http://127.0.0.1:5173/vite.svg",
+      "method": "GET",
+      "type": "Other"
+    }
+  ],
+  "lifecycle": []
+}

@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://directoros/schemas/event_envelope/v001",
+  "title": "DirectorOS Event Envelope v001",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "event_id",
+    "event_name",
+    "occurred_at",
+    "recorded_at",
+    "producer",
+    "trace",
+    "actor",
+    "subject",
+    "sequence",
+    "idempotency",
+    "outcome",
+    "metrics",
+    "data"
+  ],
+  "properties": {
+    "schema_version": { "const": "directoros.event.v001" },
+    "event_id": { "type": "string", "minLength": 8 },
+    "event_name": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]+\\.[a-z0-9_]+\\.[a-z0-9_]+$"
+    },
+    "occurred_at": { "type": "string", "format": "date-time" },
+    "recorded_at": { "type": "string", "format": "date-time" },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["service", "module", "instance_id"],
+      "properties": {
+        "service": { "type": "string" },
+        "module": { "type": "string" },
+        "instance_id": { "type": "string" }
+      }
+    },
+    "trace": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["trace_id", "span_id", "correlation_id"],
+      "properties": {
+        "trace_id": { "type": "string" },
+        "span_id": { "type": "string" },
+        "parent_span_id": { "type": ["string", "null"] },
+        "causation_id": { "type": ["string", "null"] },
+        "correlation_id": { "type": "string" }
+      }
+    },
+    "actor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "id", "session_id", "lane"],
+      "properties": {
+        "type": { "enum": ["operator", "system"] },
+        "id": { "type": "string" },
+        "session_id": { "type": "string" },
+        "lane": { "type": "string", "pattern": "^lane_[0-9]+$" }
+      }
+    },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "id", "engine", "target"],
+      "properties": {
+        "type": { "type": "string" },
+        "id": { "type": "string" },
+        "engine": { "type": "string" },
+        "target": { "type": "string" }
+      }
+    },
+    "sequence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stream", "index"],
+      "properties": {
+        "stream": { "type": "string" },
+        "index": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "idempotency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key", "replay_safe"],
+      "properties": {
+        "key": { "type": "string" },
+        "replay_safe": { "const": true }
+      }
+    },
+    "outcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "code", "message"],
+      "properties": {
+        "status": { "type": "string" },
+        "code": { "type": "string" },
+        "message": { "type": "string" }
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["latency_ms", "queue_ms"],
+      "properties": {
+        "latency_ms": { "type": ["integer", "null"], "minimum": 0 },
+        "queue_ms": { "type": ["integer", "null"], "minimum": 0 }
+      }
+    },
+    "data": { "type": "object" }
+  }
+}

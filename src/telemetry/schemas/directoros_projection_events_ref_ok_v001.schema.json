@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://directoros/schemas/projection_events/v001",
+  "title": "DirectorOS Projection Events v001",
+  "allOf": [
+    { "$ref": "https://directoros/schemas/event_envelope/v001" },
+    {
+      "type": "object",
+      "properties": {
+        "event_name": {
+          "enum": [
+            "projection.render.requested",
+            "projection.render.completed",
+            "ui.action.invoked",
+            "ui.action.completed"
+          ]
+        },
+        "subject": {
+          "type": "object",
+          "properties": { "type": { "enum": ["projection", "ui_action"] } },
+          "required": ["type"]
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "view_id": { "type": "string" },
+            "component": { "type": "string" },
+            "render_version": { "type": "string" },
+            "source_occurred_at": { "type": "string", "format": "date-time" }
+          }
+        }
+      }
+    }
+  ]
+}

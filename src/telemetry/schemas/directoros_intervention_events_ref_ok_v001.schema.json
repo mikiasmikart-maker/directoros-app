@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://directoros/schemas/intervention_events/v001",
+  "title": "DirectorOS Intervention Events v001",
+  "allOf": [
+    { "$ref": "https://directoros/schemas/event_envelope/v001" },
+    {
+      "type": "object",
+      "properties": {
+        "event_name": {
+          "enum": [
+            "intervention.lifecycle.opened",
+            "intervention.lifecycle.annotated",
+            "intervention.lifecycle.escalated",
+            "intervention.lifecycle.resolved",
+            "intervention.lifecycle.closed"
+          ]
+        },
+        "subject": {
+          "type": "object",
+          "properties": { "type": { "const": "intervention" } },
+          "required": ["type"]
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "reason": { "type": "string" },
+            "severity": { "enum": ["low", "medium", "high", "critical"] },
+            "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+            "threshold": { "type": "number", "minimum": 0, "maximum": 1 },
+            "resolution": { "type": "string" }
+          }
+        }
+      }
+    }
+  ]
+}

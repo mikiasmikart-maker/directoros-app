@@ -1,0 +1,51 @@
+:root {
+  --dos-bg: #0a0a0a;
+  --dos-panel: rgba(20, 20, 22, 0.65);
+  --dos-panel-soft: rgba(18, 18, 20, 0.78);
+  --dos-border: rgba(255, 255, 255, 0.06);
+  --dos-accent: #78a0ff;
+  --dos-text: rgba(226, 232, 240, 0.9);
+  --dos-text-muted: rgba(148, 163, 184, 0.72);
+
+  --m6-tier1-bg: rgba(10, 16, 28, 0.78);
+  --m6-tier1-border: rgba(255, 255, 255, 0.05);
+  --m6-tier1-shadow: 0 8px 24px rgba(2, 6, 23, 0.22);
+
+  --m6-tier2-bg: rgba(10, 16, 28, 0.6);
+  --m6-tier2-border: var(--m6-border-secondary);
+
+  --m6-tier3-bg: rgba(8, 12, 20, 0.34);
+  --m6-tier3-border: var(--m6-border-secondary);
+
+  --m6-border-soft: rgba(255, 255, 255, 0.04);
+  --m6-border-soft-hover: rgba(255, 255, 255, 0.08);
+  --m6-border-soft-active: rgba(120, 160, 255, 0.2);
+
+  --m6-surface-idle: rgba(255, 255, 255, 0.016);
+  --m6-surface-hover: rgba(255, 255, 255, 0.034);
+  --m6-surface-active: rgba(120, 160, 255, 0.11);
+
+  --m6-state-active-fg: #82c9a1;
+  --m6-state-active-bg: rgba(130, 201, 161, 0.08);
+  --m6-state-active-border: rgba(130, 201, 161, 0.2);
+
+  --m6-state-focus-border: rgba(120, 160, 255, 0.6);
+  --m6-state-focus-glow: 0 0 12px rgba(120, 160, 255, 0.25);
+
+  --m6-state-warn-fg: #d9a044;
+  --m6-state-warn-bg: rgba(217, 160, 68, 0.08);
+  --m6-state-warn-border: rgba(217, 160, 68, 0.18);
+
+  --m6-state-critical-fg: #b48484;
+  --m6-state-critical-bg: rgba(180, 132, 132, 0.08);
+  --m6-state-critical-border: rgba(180, 132, 132, 0.2);
+
+  --m6-state-stop-fg: #9b4a4a;
+  --m6-state-stop-bg: rgba(155, 74, 74, 0.12);
+  --m6-state-stop-border: rgba(155, 74, 74, 0.35);
+
+  --m6-font-screen-title: 18px;
+  --m6-font-section-title: 10px;
+  --m6-font-body: 13px;
+  --m6-font-meta: 10px;
+}
