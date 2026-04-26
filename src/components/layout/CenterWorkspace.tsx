@@ -878,7 +878,7 @@ export const CenterWorkspace = ({
   }, [visibleJobs, selectedJobId, onSelectJob, onOpenSelectedOutput, onTogglePinSelectedJob, selectedOutputCandidates, selectedOutputPath, onSelectOutput]);
 
   return (
-    <main className={`h-full min-w-0 bg-[#050505] ${isFocusMode ? 'operator-focus-mode' : ''}`}>
+    <main className={`h-full min-w-0 bg-[#0a0a0a] ${isFocusMode ? 'operator-focus-mode' : ''}`}>
       <Panel
         title="Workspace"
         className="h-full min-h-[340px]"
@@ -912,7 +912,7 @@ export const CenterWorkspace = ({
           </div>
         }
       >
-        <div className="flex flex-col gap-3.5">
+        <div className="flex flex-col gap-3.5 flex-1 min-h-0 overflow-y-auto m6-scrollbar-thin p-4">
           <section className="px-1 py-2 flex flex-col group">
             <span className="text-[9px] uppercase font-semibold tracking-[0.2em] text-neutral-600 mb-1.5">Active Scene</span>
             <h2 className="text-2xl font-bold text-white tracking-tighter leading-none">{scene?.name ?? 'No Scene Selected'}</h2>
@@ -1031,7 +1031,7 @@ export const CenterWorkspace = ({
 
               <RuntimeOfflineStatus state={streamState} />
 
-              <div className={`rounded-xl border p-4 shadow-[0_12px_32px_rgba(2,6,23,0.18),inset_0_1px_0_rgba(255,255,255,0.02)] transition-[border-color,background-color,box-shadow] duration-180 ease-out ${hasActiveRender ? 'border-white/[0.04] bg-[linear-gradient(180deg,rgba(22,22,22,0.52)_0%,rgba(18,18,18,0.48)_100%)]' : 'border-white/[0.06] bg-[linear-gradient(180deg,rgba(25,25,25,0.72)_0%,rgba(20,20,20,0.68)_100%)]'}`}>
+              <div className={`rounded-xl border p-4 shadow-[0_12px_32px_rgba(2,6,23,0.18),inset_0_1px_0_rgba(255,255,255,0.02)] transition-[border-color,background-color,box-shadow] duration-[180ms] ease-out ${hasActiveRender ? 'border-white/[0.04] bg-[linear-gradient(180deg,rgba(22,22,22,0.52)_0%,rgba(18,18,18,0.48)_100%)]' : 'border-white/[0.06] bg-[linear-gradient(180deg,rgba(25,25,25,0.72)_0%,rgba(20,20,20,0.68)_100%)]'}`}>
                 <div className="mb-4 flex items-center justify-between border-b border-white/[0.04] pb-2 text-[10px]">
                   <span className={`${hasActiveRender ? 'text-slate-500' : 'text-cyan-100/60'} font-bold uppercase tracking-[0.12em]`}>Operator Context</span>
                   <div className="flex items-center gap-3 text-[9px] tracking-widest text-slate-500/50">
@@ -1057,7 +1057,7 @@ export const CenterWorkspace = ({
                         type="button"
                         onClick={onNextBestAction}
                         disabled={streamState === 'offline' || hasActiveRender}
-                        className={interactionClass('primary', `mt-3 flex w-full items-center justify-center gap-3 rounded-lg px-4 py-3 text-[13px] font-bold uppercase tracking-widest shadow-lg m6-animate-entry-sharp m6-pulse-once active:scale-[0.98] transition-[background-color,border-color,transform,box-shadow,opacity] duration-180 ${
+                        className={interactionClass('primary', `mt-3 flex w-full items-center justify-center gap-3 rounded-lg px-4 py-3 text-[13px] font-bold uppercase tracking-widest shadow-lg m6-animate-entry-sharp m6-pulse-once active:scale-[0.98] transition-[background-color,border-color,transform,box-shadow,opacity] duration-[180ms] ${
                           hasActiveRender ? 'bg-panel/20 text-slate-500' : 
                           nextBestAction.accent === 'rose' ? 'bg-rose-500/20 text-rose-400 hover:bg-rose-500/30 border border-rose-500/30 shadow-rose-900/10' :
                           nextBestAction.accent === 'emerald' ? 'bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 border border-emerald-500/30 shadow-emerald-900/10' :
@@ -1083,7 +1083,7 @@ export const CenterWorkspace = ({
                         type="button"
                         onClick={selectedJobPrimaryQuickAction.onTrigger}
                         disabled={selectedJobPrimaryQuickAction.disabled || streamState === 'offline'}
-                        className={interactionClass('primary', `mt-1 flex w-full items-center justify-center rounded-lg px-4 py-3 text-[13px] font-bold uppercase tracking-wider border m6-animate-entry-sharp active:scale-[0.98] transition-[background-color,border-color,transform,opacity] duration-180 ${
+                        className={interactionClass('primary', `mt-1 flex w-full items-center justify-center rounded-lg px-4 py-3 text-[13px] font-bold uppercase tracking-wider border m6-animate-entry-sharp active:scale-[0.98] transition-[background-color,border-color,transform,opacity] duration-[180ms] ${
                           hasActiveRender || selectedJobPrimaryQuickAction.disabled ? 'bg-panel/14 text-slate-500 border-transparent' : 
                           selectedJobPrimaryQuickAction.tone === 'success' ? 'bg-emerald-500/15 text-emerald-100 border-emerald-500/30 hover:bg-emerald-500/25' :
                           selectedJobPrimaryQuickAction.tone === 'brand' ? 'bg-cyan-500/15 text-cyan-100 border-cyan-500/30 hover:bg-cyan-500/25' :
@@ -1282,7 +1282,7 @@ export const CenterWorkspace = ({
                             </div>
                           ) : null}
                           {inlineActionReceipt?.visible && (
-                            <div className={`mt-2 rounded border px-2 py-2 text-[10px] ${inlineActionReceipt.tone === 'ok' ? 'border-emerald-300/20 bg-emerald-500/10 text-emerald-100/90' : 'border-rose-300/20 bg-rose-500/10 text-rose-100/90'}`}>
+                            <div className={`mt-2 rounded border px-2 py-2 text-[10px] m6-animate-receipt-sharp ${inlineActionReceipt.tone === 'ok' ? 'border-emerald-300/20 bg-emerald-500/10 text-emerald-100/90' : 'border-rose-300/20 bg-rose-500/10 text-rose-100/90'}`}>
                               {inlineActionReceipt.guidanceOutcome && (
                                 <div className="mb-1.5 flex items-center gap-1 text-[9px] uppercase tracking-[0.08em] text-textMuted/55">
                                   <span className="opacity-60">▸</span>
@@ -1380,7 +1380,7 @@ export const CenterWorkspace = ({
                               return (
                                 <div 
                                   key={candidate.jobId} 
-                                  className={`group relative flex flex-col gap-2.5 rounded-lg border p-3 transition-[border-color,background-color,box-shadow,transform] duration-180 ease-out ${
+                                  className={`group relative flex flex-col gap-2.5 rounded-lg border p-3 transition-[border-color,background-color,box-shadow,transform] duration-[180ms] ease-out ${
                                     isWinner ? 'border-cyan-500/40 bg-cyan-500/10 shadow-[0_4px_16px_rgba(34,211,238,0.12)]' : 
                                     isLatest ? 'border-indigo-500/20 bg-indigo-500/5 hover:bg-indigo-500/8' :
                                     'border-white/[0.04] bg-panel/22 hover:bg-panel/32 hover:border-white/[0.08]'
@@ -1419,14 +1419,14 @@ export const CenterWorkspace = ({
                                       <button 
                                         type="button" 
                                         onClick={() => onOpenEvidenceCandidate?.(candidate.jobId)} 
-                                        className={`rounded bg-panel/30 px-2 py-1 text-[9px] font-bold uppercase text-slate-400 transition-[background-color,color,border-color] duration-120 hover:bg-panel/50 hover:text-slate-200 border border-white/5 active:scale-[0.99]`}
+                                        className={`rounded bg-panel/30 px-2 py-1 text-[9px] font-bold uppercase text-slate-400 transition-[background-color,color,border-color] duration-[120ms] hover:bg-panel/50 hover:text-slate-200 border border-white/5 active:scale-[0.99]`}
                                       >
                                         Inspect
                                       </button>
                                       <button 
                                         type="button" 
                                         onClick={() => onToggleCompareCandidate?.(candidate.jobId)} 
-                                        className={`rounded bg-panel/30 px-2 py-1 text-[9px] font-bold uppercase text-slate-400 transition-[background-color,color,border-color] duration-120 hover:bg-panel/50 hover:text-slate-200 border border-white/5 active:scale-[0.99]`}
+                                        className={`rounded bg-panel/30 px-2 py-1 text-[9px] font-bold uppercase text-slate-400 transition-[background-color,color,border-color] duration-[120ms] hover:bg-panel/50 hover:text-slate-200 border border-white/5 active:scale-[0.99]`}
                                       >
                                         Compare
                                       </button>
@@ -1441,7 +1441,7 @@ export const CenterWorkspace = ({
                           <button type="button" onClick={onCompareSuggestedPair} disabled={!productionFamily?.suggestedPairPrimaryJobId || !productionFamily?.suggestedPairPartnerJobId} className="rounded bg-cyan-500/14 px-2 py-1 text-cyan-100 disabled:opacity-35">Compare Suggested Pair</button>
                         </div>
                         {familyInlineActionReceipt?.visible ? (
-                          <div className={`mt-1.5 rounded border px-2 py-2 text-[10px] ${familyInlineActionReceipt.tone === 'ok' ? 'border-emerald-300/20 bg-emerald-500/10 text-emerald-100/90' : 'border-rose-300/20 bg-rose-500/10 text-rose-100/90'}`}>
+                          <div className={`mt-1.5 rounded border px-2 py-2 text-[10px] m6-animate-receipt-sharp ${familyInlineActionReceipt.tone === 'ok' ? 'border-emerald-300/20 bg-emerald-500/10 text-emerald-100/90' : 'border-rose-300/20 bg-rose-500/10 text-rose-100/90'}`}>
                             <div className="flex items-start justify-between gap-2">
                               <div className="min-w-0">
                                 <div className="text-[9px] uppercase tracking-[0.08em] text-textMuted/62">Family Update</div>

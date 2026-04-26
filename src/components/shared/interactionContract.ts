@@ -2,12 +2,12 @@ import clsx from 'clsx';
 
 export type InteractionTier = 'primary' | 'secondary' | 'passive';
 
-const BASE = 'transition-[border-color,background-color,color,opacity,box-shadow,transform] duration-100 ease-out motion-reduce:transition-none focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-35';
+const BASE = 'transition-[border-color,background-color,color,opacity,box-shadow,transform] duration-[150ms] ease-out motion-reduce:transition-none focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-35';
 
 const HOVER: Record<InteractionTier, string> = {
-  primary: 'hover:brightness-[1.06] hover:saturate-[1.06] hover:shadow-[0_0_0_1px_rgba(120,160,255,0.08)]',
-  secondary: 'hover:border-[rgba(120,160,255,0.08)] hover:bg-panel/24 hover:text-slate-200/78',
-  passive: 'hover:bg-panel/52 hover:text-text/88',
+  primary: 'hover:brightness-[1.06] hover:saturate-[1.06] hover:shadow-[0_0_0_1px_rgba(120,160,255,0.08)] active:scale-[0.98] active:brightness-[1.02]',
+  secondary: 'hover:border-[rgba(120,160,255,0.08)] hover:bg-panel/24 hover:text-slate-200/78 active:scale-[0.99]',
+  passive: 'hover:bg-panel/52 hover:text-text/88 active:opacity-80',
 };
 
 const DISABLED: Record<InteractionTier, string> = {

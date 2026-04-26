@@ -374,12 +374,22 @@ body {
 
 @keyframes m6-pulse-once {
   0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(120, 160, 255, 0); }
-  20% { transform: scale(1.015); box-shadow: 0 0 8px 4px rgba(120, 160, 255, 0.12); }
+  20% { transform: scale(1.02); box-shadow: 0 0 8px 4px rgba(120, 160, 255, 0.12); }
   100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(120, 160, 255, 0); }
 }
 
 .m6-pulse-once {
   animation: m6-pulse-once 0.6s var(--m6-easing) forwards;
+}
+
+@keyframes m6-receipt-sharp {
+  0% { transform: scale(0.98); opacity: 0; }
+  30% { transform: scale(1.01); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.m6-animate-receipt-sharp {
+  animation: m6-receipt-sharp 150ms var(--m6-easing) forwards;
 }
 
 @keyframes m6-return-anchor-pulse {

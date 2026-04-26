@@ -124,7 +124,7 @@ export const RenderPreview: React.FC<RenderPreviewProps> = (props) => {
   const actionLabel = isRunning ? 'Signal Live' : (isFailed || isCancelled ? 'Initiate Recovery' : 'Render Scene');
 
   return (
-    <div className="relative flex-1 min-h-0 w-full bg-[#050505] flex flex-col overflow-hidden group">
+    <div className="relative flex-1 min-h-0 w-full bg-[#0a0a0a] flex flex-col overflow-hidden group">
       
       {/* VRAM ARMOR: Media Layer */}
       <div className="absolute inset-0 z-0">
@@ -194,7 +194,7 @@ export const RenderPreview: React.FC<RenderPreviewProps> = (props) => {
             {/* PRIMARY RENDER ACTION */}
             <button
               onClick={props.onLaunch}
-              className={`px-6 py-2 text-[10px] font-bold tracking-[0.2em] uppercase border transition-all duration-300 active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed shadow-[0_0_20px_rgba(129,68,192,0.2)] ${
+              className={`px-6 py-2 text-[10px] font-bold tracking-[0.2em] uppercase border transition-all duration-[150ms] active:scale-[0.98] disabled:opacity-30 disabled:cursor-not-allowed shadow-[0_0_20px_rgba(129,68,192,0.2)] ${
                 isFailed 
                   ? 'bg-rose-500/10 border-rose-500/30 text-rose-400 hover:bg-rose-500/20' 
                   : 'bg-[#8144C0] hover:bg-[#9359d1] text-white border-[#a166e2]'
