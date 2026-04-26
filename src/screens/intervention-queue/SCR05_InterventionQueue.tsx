@@ -97,21 +97,18 @@ export const SCR05_InterventionQueue = ({
                       key={item.id}
                       type="button"
                       onClick={() => onSelectIntervention?.(item.id)}
-                      className={`w-full rounded border px-2.5 py-1.5 text-left transition-all ${isSelected ? 'border-[var(--m6-state-focus-border)]/40 bg-accent/12' : 'border-[var(--m6-border-soft)] bg-panel/45 hover:border-[var(--dos-border)] hover:bg-panel/52 hover:text-text/88'}`}
+                      className={`w-full rounded border px-3 py-2 text-left transition-all ${isSelected ? 'border-[var(--m6-state-focus-border)]/40 bg-accent/12' : 'border-[var(--m6-border-soft)] bg-panel/45 hover:border-[var(--dos-border)] hover:bg-panel/52 hover:text-text/88'}`}
                     >
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="truncate text-[11px] text-text/92">{item.title}</span>
-                        <span className={`rounded border px-1.5 py-0.5 text-[9px] uppercase tracking-wide font-bold ${priorityTone[item.priority]}`}>{item.priority}</span>
-                      </div>
-                      <div className="mt-1 grid grid-cols-2 gap-1 text-[9px] uppercase tracking-wide text-textMuted/85">
-                        <span className="rounded bg-panel/45 px-1 py-0.5">confidence gap: {item.confidenceGapLabel}</span>
-                        <span className="rounded bg-panel/45 px-1 py-0.5">trust: {item.trustStateLabel}</span>
-                        <span className="rounded bg-panel/45 px-1 py-0.5">aging: {item.agingLabel}</span>
-                        <span className="rounded bg-cyan-500/10 px-1 py-0.5 text-cyan-100">state: {item.canonicalStateLabel}</span>
-                      </div>
-                      <div className="mt-1 flex flex-wrap gap-1 text-[9px] uppercase tracking-wide text-textMuted/80">
-                        <span className="rounded border border-[var(--dos-border)] bg-panel/45 px-1 py-0.5">latency: {item.latencyLabel ?? 'n/a'}</span>
-                        {item.stale ? <span className="rounded border border-[var(--m6-state-warn-border)] bg-[var(--m6-state-warn-bg)] px-1 py-0.5 text-[var(--m6-state-warn-fg)]">stale</span> : null}
+                      <div className="flex flex-col gap-0.5">
+                        <span className="truncate text-[12px] font-bold text-text/92">{item.title}</span>
+                        <span className="truncate text-[11px] text-textMuted/80">{item.evidenceSummary || 'No context provided'}</span>
+                        <div className="mt-1 flex items-center gap-2 text-[10px] uppercase tracking-wider text-textMuted/60">
+                          <span className={`${item.priority === 'urgent' ? 'text-[var(--m6-state-critical-fg)] font-bold' : ''}`}>{item.priority}</span>
+                          <span className="opacity-30">•</span>
+                          <span>{item.trustStateLabel}</span>
+                          <span className="opacity-30">•</span>
+                          <span>{item.agingLabel}</span>
+                        </div>
                       </div>
                     </button>
                   );
@@ -132,13 +129,14 @@ export const SCR05_InterventionQueue = ({
                   <div className="mb-1 text-[10px] uppercase tracking-[0.12em] text-textMuted/80">Evidence</div>
                   <div className="text-text/90">{selected.evidenceSummary ?? 'No evidence summary provided.'}</div>
                 </section>
-                <section className="rounded bg-panel/40 p-2">
-                  <div className="mb-1 text-[10px] uppercase tracking-[0.12em] text-textMuted/80">Recommendation</div>
-                  <div className="text-text/90">{selected.recommendationSummary ?? 'No recommendation summary provided.'}</div>
+                <section className="rounded bg-panel/40 p-3 ring-1 ring-white/5">
+                  <div className="mb-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-accent">Next Move</div>
+                  <div className="text-[12px] font-bold text-text/95">{selected.recommendationSummary ?? 'Pending Analysis...'}</div>
+                  <div className="mt-1 text-[11px] text-textMuted/85">{selected.decisionContextSummary ?? 'Calculating optimal path...'}</div>
                 </section>
-                <section className="rounded bg-panel/40 p-2">
-                  <div className="mb-1 text-[10px] uppercase tracking-[0.12em] text-textMuted/80">Canonical Decision Context</div>
-                  <div className="text-text/90">{selected.decisionContextSummary ?? 'No canonical decision context provided.'}</div>
+                <section className="rounded bg-panel/20 p-2 border border-white/5">
+                  <div className="mb-1 text-[9px] uppercase tracking-[0.12em] text-textMuted/60">Evidence Context</div>
+                  <div className="text-[11px] text-textMuted/90">{selected.evidenceSummary ?? 'No evidence summary provided.'}</div>
                 </section>
                 <div className="flex flex-wrap gap-1.5 text-[10px] uppercase tracking-wide">
                   <button type="button" onClick={() => onAssign?.(selected.id)} className="rounded border border-[var(--dos-border)] px-2 py-1 text-textMuted hover:bg-panel/52 hover:text-text/88">Assign</button>
@@ -156,18 +154,30 @@ export const SCR05_InterventionQueue = ({
           </aside>
         </section>
 
-        <section className="rounded-md border border-[var(--m6-state-critical-border)] bg-[var(--m6-state-critical-bg)] px-3 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.01)]">
-          <div className="mb-2 flex items-center justify-between gap-2">
-            <div className="text-[10px] uppercase tracking-[0.15em] text-[var(--m6-state-critical-fg)]/90">Decision Action Rail</div>
-            <button type="button" onClick={onCreateQuickIntervention} className="rounded border border-indigo-500/20 bg-indigo-500/10 px-2 py-1 text-[10px] uppercase tracking-wide text-indigo-100">Create Intervention</button>
-          </div>
-          <div className="flex flex-wrap gap-1.5 text-[10px] uppercase tracking-wide">
-            <button type="button" disabled={!selected} onClick={() => selected && onApprove?.(selected.id)} className="rounded border border-[var(--m6-state-active-border)] bg-[var(--m6-state-active-bg)] px-2.5 py-1 text-[var(--m6-state-active-fg)] disabled:opacity-40">Resolve</button>
-            <button type="button" disabled={!selected} onClick={() => selected && onAssign?.(selected.id)} className="rounded border border-cyan-500/20 bg-cyan-500/10 px-2.5 py-1 text-cyan-100 disabled:opacity-40">Assign</button>
-            <button type="button" disabled={!selected} onClick={() => selected && onRevise?.(selected.id)} className="rounded border border-[var(--m6-state-warn-border)] bg-[var(--m6-state-warn-bg)] px-2.5 py-1 text-[var(--m6-state-warn-fg)] disabled:opacity-40">Revise</button>
-            <button type="button" disabled={!selected} onClick={() => selected && onReject?.(selected.id)} className="rounded border border-[var(--m6-state-critical-border)] bg-[var(--m6-state-critical-bg)] px-2.5 py-1 text-[var(--m6-state-critical-fg)] disabled:opacity-40">Escalate</button>
-            <button type="button" disabled={!selected} onClick={() => selected && onSupersede?.(selected.id)} className="rounded border border-indigo-500/20 bg-indigo-500/10 px-2.5 py-1 text-indigo-100 disabled:opacity-40">Close</button>
-            <button type="button" disabled={!selected} onClick={() => selected && onDefer?.(selected.id)} className="rounded border border-[var(--dos-border)] px-2.5 py-1 text-textMuted hover:bg-panel/52 hover:text-text/88 disabled:opacity-40">Defer</button>
+        <section className="rounded-md border border-[var(--m6-border-soft)] bg-panel/40 px-4 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.01)]">
+          <div className="flex items-center justify-between gap-6">
+            <div className="flex items-center gap-1.5">
+              <button 
+                type="button" 
+                disabled={!selected} 
+                onClick={() => selected && onApprove?.(selected.id)} 
+                className="rounded-md bg-[#8144C0] px-6 py-2 text-[11px] font-bold uppercase tracking-[0.12em] text-white shadow-lg shadow-purple-500/20 ring-1 ring-purple-400/30 transition-all hover:scale-[1.02] hover:brightness-110 active:scale-95 disabled:opacity-40"
+              >
+                Resolve
+              </button>
+              <div className="h-8 w-px bg-white/10 mx-2" />
+              <div className="flex items-center gap-1 text-[10px] uppercase tracking-wide opacity-50">
+                <button type="button" disabled={!selected} onClick={() => selected && onAssign?.(selected.id)} className="px-2 py-1 hover:text-text hover:opacity-100 disabled:opacity-40">Assign</button>
+                <button type="button" disabled={!selected} onClick={() => selected && onRevise?.(selected.id)} className="px-2 py-1 hover:text-text hover:opacity-100 disabled:opacity-40">Revise</button>
+                <button type="button" disabled={!selected} onClick={() => selected && onReject?.(selected.id)} className="px-2 py-1 hover:text-text hover:opacity-100 disabled:opacity-40 text-[var(--m6-state-critical-fg)]">Escalate</button>
+                <button type="button" disabled={!selected} onClick={() => selected && onDefer?.(selected.id)} className="px-2 py-1 hover:text-text hover:opacity-100 disabled:opacity-40">Defer</button>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <button type="button" disabled={!selected} onClick={() => selected && onSupersede?.(selected.id)} className="rounded border border-white/10 px-3 py-1.5 text-[10px] uppercase tracking-wide text-textMuted hover:bg-white/5 hover:text-text disabled:opacity-40">Close</button>
+              <button type="button" onClick={onCreateQuickIntervention} className="rounded border border-indigo-500/30 bg-indigo-500/10 px-3 py-1.5 text-[10px] uppercase tracking-wide text-indigo-200 hover:bg-indigo-500/20">Manual Override</button>
+            </div>
           </div>
         </section>
       </div>

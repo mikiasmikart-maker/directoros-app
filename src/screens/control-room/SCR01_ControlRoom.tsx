@@ -121,17 +121,22 @@ export const SCR01_ControlRoom = ({
   return (
     <main className="h-full min-w-0 p-3">
       <div className="grid h-full min-h-0 grid-rows-[auto_auto_1fr_auto] gap-3">
-        <section className="m6-tier-2 rounded-md px-4 py-3">
-          <div className="grid grid-cols-[repeat(5,minmax(0,1fr))_auto] gap-2 text-[10px] uppercase tracking-wide">
-            <div className="rounded bg-panel/45 px-2 py-1.5 text-textMuted">health: <span className="text-text/95">{systemHealth}</span></div>
-            <div className="rounded bg-panel/45 px-2 py-1.5 text-textMuted">stream: <span className="text-text/95">{streamState}</span></div>
-            <div className="rounded bg-panel/45 px-2 py-1.5 text-textMuted">time: <span className="text-text/95">{streamTimestampLabel ?? '—'}</span></div>
-            <div className="rounded bg-panel/45 px-2 py-1.5 text-textMuted">queue: <span className="text-text/95">{queueMode}</span></div>
-            <div className="rounded bg-panel/45 px-2 py-1.5 text-textMuted">active: <span className="text-text/95">{activeRunLabel ?? activeShotLabel ?? 'none'}</span></div>
-            <button type="button" onClick={onOpenAttention} className="rounded bg-rose-500/10 px-2 py-1.5 text-rose-100 hover:bg-panel/52 hover:text-text/88">
-              Attention → SCR-05
-            </button>
+        <section className="m6-tier-2 flex items-center justify-between rounded-md border border-[var(--m6-border-soft)] px-4 py-2">
+          <div className="flex items-center gap-6 text-[10px] uppercase tracking-widest">
+            <div className="flex items-center gap-2">
+              <div className={`h-1.5 w-1.5 rounded-full ${systemHealth === 'optimal' ? 'bg-emerald-400' : 'bg-rose-400'} animate-pulse`} />
+              <span className="text-textMuted">Health: <span className="text-text">{systemHealth}</span></span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className={`h-1.5 w-1.5 rounded-full ${streamState === 'active' ? 'bg-cyan-400' : 'bg-slate-600'}`} />
+              <span className="text-textMuted">Stream: <span className="text-text">{streamState}</span> <span className="ml-1 opacity-40">({streamTimestampLabel ?? '—'})</span></span>
+            </div>
+            <div className="text-textMuted">Queue: <span className="text-text">{queueMode}</span></div>
+            <div className="text-textMuted">Active: <span className="text-accent">{activeRunLabel ?? activeShotLabel ?? 'none'}</span></div>
           </div>
+          <button type="button" onClick={onOpenAttention} className="rounded border border-rose-500/30 bg-rose-500/10 px-3 py-1 text-[10px] font-bold uppercase tracking-wide text-rose-200 hover:bg-rose-500/20">
+            Attention → SCR-05
+          </button>
         </section>
 
         <TelemetryKpiStrip events={telemetryEvents} />

@@ -121,7 +121,7 @@ export const NextBestAction = ({ nba, onAction }: NextBestActionProps) => {
             e.stopPropagation();
             onAction();
           }}
-          className="shrink-0 rounded-md bg-panel/30 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider ring-1 ring-[var(--m6-border-soft)] transition-all hover:bg-panel/50 hover:ring-[var(--dos-border)] active:scale-95"
+          className="shrink-0 rounded-md bg-panel/40 px-4 py-2 text-[11px] font-bold uppercase tracking-widest ring-1 ring-white/20 transition-all hover:bg-white/10 hover:ring-white/40 hover:shadow-[0_0_15px_rgba(255,255,255,0.1)] active:scale-95"
         >
           {nba.cta}
         </button>
