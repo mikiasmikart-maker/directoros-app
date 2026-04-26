@@ -28,6 +28,7 @@ export interface SelectedJobNextActionInput {
   retryEligible: boolean;
   isBestKnown: boolean;
   isApprovedOrFinalized: boolean;
+  hasArtifact?: boolean;
 }
 
 export interface SelectedJobNextActionResolution {
@@ -44,6 +45,7 @@ export const resolveSelectedJobNextAction = ({
   retryEligible,
   isBestKnown,
   isApprovedOrFinalized,
+  hasArtifact = true,
 }: SelectedJobNextActionInput): SelectedJobNextActionResolution => {
   const failed = canonicalState === 'failed';
   const cancelled = canonicalState === 'cancelled';
@@ -128,9 +130,9 @@ export const resolveSelectedJobNextAction = ({
 
   if (completedLike) {
     return {
-      primaryActionKey: 'review_output',
-      primaryActionLabel: 'Open Output',
-      primaryActionReason: 'Selected job is completed and not yet approved/finalized.',
+      primaryActionKey: hasArtifact ? 'review_output' : 'inspect_historical_artifact',
+      primaryActionLabel: hasArtifact ? 'Open Output' : 'Inspect Job',
+      primaryActionReason: hasArtifact ? 'Selected job is completed and not yet approved/finalized.' : 'Selected job is completed but no artifact is registered.',
       secondaryActions: [
         { key: 'inspect_historical_artifact', label: 'Inspect Output' },
       ],

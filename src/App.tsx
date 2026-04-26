@@ -1525,6 +1525,8 @@ function App() {
         ? `retry child of ${(baseJob.lineageParentJobId ?? baseJob.retryOf)}`
         : `lineage root ${lineageFamily.at(-1)?.id ?? baseJob.id}`;
     const retryEligible = Boolean(baseJob.bridgeJob.sceneId && baseJob.bridgeJob.payload?.prompt && baseJob.bridgeJob.payload?.routeContext?.activeRoute && baseJob.bridgeJob.payload?.routeContext?.strategy);
+    const hasArtifact = Boolean(baseJob.previewImage || baseJob.previewMedia || (baseJob.resultPaths && baseJob.resultPaths.length > 0));
+
     const nextAction = resolveSelectedJobNextAction({
       canonicalState,
       approvalStatus: resolvedOperatorReviewState?.approvalStatus,
@@ -1532,6 +1534,7 @@ function App() {
       retryEligible,
       isBestKnown: resolvedOperatorReviewState?.bestKnownJobId === baseJob.id,
       isApprovedOrFinalized: resolvedOperatorReviewState?.actionState === 'finalized' || resolvedOperatorReviewState?.approvalStatus === 'approved' || resolvedOperatorReviewState?.actionState === 'approved',
+      hasArtifact,
     });
     const lastMeaningfulChange = (lineageFamily[0]?.state ?? baseJob.state) === 'failed'
       ? `Failed at ${(lineageFamily[0] ?? baseJob).failedStage ?? 'running'}${(lineageFamily[0] ?? baseJob).error ? ` • ${(lineageFamily[0] ?? baseJob).error}` : ''}`
