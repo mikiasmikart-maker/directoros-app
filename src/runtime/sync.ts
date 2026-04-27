@@ -28,17 +28,21 @@ const resolveLocalRuntimeJob = (runtimeJob: any, locals: RenderQueueJob[]) => {
   const runtimeJobId = runtimeJob?.job_id as string | undefined;
   const manifestPath = runtimeJob?.manifest_path as string | undefined;
 
+  if (!runtimeJobId) return undefined;
+
   return (
-    locals.find((job) => job.runtimeBridgeJobId && runtimeJobId && job.runtimeBridgeJobId === runtimeJobId) ||
-    locals.find((job) => runtimeJobId && (job.id === runtimeJobId || job.bridgeJob.id === runtimeJobId)) ||
+    // 1. Primary: Exact bridge ID match (authoritative link)
+    locals.find((job) => job.runtimeBridgeJobId === runtimeJobId) ||
+    // 2. Secondary: Remote job_label matching local ID (common for submissions)
+    locals.find((job) => job.id === runtimeJobId) ||
+    // 3. Tertiary: Manifest path match
     locals.find((job) => job.manifestPath && manifestPath && job.manifestPath === manifestPath) ||
+    // 4. Fallback: Retries and lineage
     locals.find(
       (job) =>
-        runtimeJobId &&
-        (job.id === runtimeJobId ||
-          job.bridgeJob.id === runtimeJobId ||
-          job.bridgeJob.payload.lineageParentJobId === runtimeJobId ||
-          job.retryOf === runtimeJobId),
+        job.bridgeJob.id === runtimeJobId ||
+        job.bridgeJob.payload.lineageParentJobId === runtimeJobId ||
+        job.retryOf === runtimeJobId
     )
   );
 };
@@ -74,7 +78,7 @@ const HYDRATION_STATE_ORDER: Record<RenderJobState, number> = {
 const mergeRuntimeJob = (local: RenderQueueJob, runtimeJob: any, detail?: any, skipPersist = false) => {
   const resolved = detail ?? runtimeJob;
   const resolvedState = mapRuntimeStatusToJobState(resolved?.status ?? runtimeJob.status);
-  const outputs = resolved?.outputs || [];
+  const outputs = resolved?.outputs ?? runtimeJob.outputs ?? [];
   const preview = resolved?.preview_image_url ?? resolved?.preview_image ?? runtimeJob.preview_image_url ?? runtimeJob.preview_image;
   const localIsTerminal = TERMINAL_JOB_STATES.has(local.state);
   const runtimeIsTerminal = TERMINAL_JOB_STATES.has(resolvedState);
@@ -109,17 +113,22 @@ const derivePreviewState = (job: RenderQueueJob): RenderPreviewState => ({
   mode:
     job.state === 'queued'
       ? 'queued'
-      : job.state === 'preflight' || job.state === 'running' || job.state === 'packaging'
-        ? 'rendering'
-        : job.state === 'completed'
-          ? 'completed'
-          : job.state === 'failed'
-            ? 'failed'
-            : job.state === 'cancelled'
-              ? 'cancelled'
-              : 'idle',
+      : job.state === 'preflight'
+        ? 'preflight'
+        : job.state === 'running'
+          ? 'rendering'
+          : job.state === 'packaging'
+            ? 'packaging'
+            : job.state === 'completed'
+              ? 'completed'
+              : job.state === 'failed'
+                ? 'failed'
+                : job.state === 'cancelled'
+                  ? 'cancelled'
+                  : 'idle',
   progress: job.progress,
   label: job.error || `${job.engine.toUpperCase()} ${job.state}`,
+  canonicalState: job.state,
   resultPaths: job.resultPaths,
   previewImage: job.previewImage,
   previewMedia: job.previewMedia,

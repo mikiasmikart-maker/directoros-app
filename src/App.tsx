@@ -1598,7 +1598,7 @@ function App() {
 
   const resolvedPreviewContext = useMemo<ResolvedPreviewContext>(() => {
     // Phase 3: Director Mode - Favor timeline authority if active shot exists
-    const timelineResolution = timelineActiveShot ? resolveAuthority(timelineActiveShot.sceneId, runtimeJobs, selectedJobId) : null;
+    const timelineResolution = timelineActiveShot ? resolveAuthority(timelineActiveShot.sceneId, runtimeJobs, selectedJobId, timelineActiveShot.id) : null;
 
     // Phase 3 Correction: Shot Boundary & Gap Handling
     // If we are in a gap (no active shot), return a blackout/none authority.
@@ -2225,7 +2225,9 @@ function App() {
   const renderStateByPreview: Record<RenderPreviewState['mode'], RenderState> = {
     idle: 'ready',
     queued: 'queued',
+    preflight: 'rendering',
     rendering: 'rendering',
+    packaging: 'rendering',
     completed: 'completed',
     failed: 'failed',
     cancelled: 'failed',

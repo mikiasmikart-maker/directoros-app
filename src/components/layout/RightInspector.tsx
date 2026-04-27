@@ -279,7 +279,10 @@ export const RightInspector = memo(({
       selectedJobTelemetry.canonicalState === 'approved' ||
       selectedJobTelemetry.canonicalState === 'finalized';
     
-    const isExecutionSuccess = selectedJobTelemetry.lifecycle === 'completed';
+    const isExecutionSuccess = selectedJobTelemetry.canonicalState === 'completed' || 
+                               selectedJobTelemetry.canonicalState === 'approved' || 
+                               selectedJobTelemetry.canonicalState === 'finalized' ||
+                               selectedJobTelemetry.lifecycle === 'completed';
     const hasArtifact = Boolean(selectedJobTelemetry.selectedOutputPath);
 
     // Specs Authoritative Check (Job > Sequence/Graph Fallback)
@@ -681,7 +684,7 @@ export const RightInspector = memo(({
 
                 <div className="mt-2.5 flex flex-wrap items-center gap-1.5 text-[8px]">
                   <span className={`m6-signal-elevated rounded border px-1.5 py-0.5 font-bold uppercase tracking-tight shadow-[0_0_8px_rgba(34,211,238,0.1)] border-cyan-400/40 bg-cyan-500/10 text-cyan-100`}>
-                    {selectedJobTelemetry?.lifecycle ?? (hasActiveRender ? livePreview.mode : 'Idle State')}
+                    {selectedJobTelemetry?.canonicalState ?? selectedJobTelemetry?.lifecycle ?? (hasActiveRender ? livePreview.mode : 'Idle State')}
                   </span>
                   <span className={`m6-signal-ambient rounded border px-1.5 py-0.5 font-bold uppercase tracking-tight ${hasActiveRender ? 'border-transparent text-slate-700' : 'border-[var(--m6-border-soft)] text-slate-500'}`}>{focusStateLabel}</span>
                 </div>

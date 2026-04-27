@@ -17,9 +17,10 @@ interface CompileInput {
 }
 
 export interface RenderPreviewState {
-  mode: 'idle' | 'queued' | 'rendering' | 'completed' | 'failed' | 'cancelled';
+  mode: 'idle' | 'queued' | 'preflight' | 'rendering' | 'packaging' | 'completed' | 'failed' | 'cancelled';
   progress: number;
   label?: string;
+  canonicalState?: string;
   resultPaths?: string[];
   previewImage?: string;
   previewMedia?: string;
