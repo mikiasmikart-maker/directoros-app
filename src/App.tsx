@@ -808,7 +808,7 @@ function App() {
 
   const selectedJob = useMemo(() => {
     if (!selectedJobId) return undefined;
-    return runtimeJobs.find((job) => job.id === selectedJobId || job.runtimeBridgeJobId === selectedJobId);
+    return (runtimeJobs || []).find((job) => job.id === selectedJobId || job.runtimeBridgeJobId === selectedJobId);
   }, [runtimeJobs, selectedJobId]);
 
 
@@ -854,8 +854,8 @@ function App() {
       };
     });
 
-    setRuntimeJobs(() => persistedJobs);
-    setRenderJobs(() => persistedJobs);
+    setRuntimeJobs(() => persistedJobs || []);
+    setRenderJobs(() => persistedJobs || []);
     setRuntimeJobCounts(counts);
     setJobCounts(counts);
     setRuntimeRecentRenders((recentEnvelope as { recent?: any[] }).recent ?? []);
@@ -966,8 +966,8 @@ function App() {
 
   const selectedFamilyJobs = useMemo(() => {
     if (!selectedFamilyRootId) return [] as RenderQueueJob[];
-    return runtimeJobs
-      .filter((job) => findLineageRootId(job, renderJobs) === selectedFamilyRootId)
+    return (runtimeJobs || [])
+      .filter((job) => findLineageRootId(job, renderJobs || []) === selectedFamilyRootId)
       .sort((a, b) => b.createdAt - a.createdAt);
   }, [runtimeJobs, selectedFamilyRootId]);
 
@@ -1255,7 +1255,7 @@ function App() {
   const lineageFamily = useMemo(() => {
     const baseJob = selectedJob ?? selectedFamilyRepresentativeJob;
     if (!baseJob) return [] as RenderQueueJob[];
-    const byId = new Map(renderJobs.map((job) => [job.id, job]));
+    const byId = new Map((renderJobs || []).map((job) => [job.id, job]));
     let root = baseJob;
     let guard = 0;
     while ((root.lineageParentJobId || root.retryOf) && guard < 12) {
@@ -1277,7 +1277,7 @@ function App() {
       }
       return job.id === rootId;
     };
-    return renderJobs.filter((job) => belongsToRoot(job)).sort((a, b) => b.createdAt - a.createdAt);
+    return (renderJobs || []).filter((job) => belongsToRoot(job)).sort((a, b) => b.createdAt - a.createdAt);
   }, [selectedJob, selectedFamilyRepresentativeJob, renderJobs]);
 
   const familyDecisionHistory = useMemo(() => {
@@ -1587,7 +1587,7 @@ function App() {
 
   const selectedOverrideClipId = useMemo(() => {
     if (!timelineActiveShot || !selectedJobId) return undefined;
-    const selectedJob = renderJobs.find(j => j.id === selectedJobId);
+    const selectedJob = (renderJobs || []).find(j => j.id === selectedJobId);
     // Selected override is shot-local and playhead-local:
     // Only show if the selected job belongs to the clip currently under the playhead.
     if (selectedJob && (selectedJob.shotId === timelineActiveShot.sceneId || selectedJob.sceneId === timelineActiveShot.sceneId)) {
@@ -4022,7 +4022,35 @@ function App() {
               next[selectedScene.id] = nodeId;
               return next;
             });
-            setSelectedJobId(undefined);
+
+            // Pass 42: Runtime Job Binding Fix - Bind to best available job on shot selection
+            const node = nodeId ? selectedGraph?.nodes?.find(n => n.id === nodeId) : undefined;
+            const resolvedShotId = node && node.type === 'shot' ? (node as any).shotId || node.id : undefined;
+            const currentRenderJobs = renderJobs || [];
+
+            if (node && node.type === 'shot' && resolvedShotId) {
+              const shotJobs = currentRenderJobs.filter(j => j.shotId === resolvedShotId);
+              
+              // Priority: 1. running, 2. packaging/preflight/queued, 3. latest completed, 4. latest terminal with artifacts
+              const bestJob = 
+                shotJobs.find(j => j.state === 'running') ||
+                shotJobs.filter(j => ['packaging', 'preflight', 'queued'].includes(j.state)).sort((a, b) => b.createdAt - a.createdAt)[0] ||
+                shotJobs.filter(j => j.state === 'completed').sort((a, b) => b.createdAt - a.createdAt)[0] ||
+                shotJobs.filter(j => (j.previewImage || j.previewMedia || (j.resultPaths && j.resultPaths.length > 0))).sort((a, b) => b.createdAt - a.createdAt)[0] ||
+                renderJobs.filter(j => j.sceneId === selectedScene.id).sort((a, b) => b.createdAt - a.createdAt)[0];
+
+              if (bestJob) {
+                setSelectedJobId(bestJob.id);
+                setSelectedFamilyRootId(findLineageRootId(bestJob, renderJobs));
+              } else if (!selectedJobId) {
+                // Only clear if no job is currently selected (preserving manual selection intent)
+                setSelectedJobId(undefined);
+              }
+            } else if (!node || (node.type !== 'shot' && !renderJobs.some(j => j.shotId === nodeId))) {
+              // Clear selection only when selecting a non-shot node with no related job context
+              setSelectedJobId(undefined);
+            }
+
             if (nodeId) pushOperatorFeedback('Focus moved to graph node', 'info', 'open', 'transition');
           }}
           onLoadGraphTemplate={onLoadGraphTemplate}
@@ -4376,8 +4404,8 @@ function App() {
             status: selectedJob.state === 'failed' ? 'attention required' : selectedJob.state === 'completed' ? 'ready' : 'active',
             lifecycle: selectedJob.state,
             mode: selectedJob.bridgeJob.outputType === 'video' ? 'cinematic' : 'studio_run',
-            activeRoute: selectedJob.bridgeJob.payload.routeContext.activeRoute,
-            strategy: selectedJob.bridgeJob.payload.routeContext.strategy,
+            activeRoute: selectedJob.bridgeJob?.payload?.routeContext?.activeRoute || 'default',
+            strategy: selectedJob.bridgeJob?.payload?.routeContext?.strategy || 'default',
             preflight: selectedJob.state === 'queued' ? 'pending' : selectedJob.state === 'preflight' ? 'running checks' : selectedJob.state === 'failed' ? 'failed' : 'passed',
             dependencyHealth: selectedJob.state === 'failed' ? 'degraded' : selectedJob.state === 'preflight' ? 'checking' : 'healthy',
             canonicalState: selectedJobAuthority?.canonicalState,
@@ -4397,9 +4425,9 @@ function App() {
             pinned: pinnedJobId === selectedJob.id,
             metadata: selectedJob.metadata,
             technicalSpecs: {
-              resolution: String(selectedJob.bridgeJob.payload.parameters['resolution'] || ''),
-              codec: String(selectedJob.bridgeJob.payload.parameters['codec'] || ''),
-              exportFormat: String(selectedJob.bridgeJob.payload.parameters['export_format'] || ''),
+              resolution: String(selectedJob.bridgeJob?.payload?.parameters?.['resolution'] || ''),
+              codec: String(selectedJob.bridgeJob?.payload?.parameters?.['codec'] || ''),
+              exportFormat: String(selectedJob.bridgeJob?.payload?.parameters?.['export_format'] || ''),
             },
           } : undefined}
           runtimeSignalContext={runtimeSignalContext}

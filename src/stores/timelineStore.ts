@@ -52,13 +52,13 @@ export const resolveAuthority = (
   selectedJobId?: string,
   shotId?: string
 ) => {
-  const familyJobs = jobs
+  const familyJobs = (jobs || [])
     .filter(j => j.sceneId === sceneId && (!shotId || j.shotId === shotId))
     .sort((a, b) => b.createdAt - a.createdAt);
   
   // Phase 3 Correction: Operator Intent Override
   // If a job is explicitly selected AND it belongs to this shot, it takes top priority.
-  const selected = selectedJobId ? jobs.find(j => j.id === selectedJobId && j.sceneId === sceneId && (!shotId || j.shotId === shotId)) : undefined;
+  const selected = selectedJobId ? (jobs || []).find(j => j.id === selectedJobId && j.sceneId === sceneId && (!shotId || j.shotId === shotId)) : undefined;
   if (selected) {
     return { 
       kind: 'selected_attempt' as FamilyPreviewAuthorityKind, 
