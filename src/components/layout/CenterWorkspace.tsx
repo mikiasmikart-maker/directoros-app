@@ -698,7 +698,11 @@ export const CenterWorkspace = ({
   }, [selectedJob]);
 
   const withPreviewCacheBust = (path?: string, versionToken?: number) => {
-    if (!path) return undefined;
+    if (!path || typeof path !== 'string') return undefined;
+    
+    // SURGICAL: Disable cache-bust for base64 data URLs to prevent OOM on HP OMEN hardware
+    if (path.startsWith('data:')) return path;
+
     const join = path.includes('?') ? '&' : '?';
     const token = typeof versionToken === 'number' ? versionToken : Date.now();
     return `${path}${join}v=${token}`;

@@ -2530,7 +2530,7 @@ function App() {
     const _elapsed = performance.now() - _t0;
     if (_elapsed > 50) console.warn(`[DirectorOS][BLOCK] graphForCompile runtime overlay took ${_elapsed.toFixed(1)}ms`);
     return { ...staticGraph, nodes: nextNodes, connections: nextConnections };
-  }, [staticGraph, isRendering, previewState, postWorkflowByScene, shotQueueSummary, activeShot, resolvedPreviewContext]);
+  }, [staticGraph, isRendering, postWorkflowByScene, shotQueueSummary, activeShot, resolvedPreviewContext]);
 
 
   const activeRoutePresetId = useMemo(
@@ -2621,7 +2621,9 @@ function App() {
   // Forces 'expanded_prompt' update in canonical job state when parameters move.
   useEffect(() => {
     // Only perform expansion if a job is selected and template is available
-    if (!selectedJobId || !compiledPayload) return;
+    // DECOUPLE: This effect now only runs when the graph actually changes structurally,
+    // not on every progress update.
+    if (!selectedJobId || !compiledPayload || isProcessing) return;
 
     const targetJob = renderJobs.find((j) => j.id === selectedJobId);
     if (!targetJob) return;

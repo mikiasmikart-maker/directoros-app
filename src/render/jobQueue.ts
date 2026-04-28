@@ -328,10 +328,17 @@ export const updateRenderProgress = (jobId: string, progress: number): RuntimeRe
     updatedAt: Date.now(),
   };
 
+  const progressJump = Math.abs(clamped - (existing.progress || 0));
+  const shouldEmit = nextState !== existing.state || progressJump >= 2 || clamped === 100 || clamped === 0;
+
   runtimeJobs.set(jobId, next);
   enforceInMemoryCap();
   persistJobs();
-  emitRenderJobEvent({ type: 'job.progress', job: next });
+
+  if (shouldEmit) {
+    emitRenderJobEvent({ type: 'job.progress', job: next });
+  }
+  
   return next;
 };
 
