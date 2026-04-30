@@ -46,12 +46,12 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 
 
 export const runtimeApi = {
-  health: async (): Promise<RuntimeHealthStatus> => request(`/api/runtime/health?t=${Date.now()}`),
+  health: async (): Promise<RuntimeHealthStatus> => request(`/runtime/health?t=${Date.now()}`),
   render: async (payload: RuntimeRenderSubmissionRequest): Promise<RuntimeRenderSubmissionResponse> =>
-    request('/api/runtime/render', { method: 'POST', body: JSON.stringify(payload) }),
-  jobs: async (limit = 100) => request(`/api/runtime/jobs?limit=${limit}`),
-  jobDetail: async (jobId: string) => request(`/api/runtime/jobs/${encodeURIComponent(jobId)}`),
-  cancelJob: async (jobId: string) => request(`/api/runtime/jobs/${encodeURIComponent(jobId)}/cancel`, { method: 'POST' }),
-  recentRenders: async (limit = 8) => request(`/api/runtime/recent-renders?limit=${limit}`),
-  timeline: async (limit = 30) => request(`/api/runtime/timeline?limit=${limit}`),
+    request('/runtime/render', { method: 'POST', body: JSON.stringify(payload) }),
+  jobs: async (limit = 100) => request(`/runtime/jobs?limit=${limit}`),
+  jobDetail: async (jobId: string) => request(`/runtime/jobs/${encodeURIComponent(jobId)}`),
+  cancelJob: async (jobId: string) => request(`/runtime/jobs/${encodeURIComponent(jobId)}/cancel`, { method: 'POST' }),
+  recentRenders: async (limit = 8) => request(`/runtime/recent-renders?limit=${limit}`),
+  timeline: async (limit = 30) => request(`/runtime/timeline?limit=${limit}`),
 };
