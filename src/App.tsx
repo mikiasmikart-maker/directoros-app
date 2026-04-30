@@ -2115,9 +2115,10 @@ function App() {
         // 2. Trigger side-effects - Allow sync in DEGRADED to prevent zombie UI
         // We only skip sync in 'offline' mode.
         if (nextState === 'connected' || nextState === 'degraded') {
-          // Temporary isolation test: disabled polling
-          // await refreshRuntimeSurfaces();
-          // await reconcileDurableRenderAuthority();
+          if (!isRendering) {
+            await refreshRuntimeSurfaces();
+            await reconcileDurableRenderAuthority();
+          }
         }
 
         scheduleNext(nextState, 0);
