@@ -489,7 +489,7 @@ function App() {
   const pendingGuidanceOutcomeRef = useRef<string | undefined>(undefined);
 
 
-  
+
   useEffect(() => {
     // Continuity & Memory: trace pre-shootout focus for restoration logic
     if (preShootoutFocus) {
@@ -754,8 +754,8 @@ function App() {
   }, []);
 
   const selectedGraphNodeId = selectedScene ? selectedGraphNodeByScene[selectedScene.id] : undefined;
-  const postWorkflow = selectedScene 
-    ? postWorkflowByScene[selectedScene.id] 
+  const postWorkflow = selectedScene
+    ? postWorkflowByScene[selectedScene.id]
     : { review: 'pending', edit: 'waiting', export: 'waiting', delivery: 'waiting' } as PostWorkflowState;
 
   const selectedGraphNode = useMemo<SceneGraphNode | undefined>(() => selectedGraph?.nodes?.find((node) => node.id === selectedGraphNodeId), [selectedGraph, selectedGraphNodeId]);
@@ -1776,7 +1776,7 @@ function App() {
         reason: projection?.explanations?.summary,
       }];
     }));
-    
+
     return summary;
   }, [shotQueueSummary, resolvedProductionFamilyTruth, lastStreamEventAt]);
 
@@ -2095,15 +2095,15 @@ function App() {
       if (isDestroyed) return;
       try {
         const health = await runtimeApi.health();
-        
+
         // --- Phase 3 Contract Fix: Handle missing bridge_status at top level ---
         const isBridgeOk = health.bridge_status === 'ok' || health.dependency_status?.bridge === 'ok';
         if (health.ok && !health.bridge_status && health.dependency_status?.bridge) {
-           console.warn('[directoros.contract] API Drift Detected: "bridge_status" missing from top-level health response. Using "dependency_status.bridge" fallback.');
+          console.warn('[directoros.contract] API Drift Detected: "bridge_status" missing from top-level health response. Using "dependency_status.bridge" fallback.');
         }
 
         const nextState = (health.ok && isBridgeOk) ? 'connected' : 'degraded';
-        
+
         if (consecutiveFailures > 0) {
           console.info('[runtime] Bridge reconnected. Restoring normal polling cadence.');
         }
@@ -2391,8 +2391,8 @@ function App() {
         const state = shot?.state ?? 'waiting';
         const runtimeState: PipelineActivityState =
           ['active', 'compiling', 'routed', 'rendering', 'review'].includes(state) ? 'active' :
-          ['completed', 'skipped'].includes(state) ? 'completed' :
-          state === 'failed' ? 'failed' : state === 'blocked' ? 'blocked' : 'waiting';
+            ['completed', 'skipped'].includes(state) ? 'completed' :
+              state === 'failed' ? 'failed' : state === 'blocked' ? 'blocked' : 'waiting';
 
         return {
           ...node,
@@ -2410,8 +2410,8 @@ function App() {
       if (node.type === 'compiler') {
         const runtimeState: PipelineActivityState =
           previewState.mode === 'failed' && phaseByProgress <= 1 ? 'failed' :
-          phaseByProgress >= 2 || previewState.mode === 'completed' ? 'completed' :
-          phaseByProgress >= 1 ? 'processing' : 'idle';
+            phaseByProgress >= 2 || previewState.mode === 'completed' ? 'completed' :
+              phaseByProgress >= 1 ? 'processing' : 'idle';
 
         return {
           ...node,
@@ -2426,8 +2426,8 @@ function App() {
       if (node.type === 'engine_router') {
         const runtimeState: PipelineActivityState =
           previewState.mode === 'failed' && phaseByProgress <= 2 ? 'failed' :
-          phaseByProgress >= 3 || previewState.mode === 'completed' ? 'completed' :
-          phaseByProgress >= 2 ? 'active' : phaseByProgress >= 1 ? 'waiting' : 'idle';
+            phaseByProgress >= 3 || previewState.mode === 'completed' ? 'completed' :
+              phaseByProgress >= 2 ? 'active' : phaseByProgress >= 1 ? 'waiting' : 'idle';
 
         return {
           ...node,
@@ -2442,9 +2442,9 @@ function App() {
         const isPrimary = node.engineTarget === node.routeState?.primaryEngine;
         const runtimeState: PipelineActivityState = !node.activeRoute ? 'waiting' :
           previewState.mode === 'failed' && isPrimary ? 'failed' :
-          previewState.mode === 'completed' && isPrimary ? 'completed' :
-          phaseByProgress >= 3 && isPrimary ? 'processing' :
-          phaseByProgress >= 2 && isPrimary ? 'active' : 'waiting';
+            previewState.mode === 'completed' && isPrimary ? 'completed' :
+              phaseByProgress >= 3 && isPrimary ? 'processing' :
+                phaseByProgress >= 2 && isPrimary ? 'active' : 'waiting';
 
         return {
           ...node,
@@ -2452,7 +2452,7 @@ function App() {
           runtimeProgress: runtimeState === 'completed' ? 100 : runtimeState === 'processing' ? Math.max(12, previewState.progress) : runtimeState === 'active' ? 34 : 0,
           runtimeLastAction: runtimeState === 'completed' ? `${(node.engineTarget ?? 'engine').toUpperCase()} output ready` :
             runtimeState === 'processing' ? `${(node.engineTarget ?? 'engine').toUpperCase()} rendering` :
-            runtimeState === 'active' ? `${(node.engineTarget ?? 'engine').toUpperCase()} branch engaged` : 'Standby branch',
+              runtimeState === 'active' ? `${(node.engineTarget ?? 'engine').toUpperCase()} branch engaged` : 'Standby branch',
           runtimeNextStage: runtimeState === 'completed' ? 'Render Output' : node.engineTarget?.toUpperCase(),
         };
       }
@@ -2460,7 +2460,7 @@ function App() {
       if (node.type === 'render_output') {
         const runtimeState: PipelineActivityState =
           previewState.mode === 'failed' ? 'failed' : previewState.mode === 'completed' ? 'completed' :
-          previewState.mode === 'rendering' ? 'processing' : previewState.mode === 'queued' ? 'waiting' : 'idle';
+            previewState.mode === 'rendering' ? 'processing' : previewState.mode === 'queued' ? 'waiting' : 'idle';
 
         const authorityLabel = _rpc?.approvedOutput.jobId ? 'approved output' : _rpc?.selectedOutput.jobId ? 'selected output' : _rpc?.currentOutput.jobId ? 'current output' : undefined;
         const authorityTone: SceneGraphNode['authorityTone'] = _rpc?.approvedOutput.jobId ? 'approved' : _rpc?.selectedOutput.jobId ? 'selected' : _rpc?.currentOutput.jobId ? 'current' : 'none';
@@ -2474,8 +2474,8 @@ function App() {
           runtimeProgress: previewState.mode === 'completed' ? 100 : previewState.progress,
           runtimeLastAction:
             previewState.mode === 'completed' ? `${activeShot?.title ?? 'Active shot'} → ${node.engineTarget?.toUpperCase() ?? 'ENGINE'} completed` :
-            previewState.mode === 'failed' ? `${activeShot?.title ?? 'Active shot'} render failed` :
-            previewState.mode === 'rendering' ? `${activeShot?.title ?? 'Active shot'} → ${node.engineTarget?.toUpperCase() ?? 'ENGINE'} rendering` : 'Awaiting engine target output',
+              previewState.mode === 'failed' ? `${activeShot?.title ?? 'Active shot'} render failed` :
+                previewState.mode === 'rendering' ? `${activeShot?.title ?? 'Active shot'} → ${node.engineTarget?.toUpperCase() ?? 'ENGINE'} rendering` : 'Awaiting engine target output',
           runtimeNextStage: previewState.mode === 'completed' ? 'Review' : 'Render Output',
           authorityLabel,
           authorityTone,
@@ -2490,8 +2490,8 @@ function App() {
         const state = postStages.find((item) => item.stage === stage);
         const runtimeState: PipelineActivityState =
           ['active'].includes(state?.status ?? '') ? 'active' :
-          ['approved', 'completed', 'ready'].includes(state?.status ?? '') ? 'completed' :
-          state?.status === 'failed' ? 'failed' : state?.status === 'blocked' ? 'blocked' : 'waiting';
+            ['approved', 'completed', 'ready'].includes(state?.status ?? '') ? 'completed' :
+              state?.status === 'failed' ? 'failed' : state?.status === 'blocked' ? 'blocked' : 'waiting';
 
         return {
           ...node,
@@ -2522,8 +2522,8 @@ function App() {
         (fromNode?.type === 'engine_target' && toNode?.type === 'render_output' && Boolean(fromNode.activeRoute));
       const runtimeState: PipelineActivityState =
         fromNode?.runtimeState === 'failed' || toNode?.runtimeState === 'failed' || toNode?.runtimeState === 'blocked' ? 'failed' :
-        fromNode?.runtimeState === 'active' || fromNode?.runtimeState === 'processing' || toNode?.runtimeState === 'active' || toNode?.runtimeState === 'processing' ? 'active' :
-        fromNode?.runtimeState === 'completed' && toNode?.runtimeState === 'completed' ? 'completed' : activeRoute ? 'waiting' : 'idle';
+          fromNode?.runtimeState === 'active' || fromNode?.runtimeState === 'processing' || toNode?.runtimeState === 'active' || toNode?.runtimeState === 'processing' ? 'active' :
+            fromNode?.runtimeState === 'completed' && toNode?.runtimeState === 'completed' ? 'completed' : activeRoute ? 'waiting' : 'idle';
 
       return { ...connection, activeRoute, runtimeState };
     });
@@ -2531,8 +2531,7 @@ function App() {
     const _elapsed = performance.now() - _t0;
     if (_elapsed > 50) console.warn(`[DirectorOS][BLOCK] graphForCompile runtime overlay took ${_elapsed.toFixed(1)}ms`);
     return { ...staticGraph, nodes: nextNodes, connections: nextConnections };
-  }, [staticGraph, isRendering, postWorkflowByScene, shotQueueSummary, activeShot, resolvedPreviewContext]);
-
+  }, [staticGraph, isRendering, postWorkflowByScene, shotQueueSummary, activeShot]);
 
   const activeRoutePresetId = useMemo(
     () => graphForCompile?.nodes.find((node) => node.type === 'engine_router')?.routeState?.presetId,
@@ -2839,7 +2838,52 @@ function App() {
     // SURGICAL: Async yield to allow DOM update and heap stabilization before heavy compilation
     await new Promise(resolve => setTimeout(resolve, 100));
 
+    // ─── DIAGNOSTIC INSTRUMENTATION (read-only, no behavior change) ──────────
     try {
+      const _nodeCount = graphForCompile?.nodes?.length ?? 0;
+      const _connCount = graphForCompile?.connections?.length ?? 0;
+      const _graphBytes = (() => { try { return JSON.stringify(graphForCompile).length; } catch { return -1; } })();
+      const _clipsCount = timelineState.clips?.length ?? 0;
+      console.log(
+        `[DIAG] PRE-COMPILE | graphForCompile: ${_nodeCount} nodes, ${_connCount} conns, ~${(_graphBytes / 1024).toFixed(1)} KB | clips: ${_clipsCount} | scene: ${selectedScene?.id ?? 'none'} | engine: ${appState.engineTarget}`
+      );
+    } catch { /* probe only */ }
+
+    // inline compile probe — mirrors compilePromptPayload without calling it
+    try {
+      const { compilePromptPayload: _cpFn } = await import('./utils/promptCompiler');
+      const _compiled = _cpFn({
+        scene: selectedScene,
+        clips: timelineState.clips,
+        selectedClipId: appState.selectedClipId,
+        memoryProfilesById,
+        inspectorOverrides: sceneOverrides,
+        engineTarget: appState.engineTarget,
+        graphState: graphForCompile,
+      });
+      if (_compiled) {
+        const _payloadKeys = Object.keys(_compiled.payload ?? {});
+        const _hasGraph = Boolean((_compiled.payload as any)?.graph);
+        const _graphPayloadBytes = (() => { try { return JSON.stringify((_compiled.payload as any)?.graph).length; } catch { return -1; } })();
+        const _fullBytes = (() => { try { return JSON.stringify(_compiled).length; } catch { return -1; } })();
+        console.log(
+          `[DIAG] POST-COMPILE | compiledPayload: ~${(_fullBytes / 1024).toFixed(1)} KB | keys: [${_payloadKeys.join(', ')}] | payload.graph present: ${_hasGraph} | payload.graph size: ~${(_graphPayloadBytes / 1024).toFixed(1)} KB`
+        );
+        const _paramCount = Object.keys(_compiled.payload?.parameters ?? {}).length;
+        const _shotCtx = JSON.stringify(_compiled.payload?.shotContext ?? {});
+        console.log(
+          `[DIAG] POST-COMPILE | parameters: ${_paramCount} keys | shotContext: ${_shotCtx} | engine resolved: ${_compiled.engineTarget}`
+        );
+      } else {
+        console.warn('[DIAG] POST-COMPILE | compilePromptPayload returned null — pipeline will abort');
+      }
+    } catch (_e) {
+      console.warn('[DIAG] POST-COMPILE probe failed:', _e);
+    }
+    // ─── END DIAGNOSTIC INSTRUMENTATION ──────────────────────────────────────
+
+    try {
+      console.log('[DIAG] PRE-PIPELINE | entering runRenderPipeline');
       const pipelineResult = await runRenderPipeline(
         {
           scene: selectedScene,
@@ -2856,22 +2900,22 @@ function App() {
             const now = Date.now();
             const isTerminal = job.state === 'completed' || job.state === 'failed' || job.state === 'cancelled';
             const isTransition = job.state === 'preflight' || job.state === 'queued' || job.state === 'packaging';
-            
+
             // THROTTLE: Only update UI state once per second unless it's a critical state transition
             const shouldThrottle = !isTerminal && !isTransition && (now - lastUIProgressUpdateAt.current < 1000);
 
             const jobs = listRenderJobs();
             const counts = getRenderJobCounts();
-            
+
             // IDENTITY GATE: Only trigger re-render if jobs list structure or terminal states changed
             const jobsSignature = jobs.map(j => `${j.id}:${j.state}:${j.progress}`).join('|');
             if (jobsSignature === (window as any).__lastJobsSignature && !isTerminal && !isTransition) {
-               return;
+              return;
             }
             (window as any).__lastJobsSignature = jobsSignature;
 
             if (shouldThrottle) {
-               return;
+              return;
             }
 
             lastUIProgressUpdateAt.current = now;
@@ -2880,8 +2924,10 @@ function App() {
             setRuntimeJobs(() => jobs);
             setRenderJobs(() => jobs);
 
-            // Signal update to heavy memos ONLY on state/order changes (not progress)
-            if (job.state !== 'running') {
+            // Signal update to heavy memos ONLY on terminal states.
+            // CRITICAL: Do NOT fire on queued/preflight/packaging — triggers reviewSnapshot
+            // useMemo → reviewEventStore.list() alasql query cascade → OOM on render-click.
+            if (job.state === 'completed' || job.state === 'failed' || job.state === 'cancelled') {
               setLastStreamEventAt(Date.now());
             }
 
@@ -2910,7 +2956,7 @@ function App() {
             const _pStart = performance.now();
             const now = Date.now();
             const isTerminal = state.mode === 'completed' || state.mode === 'failed' || state.mode === 'cancelled';
-            
+
             // THROTTLE: Only update UI state once per second unless it's a terminal state transition
             if (!isTerminal && now - lastUIProgressUpdateAt.current < 1000) {
               return;
@@ -2944,7 +2990,7 @@ function App() {
 
               // IDENTITY GATE: Only update sequence state if the shot status actually changed
               if (currentShot.state === nextState && !isTerminal) {
-                 return prev;
+                return prev;
               }
 
               const next: ShotSequenceState = {
@@ -4036,9 +4082,9 @@ function App() {
 
             if (node && node.type === 'shot' && resolvedShotId) {
               const shotJobs = currentRenderJobs.filter(j => j.shotId === resolvedShotId);
-              
+
               // Priority: 1. running, 2. packaging/preflight/queued, 3. latest completed, 4. latest terminal with artifacts
-              const bestJob = 
+              const bestJob =
                 shotJobs.find(j => j.state === 'running') ||
                 shotJobs.filter(j => ['packaging', 'preflight', 'queued'].includes(j.state)).sort((a, b) => b.createdAt - a.createdAt)[0] ||
                 shotJobs.filter(j => j.state === 'completed').sort((a, b) => b.createdAt - a.createdAt)[0] ||
