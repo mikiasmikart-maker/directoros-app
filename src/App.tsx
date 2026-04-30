@@ -2836,6 +2836,9 @@ function App() {
     if (_initDuration > 50) console.warn(`[DirectorOS][BLOCK] onRenderScene initial setState took ${_initDuration.toFixed(1)}ms`);
     else console.log(`[DirectorOS][TIMING] onRenderScene: initial setState done in ${_initDuration.toFixed(1)}ms`);
 
+    // SURGICAL: Async yield to allow DOM update and heap stabilization before heavy compilation
+    await new Promise(resolve => setTimeout(resolve, 100));
+
     try {
       const pipelineResult = await runRenderPipeline(
         {
