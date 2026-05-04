@@ -4,19 +4,10 @@
  */
 
 export const mapTechnicalState = (state: string): string => {
-  const mapping: Record<string, string> = {
-    'preflight': 'Preparing',
-    'running': 'Rendering',
-    'packaging': 'Finalizing',
-    'queued': 'Queued',
-    'completed': 'Ready',
-    'failed': 'Runtime Stalled',
-    'cancelled': 'Halted',
-    'stale': 'Out of sync',
-    'unavailable': 'Temporarily unavailable',
-    'ready': 'Ready',
-  };
-  return mapping[state.toLowerCase()] || state;
+  const s = state.toLowerCase();
+  if (s === 'completed') return 'SEALED';
+  if (s === 'failed') return 'BROKEN';
+  return 'ACTIVE';
 };
 
 /**

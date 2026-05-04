@@ -103,14 +103,6 @@ const lifecycleRank: Record<RenderQueueJob['state'], number> = {
 
 const getOperatorStateLabel = (job?: RenderQueueJob) => {
   if (!job) return 'none';
-  if (job.state === 'queued') return 'Queued • Pending lane';
-  if (job.state === 'preflight') return 'Preparing • Running checks';
-  if (job.state === 'running') return 'Rendering • Generating output';
-  if (job.state === 'packaging') return 'Finalizing • Preparing preview';
-  if (job.state === 'failed') {
-    const failedBeforeStart = (job.failedStage === 'queued' || job.failedStage === 'preflight');
-    return failedBeforeStart ? 'Blocked at startup' : `Stalled at ${mapTechnicalState(job.failedStage ?? 'running')}`;
-  }
   return mapTechnicalState(job.state);
 };
 
@@ -732,23 +724,7 @@ export const CenterWorkspace = ({
     canInspectHistoricalOutput,
   });
   const selectedLastMeaningfulChange = selectedJob
-    ? selectedJob.state === 'failed'
-      ? `${selectedJob.failedStage === 'queued' || selectedJob.failedStage === 'preflight' ? 'Blocked at startup' : `Failed at ${mapTechnicalState(selectedJob.failedStage ?? 'running')}`}`
-      : productionFamily?.approvedOutputId === selectedJob.id
-        ? 'Approved Truth'
-        : productionFamily?.currentWinnerId === selectedJob.id
-          ? 'Production Winner'
-          : selectedJob.state === 'completed'
-            ? `Ready • ${formatElapsed(selectedJob.createdAt)} ago`
-            : selectedJob.state === 'queued'
-              ? 'Queued • Pending lane'
-              : selectedJob.state === 'preflight'
-                ? 'Preparing • Running checks'
-                : selectedJob.state === 'running'
-                  ? 'Rendering • Generating output'
-                  : selectedJob.state === 'packaging'
-                    ? 'Finalizing • Preparing preview'
-                    : `State: ${mapTechnicalState(selectedJob.state)}`
+    ? mapTechnicalState(selectedJob.state)
     : launchReadiness.isReady
       ? 'System ready for launch'
       : launchReadiness.reason ?? 'Awaiting operator context';

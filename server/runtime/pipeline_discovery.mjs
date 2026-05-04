@@ -103,6 +103,7 @@ const toPendingAcceptedRunJob = (entry) => {
   const isFailed = !isAlive;
   return {
     job_id: entry.job_id,
+    parent_job_id: entry.parent_job_id,
     mode: entry.mode || 'studio_run',
     preset: 'pending',
     status: isFailed ? 'failed' : 'queued',
@@ -122,6 +123,7 @@ const toPendingAcceptedRunDetail = (entry) => {
   const isFailed = !isAlive;
   return {
     job_id: entry.job_id,
+    parent_job_id: entry.parent_job_id,
     mode: entry.mode || 'studio_run',
     preset: 'pending',
     status: isFailed ? 'failed' : 'queued',
@@ -164,9 +166,12 @@ export const getRecentRenders = async (limit = 8) => {
 export const getJobs = async (limit = 100) => {
   const manifestPaths = await listManifestPaths();
   const manifests = await Promise.all(manifestPaths.slice(0, limit).map((manifestPath) => readManifest(manifestPath)));
-  const manifestJobs = manifests.filter(Boolean).map((entry) => ({
-    job_id: sanitizeJobId(entry.manifest?.job_name || path.basename(entry.manifest_ref.path, '.json')),
-    mode: entry.manifest?.family ? 'studio_run' : 'cinematic',
+  const manifestJobs = manifests.filter(Boolean).map((entry) => {
+    const jobId = sanitizeJobId(entry.manifest?.job_name || path.basename(entry.manifest_ref.path, '.json'));
+    return {
+      job_id: jobId,
+      parent_job_id: entry.manifest?.parent_job_id,
+      mode: entry.manifest?.family ? 'studio_run' : 'cinematic',
     preset: entry.manifest?.template || 'unknown',
     status: entry.manifest?.status || 'completed',
     preview_image: entry.authoritative_output?.path,
@@ -178,8 +183,15 @@ export const getJobs = async (limit = 100) => {
         ? new Date(entry.manifest.completed_at).getTime() - new Date(entry.manifest.created_at).getTime()
         : undefined,
     manifest_path: entry.manifest_ref.path,
-    engine: entry.manifest?.checkpoint || entry.manifest?.template,
-  }));
+      engine: entry.manifest?.checkpoint || entry.manifest?.template,
+    };
+  });
+  
+  const registry = await readAcceptedRunsRegistry();
+  const lineageMap = new Map();
+  for (const r of registry.runs) {
+    if (r?.job_id) lineageMap.set(sanitizeJobId(r.job_id), r.parent_job_id);
+  }
 
   const pipelineStates = await readJobStates();
   const primaryJobsList = [];
@@ -191,6 +203,7 @@ export const getJobs = async (limit = 100) => {
     primaryJobIdsSet.add(canonicalId);
 
     const augmentingManifest = manifestJobs.find(m => m.job_id === canonicalId);
+    const registryParentId = lineageMap.get(canonicalId);
 
     let duration_ms = undefined;
     const startIso = state.timestamps?.queued;
@@ -201,6 +214,7 @@ export const getJobs = async (limit = 100) => {
 
     primaryJobsList.push({
       job_id: canonicalId,
+      parent_job_id: state.metadata?.parent_job_id || augmentingManifest?.parent_job_id || registryParentId,
       mode: 'studio_run',
       preset: state.recipe || augmentingManifest?.preset || 'unknown',
       status: state.state || 'queued',
@@ -216,22 +230,33 @@ export const getJobs = async (limit = 100) => {
   }
 
   const unmergedManifestJobs = manifestJobs.filter(m => !primaryJobIdsSet.has(m.job_id));
-  const acceptedRunsSet = new Set([...primaryJobIdsSet, ...unmergedManifestJobs.map(m => m.job_id)]);
 
-  const acceptedRuns = (await readAcceptedRunsRegistry()).runs
-    .filter((entry) => entry?.job_id && !acceptedRunsSet.has(sanitizeJobId(entry.job_id)))
+  // Also apply lineage to unmerged manifest jobs
+  for (const m of unmergedManifestJobs) {
+    if (!m.parent_job_id) {
+      m.parent_job_id = lineageMap.get(m.job_id);
+    }
+  }
+
+  const mergedJobIdsSet = new Set([...primaryJobIdsSet, ...unmergedManifestJobs.map(m => m.job_id)]);
+
+  const pendingAcceptedRuns = registry.runs
+    .filter((entry) => entry?.job_id && !mergedJobIdsSet.has(sanitizeJobId(entry.job_id)))
     .map(entry => {
       const mapped = toPendingAcceptedRunJob(entry);
       mapped.job_id = sanitizeJobId(mapped.job_id);
       return mapped;
     });
 
-  const allJobs = [...primaryJobsList, ...unmergedManifestJobs, ...acceptedRuns];
+  const allJobs = [...primaryJobsList, ...unmergedManifestJobs, ...pendingAcceptedRuns];
   return allJobs.sort((a, b) => new Date(b.started_at || 0).getTime() - new Date(a.started_at || 0).getTime()).slice(0, limit);
 };
 
 export const getJobDetail = async (jobId) => {
   const canonicalJobId = sanitizeJobId(jobId);
+
+  const registry = await readAcceptedRunsRegistry();
+  const persistedParentId = registry.runs.find(r => sanitizeJobId(r.job_id) === canonicalJobId)?.parent_job_id;
 
   const pipelineStates = await readJobStates();
   const matchingState = pipelineStates.find(s => s && sanitizeJobId(s.job_id) === canonicalJobId);
@@ -248,10 +273,15 @@ export const getJobDetail = async (jobId) => {
     }
   }
 
+  const acceptedRun = (await readAcceptedRunsRegistry()).runs.find((entry) => sanitizeJobId(entry?.job_id) === canonicalJobId);
+  
+  let baseDetail = null;
+
   if (matchingState) {
     const endIso = matchingState.timestamps?.completed || matchingState.timestamps?.failed || matchingState.timestamps?.cancelled;
-    return {
+    baseDetail = {
       job_id: canonicalJobId,
+      parent_job_id: matchingState.metadata?.parent_job_id || augmentingManifestEntry?.manifest?.parent_job_id || persistedParentId,
       mode: 'studio_run',
       preset: matchingState.recipe || augmentingManifestEntry?.manifest?.template || 'unknown',
       status: matchingState.state || 'queued',
@@ -273,11 +303,10 @@ export const getJobDetail = async (jobId) => {
       preview_image: augmentingManifestEntry?.authoritative_output?.path,
       engine: augmentingManifestEntry?.manifest?.checkpoint || augmentingManifestEntry?.manifest?.template,
     };
-  }
-
-  if (augmentingManifestEntry) {
-    return {
+  } else if (augmentingManifestEntry) {
+    baseDetail = {
       job_id: canonicalJobId,
+      parent_job_id: augmentingManifestEntry.manifest?.parent_job_id || persistedParentId,
       mode: augmentingManifestEntry.manifest?.family ? 'studio_run' : 'cinematic',
       preset: augmentingManifestEntry.manifest?.template || 'unknown',
       status: augmentingManifestEntry.manifest?.status || 'completed',
@@ -299,15 +328,30 @@ export const getJobDetail = async (jobId) => {
       preview_image: augmentingManifestEntry.authoritative_output?.path,
       engine: augmentingManifestEntry.manifest?.checkpoint || augmentingManifestEntry.manifest?.template,
     };
-  }
-
-  const acceptedRun = (await readAcceptedRunsRegistry()).runs.find((entry) => sanitizeJobId(entry?.job_id) === canonicalJobId);
-  if (acceptedRun) {
+  } else if (acceptedRun) {
     const mapped = toPendingAcceptedRunDetail(acceptedRun);
     mapped.job_id = sanitizeJobId(mapped.job_id);
-    return mapped;
+    baseDetail = mapped;
   }
-  return null;
+
+  if (baseDetail && baseDetail.parent_job_id) {
+    // Shallow lookup for parent info to enable UI provenance thumbnails
+    const parentId = baseDetail.parent_job_id;
+    const parentManifestPaths = await listManifestPaths();
+    for (const p of parentManifestPaths.slice(0, 50)) { // Limit search depth for performance
+      const entry = await readManifest(p);
+      if (entry && sanitizeJobId(entry.manifest?.job_name || path.basename(p, '.json')) === sanitizeJobId(parentId)) {
+        baseDetail.parent_info = {
+          job_id: parentId,
+          status: entry.manifest?.status || 'completed',
+          preview_image_url: entry.preview_image,
+        };
+        break;
+      }
+    }
+  }
+
+  return baseDetail;
 };
 
 export const getTimeline = async (limit = 30) => {
@@ -387,10 +431,12 @@ export const resolveManifestForSubmission = async (submittedJobLabel) => {
   }
 
   const manifestPaths = await listManifestPaths();
-  for (const candidate of manifestPaths.slice(0, 5)) {
+  // Search deeper to find older jobs
+  for (const candidate of manifestPaths.slice(0, 200)) {
     const entry = await readManifest(candidate);
     if (!entry) continue;
-    if (!submittedJobLabel || entry.manifest?.job_name === submittedJobLabel || candidate.includes(submittedJobLabel)) return entry;
+    const manifestJobId = sanitizeJobId(entry.manifest?.job_name);
+    if (!submittedJobLabel || manifestJobId === submittedJobLabel || candidate.includes(submittedJobLabel)) return entry;
   }
   return null;
 };

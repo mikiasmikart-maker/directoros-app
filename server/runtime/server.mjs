@@ -29,11 +29,11 @@ const setCors = (res) => {
 
 /**
  * Sanitize job ID to match studio-run safe filename logic exactly.
- * Replaces slashes with double underscores.
+ * Replaces slashes and colons with double underscores.
  */
 const sanitizeJobId = (id) => {
   if (!id) return id;
-  return id.replace(/\//g, '__').replace(/\\/g, '__');
+  return id.replace(/[/\\:]/g, '__');
 };
 
 const acceptedRunsRegistryPath = `${derivedPaths.pipelineOutputsRoot}/runtime/accepted_runs.json`;
@@ -88,12 +88,42 @@ const server = http.createServer(async (req, res) => {
     const body = await parseBody(req);
     if (body.__parse_error) return json(res, 400, { ok: false, error: 'invalid_json' });
 
+    // Patch Retry Path: Resolve parameters from STUDIO_PIPELINE manifest authority
+    if (body.intent === 'retry') {
+      const targetJobId = body.job_id || body.job || body.job_label;
+      if (!targetJobId) return json(res, 400, { ok: false, error: 'retry_target_missing' });
+
+      const resolved = await resolveManifestForSubmission(targetJobId);
+      if (!resolved || !resolved.manifest) {
+        console.warn(`[runtime-render] retry blocked: manifest authority not found for ${targetJobId}`);
+        return json(res, 404, { ok: false, error: 'manifest_not_found', job_id: targetJobId });
+      }
+
+      const m = resolved.manifest;
+      // Re-hydrate request from manifest truth. Do not invent missing params.
+      body.intent = m.intent;
+      body.template = m.template;
+      body.recipe = m.recipe || m.checkpoint;
+      body.family = m.family;
+      body.engine_target = m.engine_target || (m.checkpoint ? 'comfyui' : 'studio_run');
+      body.scene_id = m.scene_id || 'retry-sync'; // Required for preflight stability
+
+      if (!body.intent || (!body.recipe && !body.template)) {
+        return json(res, 422, { ok: false, error: 'invalid_manifest_contract', job_id: targetJobId });
+      }
+
+      // Assign a new label for the retry run
+      body.job_label = `${targetJobId.replace(/.*__/g, '')}-retry-${Date.now()}`;
+      body.parent_job_id = targetJobId;
+      console.log(`[runtime-render] retry path hydrated from authority: ${resolved.manifest_ref?.filename}`);
+    }
+
     const preflight = await runPreflight({ requestBody: body });
     if (!preflight.passed) {
       return json(res, 400, { ok: false, accepted: false, status: 'failed', preflight, dependency_status: preflight.dependency_status, errors: ['preflight failed'] });
     }
 
-    const baseLabel = body.job_label || body.job || `rb-${Date.now()}`;
+    const baseLabel = body.job_label || body.job || body.job_id || `rb-${Date.now()}`;
     const canonicalJobId = sanitizeJobId(baseLabel);
 
     const result = await invokeStudioRun(body, canonicalJobId);
@@ -119,6 +149,7 @@ const server = http.createServer(async (req, res) => {
 
     void persistAcceptedRun({
       job_id: canonicalJobId,
+      parent_job_id: body.parent_job_id,
       status: 'queued',
       accepted_at: new Date().toISOString(),
       engine_target: body.engine_target,

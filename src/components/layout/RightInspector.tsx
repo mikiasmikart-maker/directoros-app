@@ -13,7 +13,7 @@ import type { FamilyPreviewAuthorityKind } from '../../utils/familyPreviewAuthor
 import type { SelectedJobNextActionResolution } from '../../utils/selectedJobNextAction';
 import type { RuntimeSignalContext, LivePreviewState } from '../workspace/RenderPreview';
 import type { Conflict } from '../../types/presence';
-import { formatOperatorId } from '../../utils/operationalLanguage';
+import { formatOperatorId, mapTechnicalState } from '../../utils/operationalLanguage';
 // Presence imports removed to resolve TS6192 unused import error
 const normalizeShotState = (state: string) => {
   if (state === 'compiling' || state === 'routed') return 'active';
@@ -684,7 +684,7 @@ export const RightInspector = memo(({
 
                 <div className="mt-2.5 flex flex-wrap items-center gap-1.5 text-[8px]">
                   <span className={`m6-signal-elevated rounded border px-1.5 py-0.5 font-bold uppercase tracking-tight shadow-[0_0_8px_rgba(34,211,238,0.1)] border-cyan-400/40 bg-cyan-500/10 text-cyan-100`}>
-                    {selectedJobTelemetry?.canonicalState ?? selectedJobTelemetry?.lifecycle ?? (hasActiveRender ? livePreview.mode : 'Idle State')}
+                    {mapTechnicalState(selectedJobTelemetry?.canonicalState ?? selectedJobTelemetry?.lifecycle ?? (hasActiveRender ? livePreview.mode : 'Idle State'))}
                   </span>
                   <span className={`m6-signal-ambient rounded border px-1.5 py-0.5 font-bold uppercase tracking-tight ${hasActiveRender ? 'border-transparent text-slate-700' : 'border-[var(--m6-border-soft)] text-slate-500'}`}>{focusStateLabel}</span>
                 </div>
@@ -1209,7 +1209,7 @@ export const RightInspector = memo(({
                       </div>
                       {isActive ? <div className="mt-0.5 text-[10px] text-cyan-100/75">{shot.stage}</div> : null}
                     </div>
-                    <span className={`ml-2 rounded border px-1.5 py-0.5 text-[9px]  ${isActive ? 'border-[var(--m6-state-focus-border)]/40 bg-cyan-500/12 text-cyan-100' : isResolved ? 'border-[var(--m6-state-active-border)] bg-[var(--m6-state-active-bg)] text-[var(--m6-state-active-fg)]' : shot.state === 'failed' || shot.state === 'blocked' ? 'border-[var(--m6-state-critical-border)] bg-[var(--m6-state-critical-bg)] text-[var(--m6-state-critical-fg)]' : 'border-[var(--m6-border-soft)] bg-panel/35 text-textMuted/50'}`}>{shot.state}</span>
+                    <span className={`ml-2 rounded border px-1.5 py-0.5 text-[9px]  ${isActive ? 'border-[var(--m6-state-focus-border)]/40 bg-cyan-500/12 text-cyan-100' : isResolved ? 'border-[var(--m6-state-active-border)] bg-[var(--m6-state-active-bg)] text-[var(--m6-state-active-fg)]' : shot.state === 'failed' || shot.state === 'blocked' ? 'border-[var(--m6-state-critical-border)] bg-[var(--m6-state-critical-bg)] text-[var(--m6-state-critical-fg)]' : 'border-[var(--m6-border-soft)] bg-panel/35 text-textMuted/50'}`}>{mapTechnicalState(shot.state)}</span>
                   </div>
                 );
               })}

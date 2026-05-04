@@ -1,5 +1,6 @@
 import React from 'react';
 import { SurgicalMediaPreview } from './SurgicalMediaPreview';
+import { mapTechnicalState } from '../../utils/operationalLanguage';
 import type { RenderQueueJob } from '../../render/jobQueue';
 import type { Conflict } from '../../types/presence';
 
@@ -111,7 +112,7 @@ export const RenderPreview: React.FC<RenderPreviewProps> = (props) => {
     role: props.authorityKind === 'none' ? 'SHOT' : props.authorityKind?.split('_')[0].toUpperCase() || 'SHOT',
   };
 
-  const { previewImage, previewMedia, previewType, state, id, role = "SHOT" } = job;
+  const { previewImage, previewType, state, id, role = "SHOT" } = job;
 
   const isRunning = ['queued', 'preflight', 'running', 'packaging'].includes(state);
   const isFailed = state === 'failed';
@@ -167,7 +168,7 @@ export const RenderPreview: React.FC<RenderPreviewProps> = (props) => {
              <span className="text-[10px] font-light text-neutral-500 uppercase tracking-widest">Runtime State</span>
              <div className="flex items-center gap-2 mt-0.5">
                 <span className={`text-[10px] font-bold uppercase ${isFailed ? 'text-rose-400' : 'text-white'}`}>
-                  {isFailed ? 'STALLED' : (state === 'completed' && !previewImage && !previewMedia ? 'COMPLETED — NO ARTIFACT' : (state || 'READY'))}
+                  {mapTechnicalState(state || 'ready')}
                 </span>
                 <div 
                   className={`w-1.5 h-1.5 rounded-full ${dotShadow} ${isRunning ? 'animate-pulse' : ''}`} 

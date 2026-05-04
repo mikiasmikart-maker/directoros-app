@@ -13,8 +13,50 @@ const mapRuntimeStatusToJobState = (status: RuntimeRenderSubmissionResponse['sta
 };
 
 // --- containment test pass begin ---
-const MAX_SYNC_JOBS = 5;
+const MAX_SYNC_JOBS = 15;
 // --- containment test pass end ---
+
+const importBridgeJobToLocal = (runtimeJob: any): RenderQueueJob | undefined => {
+  const bridgeJobId = runtimeJob.job_id;
+  if (!bridgeJobId) return undefined;
+
+  // Determine engine from bridge report
+  const engine = (runtimeJob.engine_target || runtimeJob.engine || 'flux');
+  const shotId = runtimeJob.shot_id || runtimeJob.payload?.shot_context?.shotId || runtimeJob.payload?.timeline?.shotId;
+
+  // Create a minimal bridge job payload to satisfy local registry requirements.
+  // We use placeholders for missing prompt/parameters to avoid crashing UI components
+  // that expect these to be present.
+  const bridgeJob: any = {
+    id: bridgeJobId, // Adopt bridge ID as local ID for stability
+    sceneId: runtimeJob.scene_id || 'unknown',
+    engine: engine as any,
+    jobType: 'workflow',
+    outputType: 'video',
+    previewFormat: 'video',
+    seed: 0,
+    payload: {
+      prompt: `[Adopted Job: ${bridgeJobId}]`,
+      parameters: {},
+      timeline: {},
+      shotContext: { shotId },
+      engineHints: [],
+      sceneName: 'Reconnected Session',
+      routeContext: { activeRoute: 'reconnected', strategy: 'reconnected', targetEngine: engine as any },
+    },
+    createdAt: runtimeJob.created_at ? new Date(runtimeJob.created_at).getTime() : Date.now(),
+  };
+
+  // Register in local registry
+  const localJob = addRenderJob(bridgeJob);
+  
+  // Mark as adopted so we know it's a discovered job, not one initiated in this session.
+  // This prevents the UI from incorrectly assuming it has full authority/graph data for this job.
+  return setRenderJobState(localJob.id, localJob.state, {
+    metadata: { ...localJob.metadata, isAdopted: true, adoptedAt: Date.now() },
+    runtimeBridgeJobId: bridgeJobId,
+  }) ?? localJob;
+};
 
 const mapOutputAssets = (assets?: RuntimeOutputAsset[]) =>
   (assets || []).map((asset) => ({ path: asset.path, mediaType: asset.kind === 'video' ? ('video' as const) : ('image' as const) }));
@@ -360,7 +402,14 @@ export const syncRuntimeJobsToLocal = async (): Promise<RenderQueueJob[]> => {
   const locals = listRenderJobs();
 
   for (const runtimeJob of jobsEnvelope.jobs as any[]) {
-    const local = resolveLocalRuntimeJob(runtimeJob, locals);
+    let local = resolveLocalRuntimeJob(runtimeJob, locals);
+    
+    if (!local) {
+      // ADOPTION: If we found a job in the bridge that we don't have locally, 
+      // it means we either lost local state (reload) or it was started elsewhere.
+      local = importBridgeJobToLocal(runtimeJob);
+    }
+
     if (!local) continue;
 
     // GUARD: Only fetch details if the status has actually changed

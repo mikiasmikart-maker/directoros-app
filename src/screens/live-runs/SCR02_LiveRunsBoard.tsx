@@ -253,7 +253,7 @@ export const SCR02_LiveRunsBoard = ({
                           const selected = run.id === selectedRunId;
                           const isActive = lane === 'active';
                           const isCompleted = run.canonicalState === 'completed';
-                          const title = run.canonicalState === 'completed' ? 'Completed' : run.canonicalState === 'failed' ? 'Stalled' : run.canonicalState === 'cancelled' ? 'Halted' : run.canonicalState;
+                          const title = mapTechnicalState(run.canonicalState);
                           
                           return (
                             <button 

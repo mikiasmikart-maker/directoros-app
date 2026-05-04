@@ -1,4 +1,5 @@
 import { useRef } from 'react';
+import { mapTechnicalState } from '../../utils/operationalLanguage';
 
 interface ShotTimelineItem {
   id: string;
@@ -167,7 +168,7 @@ export const SceneProductionTimeline = ({ sceneName, shots, shotReviewById, sele
                      {shot.title.replace(/^shot\s*\d+\s*:?\s*/i, '')}
                    </span>
                    <span className={`text-[7px] font-semibold uppercase tracking-[0.15em] ${toneByState[canonicalState] || 'text-white/10'}`}>
-                     {canonicalState}
+                     {mapTechnicalState(canonicalState)}
                    </span>
                 </div>
               </button>
