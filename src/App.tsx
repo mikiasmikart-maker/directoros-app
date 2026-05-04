@@ -2838,52 +2838,9 @@ function App() {
     // SURGICAL: Async yield to allow DOM update and heap stabilization before heavy compilation
     await new Promise(resolve => setTimeout(resolve, 100));
 
-    // ─── DIAGNOSTIC INSTRUMENTATION (read-only, no behavior change) ──────────
-    try {
-      const _nodeCount = graphForCompile?.nodes?.length ?? 0;
-      const _connCount = graphForCompile?.connections?.length ?? 0;
-      const _graphBytes = (() => { try { return JSON.stringify(graphForCompile).length; } catch { return -1; } })();
-      const _clipsCount = timelineState.clips?.length ?? 0;
-      console.log(
-        `[DIAG] PRE-COMPILE | graphForCompile: ${_nodeCount} nodes, ${_connCount} conns, ~${(_graphBytes / 1024).toFixed(1)} KB | clips: ${_clipsCount} | scene: ${selectedScene?.id ?? 'none'} | engine: ${appState.engineTarget}`
-      );
-    } catch { /* probe only */ }
-
-    // inline compile probe — mirrors compilePromptPayload without calling it
-    try {
-      const { compilePromptPayload: _cpFn } = await import('./utils/promptCompiler');
-      const _compiled = _cpFn({
-        scene: selectedScene,
-        clips: timelineState.clips,
-        selectedClipId: appState.selectedClipId,
-        memoryProfilesById,
-        inspectorOverrides: sceneOverrides,
-        engineTarget: appState.engineTarget,
-        graphState: graphForCompile,
-      });
-      if (_compiled) {
-        const _payloadKeys = Object.keys(_compiled.payload ?? {});
-        const _hasGraph = Boolean((_compiled.payload as any)?.graph);
-        const _graphPayloadBytes = (() => { try { return JSON.stringify((_compiled.payload as any)?.graph).length; } catch { return -1; } })();
-        const _fullBytes = (() => { try { return JSON.stringify(_compiled).length; } catch { return -1; } })();
-        console.log(
-          `[DIAG] POST-COMPILE | compiledPayload: ~${(_fullBytes / 1024).toFixed(1)} KB | keys: [${_payloadKeys.join(', ')}] | payload.graph present: ${_hasGraph} | payload.graph size: ~${(_graphPayloadBytes / 1024).toFixed(1)} KB`
-        );
-        const _paramCount = Object.keys(_compiled.payload?.parameters ?? {}).length;
-        const _shotCtx = JSON.stringify(_compiled.payload?.shotContext ?? {});
-        console.log(
-          `[DIAG] POST-COMPILE | parameters: ${_paramCount} keys | shotContext: ${_shotCtx} | engine resolved: ${_compiled.engineTarget}`
-        );
-      } else {
-        console.warn('[DIAG] POST-COMPILE | compilePromptPayload returned null — pipeline will abort');
-      }
-    } catch (_e) {
-      console.warn('[DIAG] POST-COMPILE probe failed:', _e);
-    }
-    // ─── END DIAGNOSTIC INSTRUMENTATION ──────────────────────────────────────
+    console.log(`[DirectorOS] onRenderScene: initiating pipeline for scene ${selectedScene.id}`);
 
     try {
-      console.log('[DIAG] PRE-PIPELINE | entering runRenderPipeline');
       const pipelineResult = await runRenderPipeline(
         {
           scene: selectedScene,
