@@ -54,7 +54,7 @@ export const toIso = (value) => {
   return Number.isNaN(date.getTime()) ? undefined : date.toISOString();
 };
 
-export const toFileUrlPath = (filePath) => `/api/runtime/files?path=${encodeURIComponent(filePath)}`;
+export const toFileUrlPath = (filePath) => `/runtime/files?path=${encodeURIComponent(filePath)}`;
 
 export const isImageFile = (name = '') => /\.(png|jpg|jpeg|webp|gif)$/i.test(name);
 export const isVideoFile = (name = '') => /\.(mp4|webm|mov|avi|mkv)$/i.test(name);
