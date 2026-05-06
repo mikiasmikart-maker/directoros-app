@@ -210,6 +210,7 @@ export const getJobs = async (limit = 100) => {
   for (const state of pipelineStates) {
     if (!state.job_id) continue;
     const canonicalId = sanitizeJobId(state.job_id);
+    if (primaryJobIdsSet.has(canonicalId)) continue;
     primaryJobIdsSet.add(canonicalId);
 
     const augmentingManifest = manifestJobs.find(m => m.job_id === canonicalId);
