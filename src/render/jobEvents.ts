@@ -26,7 +26,7 @@ type Listener = (event: RenderJobEvent) => void;
 
 const listeners = new Set<Listener>();
 const EVENT_LOG_KEY = 'directoros.renderEventLog.v1';
-const EVENT_LOG_LIMIT = 300;
+const EVENT_LOG_LIMIT = 50;
 const hasWindow = typeof window !== 'undefined' && typeof window.localStorage !== 'undefined';
 
 const appendEventLog = (event: RenderJobEvent) => {
@@ -43,7 +43,20 @@ const appendEventLog = (event: RenderJobEvent) => {
 
 export const emitRenderJobEvent = (event: Omit<RenderJobEvent, 'timestamp'>) => {
   const fullEvent: RenderJobEvent = { ...event, timestamp: Date.now() };
-  appendEventLog(fullEvent);
+  
+  // STRIP: Remove heavy payload before persisting to log to prevent OOM/freeze
+  const logEvent: RenderJobEvent = {
+    ...fullEvent,
+    job: fullEvent.job ? {
+      ...fullEvent.job,
+      bridgeJob: {
+        ...fullEvent.job.bridgeJob,
+        payload: undefined as any // Dead weight for history/logging
+      }
+    } : undefined
+  };
+
+  appendEventLog(logEvent);
   listeners.forEach((listener) => listener(fullEvent));
 };
 
