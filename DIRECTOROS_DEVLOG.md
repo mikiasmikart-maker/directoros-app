@@ -30,3 +30,14 @@ stable baseline for next phase.
 
 ### Reference
 - `docs/directoros_pipeline_contract_lock_mem_ok_v001.md`
+
+## Regression Guard Lock — DirectorOS v2
+**Date:** 2026-05-06
+
+### Scope
+- Automated regression checks for runtime authority.
+- No UI redesign or lifecycle semantics changes.
+
+### Handoff
+DirectorOS v2 runtime authority guarantees are now protected by automated regression coverage. Any future bridge/discovery/proof/lineage change must pass npm run test:regression before merge.
+
