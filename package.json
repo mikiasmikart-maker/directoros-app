@@ -11,7 +11,7 @@
     "test": "playwright test",
     "test:unit": "node tests/unit/operationalLanguage.test.mjs",
     "test:smoke": "node tests/smoke/runtime_discovery.test.mjs",
-    "test:regression": "npm run test:unit && npm run test:smoke",
+    "test:regression": "npm run test:unit && npm run test:smoke && node tests/regression/locked_guarantees.test.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
