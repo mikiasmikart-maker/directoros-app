@@ -166,26 +166,36 @@ export const getRecentRenders = async (limit = 8) => {
 export const getJobs = async (limit = 100) => {
   const manifestPaths = await listManifestPaths();
   const manifests = await Promise.all(manifestPaths.slice(0, limit).map((manifestPath) => readManifest(manifestPath)));
-  const manifestJobs = manifests.filter(Boolean).map((entry) => {
+  const manifestJobsRaw = manifests.filter(Boolean).map((entry) => {
     const jobId = sanitizeJobId(entry.manifest?.job_name || path.basename(entry.manifest_ref.path, '.json'));
     return {
       job_id: jobId,
       parent_job_id: entry.manifest?.parent_job_id,
       mode: entry.manifest?.family ? 'studio_run' : 'cinematic',
-    preset: entry.manifest?.template || 'unknown',
-    status: entry.manifest?.status || 'completed',
-    preview_image: entry.authoritative_output?.path,
-    preview_image_url: entry.preview_image,
-    started_at: entry.manifest?.created_at,
-    ended_at: entry.manifest?.completed_at,
-    duration_ms:
-      entry.manifest?.created_at && entry.manifest?.completed_at
-        ? new Date(entry.manifest.completed_at).getTime() - new Date(entry.manifest.created_at).getTime()
-        : undefined,
-    manifest_path: entry.manifest_ref.path,
+      preset: entry.manifest?.template || 'unknown',
+      status: entry.manifest?.status || 'completed',
+      preview_image: entry.authoritative_output?.path,
+      preview_image_url: entry.preview_image,
+      started_at: entry.manifest?.created_at,
+      ended_at: entry.manifest?.completed_at,
+      duration_ms:
+        entry.manifest?.created_at && entry.manifest?.completed_at
+          ? new Date(entry.manifest.completed_at).getTime() - new Date(entry.manifest.created_at).getTime()
+          : undefined,
+      manifest_path: entry.manifest_ref.path,
       engine: entry.manifest?.checkpoint || entry.manifest?.template,
     };
   });
+
+  // Deduplicate manifest jobs (keep newest/first)
+  const manifestJobs = [];
+  const manifestSeenIds = new Set();
+  for (const m of manifestJobsRaw) {
+    if (!manifestSeenIds.has(m.job_id)) {
+      manifestJobs.push(m);
+      manifestSeenIds.add(m.job_id);
+    }
+  }
   
   const registry = await readAcceptedRunsRegistry();
   const lineageMap = new Map();
@@ -240,13 +250,20 @@ export const getJobs = async (limit = 100) => {
 
   const mergedJobIdsSet = new Set([...primaryJobIdsSet, ...unmergedManifestJobs.map(m => m.job_id)]);
 
-  const pendingAcceptedRuns = registry.runs
-    .filter((entry) => entry?.job_id && !mergedJobIdsSet.has(sanitizeJobId(entry.job_id)))
-    .map(entry => {
-      const mapped = toPendingAcceptedRunJob(entry);
-      mapped.job_id = sanitizeJobId(mapped.job_id);
-      return mapped;
-    });
+  const pendingAcceptedRuns = [];
+  const pendingSeenIds = new Set();
+  // registry.runs might have duplicates from rapid retry clicks; pick first (newest if prepended, but registry is usually appended)
+  // Actually getJobs sorts by started_at later, so we just need uniqueness here.
+  for (const entry of registry.runs) {
+    if (!entry?.job_id) continue;
+    const cid = sanitizeJobId(entry.job_id);
+    if (mergedJobIdsSet.has(cid) || pendingSeenIds.has(cid)) continue;
+
+    const mapped = toPendingAcceptedRunJob(entry);
+    mapped.job_id = cid;
+    pendingAcceptedRuns.push(mapped);
+    pendingSeenIds.add(cid);
+  }
 
   const allJobs = [...primaryJobsList, ...unmergedManifestJobs, ...pendingAcceptedRuns];
   return allJobs.sort((a, b) => new Date(b.started_at || 0).getTime() - new Date(a.started_at || 0).getTime()).slice(0, limit);

@@ -96,7 +96,7 @@ console.log('  PASS: Parent artifacts contextual evidence only.');
  * Verify continuity logic in bridge.
  */
 console.log('[RG-07] Checking Manifest Continuity Logic...');
-const hasPendingRunsInJobs = discoveryContent.includes("pendingAcceptedRuns = registry.runs");
+const hasPendingRunsInJobs = discoveryContent.includes("pendingAcceptedRuns =") && discoveryContent.includes("registry.runs");
 const hasContinuityHydration = serverContent.includes("resolved?.accepted_run?.body_source");
 assert.ok(hasPendingRunsInJobs, 'FAIL: discovery.mjs does not track pending accepted runs');
 assert.ok(hasContinuityHydration, 'FAIL: server.mjs does not hydrate from accepted_run hint');
