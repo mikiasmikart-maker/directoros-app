@@ -4,7 +4,7 @@ import { URL } from 'node:url';
 import { runtimeConfig, derivedPaths } from './config.mjs';
 import { json, safeReadJsonFile, writeJsonFile } from './helpers.mjs';
 import { runPreflight } from './preflight.mjs';
-import { getJobDetail, getJobs, getRecentRenders, getTimeline, resolveManifestForSubmission } from './pipeline_discovery.mjs';
+import { getJobDetail, getJobs, getRecentRenders, getTimeline, readManifest, resolveManifestForSubmission } from './pipeline_discovery.mjs';
 import { invokeStudioRun } from './studio_run.mjs';
 
 const parseBody = async (req) =>
@@ -38,11 +38,24 @@ const sanitizeJobId = (id) => {
 
 const acceptedRunsRegistryPath = `${derivedPaths.pipelineOutputsRoot}/runtime/accepted_runs.json`;
 
-const persistAcceptedRun = async (entry) => {
+const getAcceptedRuns = async () => {
   try {
     const current = await safeReadJsonFile(acceptedRunsRegistryPath);
-    const runs = Array.isArray(current?.runs) ? current.runs : [];
-    const nextRuns = [...runs.filter((run) => run?.job_id !== entry.job_id), entry];
+    return Array.isArray(current?.runs) ? current.runs : [];
+  } catch {
+    return [];
+  }
+};
+
+const persistAcceptedRun = async (entry) => {
+  try {
+    const runs = await getAcceptedRuns();
+    const existing = runs.find((r) => r?.job_id === entry.job_id);
+    const updated = { ...existing, ...entry };
+    if (entry.runtime && existing?.runtime) {
+      updated.runtime = { ...existing.runtime, ...entry.runtime };
+    }
+    const nextRuns = [...runs.filter((run) => run?.job_id !== entry.job_id), updated];
     await writeJsonFile(acceptedRunsRegistryPath, { runs: nextRuns });
   } catch (error) {
     console.warn('[runtime-render] accepted-run registry write failed', error?.message || error);
@@ -93,29 +106,135 @@ const server = http.createServer(async (req, res) => {
       const targetJobId = body.job_id || body.job || body.job_label;
       if (!targetJobId) return json(res, 400, { ok: false, error: 'retry_target_missing' });
 
-      const resolved = await resolveManifestForSubmission(targetJobId);
-      if (!resolved || !resolved.manifest) {
-        console.warn(`[runtime-render] retry blocked: manifest authority not found for ${targetJobId}`);
-        return json(res, 404, { ok: false, error: 'manifest_not_found', job_id: targetJobId });
+      let resolved = await resolveManifestForSubmission(targetJobId);
+      
+      // Identity Guard: If we only found accepted_run, check if a manifest exists anyway (lifecycle truth)
+      if (resolved?.accepted_run && !resolved.manifest) {
+        const detail = await getJobDetail(targetJobId);
+        if (detail?.manifest_path) {
+          const manifestData = await readManifest(detail.manifest_path);
+          if (manifestData) resolved = { ...resolved, ...manifestData };
+        }
       }
 
-      const m = resolved.manifest;
-      // Re-hydrate request from manifest truth. Do not invent missing params.
-      body.intent = m.intent;
-      body.template = m.template;
-      body.recipe = m.recipe || m.checkpoint;
-      body.family = m.family;
-      body.engine_target = m.engine_target || (m.checkpoint ? 'comfyui' : 'studio_run');
-      body.scene_id = m.scene_id || 'retry-sync'; // Required for preflight stability
+      const availableRecipeNames = new Set(
+        fs.existsSync(derivedPaths.recipesDir)
+          ? fs.readdirSync(derivedPaths.recipesDir)
+            .map((name) => name.replace(/\.[^.]+$/, '').trim())
+            .filter(Boolean)
+          : []
+      );
 
-      if (!body.intent || (!body.recipe && !body.template)) {
-        return json(res, 422, { ok: false, error: 'invalid_manifest_contract', job_id: targetJobId });
+      const availableTemplateNames = new Set(
+        fs.existsSync(derivedPaths.pipelineTemplatesRoot)
+          ? fs.readdirSync(derivedPaths.pipelineTemplatesRoot)
+            .map((name) => name.replace(/\.[^.]+$/, '').trim())
+            .filter(Boolean)
+          : []
+      );
+
+      const familyToRecipeMap = {
+        box: 'box_cinematic_packshot',
+      };
+
+      const isCheckpointLike = (value) => /\.(safetensors|ckpt)$/i.test(value) || /sd[_-]?xl/i.test(value);
+      const isRunnableRecipe = (value) => Boolean(value) && !isCheckpointLike(value) && availableRecipeNames.has(value);
+      const isRunnableTemplateContract = (value) => Boolean(value) && !isCheckpointLike(value) && (availableTemplateNames.has(value) || availableRecipeNames.has(value));
+
+      // Resolution Engine Helper
+      const resolveRunnableFrom = (source) => {
+        if (!source) return null;
+        const sRecipe = typeof source.recipe === 'string' ? source.recipe.trim() : '';
+        const sTemplate = typeof source.template === 'string' ? source.template.trim() : '';
+        const sFamily = typeof source.family === 'string' ? source.family.trim() : '';
+
+        if (isRunnableRecipe(sRecipe)) return { recipe: sRecipe, template: undefined, from: 'recipe' };
+        if (isRunnableTemplateContract(sTemplate) && isRunnableRecipe(sTemplate)) return { recipe: sTemplate, template: sTemplate, from: 'template' };
+        
+        const familyRecipe = familyToRecipeMap[sFamily.toLowerCase()] || '';
+        if (isRunnableRecipe(familyRecipe)) return { recipe: familyRecipe, from: 'family' };
+        
+        return null;
+      };
+
+      // Precedence: valid manifest -> valid explicit POST -> valid accepted_run hint -> reject
+      let runSpec = resolveRunnableFrom(resolved?.manifest);
+      let resolvedFrom = runSpec ? `manifest.${runSpec.from}` : '';
+      
+      if (!runSpec) {
+        runSpec = resolveRunnableFrom(body); // Explicit POST
+        if (runSpec) resolvedFrom = `body.${runSpec.from}`;
+      }
+      
+      if (!runSpec && resolved?.accepted_run?.body_source) {
+        runSpec = resolveRunnableFrom(resolved.accepted_run.body_source); // Accepted Run Hint
+        if (runSpec) resolvedFrom = `accepted_run_hint.${runSpec.from}`;
       }
 
-      // Assign a new label for the retry run
-      body.job_label = `${targetJobId.replace(/.*__/g, '')}-retry-${Date.now()}`;
-      body.parent_job_id = targetJobId;
-      console.log(`[runtime-render] retry path hydrated from authority: ${resolved.manifest_ref?.filename}`);
+      if (!runSpec) {
+        const m = resolved?.manifest || {};
+        const checkpoint = typeof m.checkpoint === 'string' ? m.checkpoint.trim() : '';
+        const blockedReason = checkpoint || isCheckpointLike(m.recipe) || isCheckpointLike(m.template)
+          ? 'checkpoint_or_model_name_cannot_be_used_as_recipe_template'
+          : 'no_runnable_recipe_or_template_contract';
+        
+        console.warn(`[runtime-render] retry blocked: ${blockedReason} target=${targetJobId}`);
+        return json(res, 422, {
+          ok: false,
+          error: 'invalid_manifest_contract',
+          job_id: targetJobId,
+          parent_job_id: targetJobId,
+          message: checkpoint
+            ? 'Retry hydration failed: checkpoint-only manifest is blocked; runnable manifest.recipe/template/family contract required.'
+            : 'Retry hydration failed: no runnable recipe/template could be resolved from manifest, explicit POST, or accepted_run hint.',
+        });
+      }
+
+      // Re-hydrate request from best available source
+      const m = resolved?.manifest || {};
+      const hint = resolved?.accepted_run?.body_source || {};
+      
+      body.intent = m.intent || body.intent || hint.intent || 'render';
+      body.family = m.family || body.family || hint.family;
+      body.engine_target = m.engine_target || body.engine_target || hint.engine_target || (m.checkpoint ? 'comfyui' : 'studio_run');
+      body.scene_id = m.scene_id || body.scene_id || hint.scene_id || 'retry-sync';
+      body.parent_job_id = targetJobId; // parent_job_id immutable
+      body.recipe = runSpec.recipe;
+      body.template = runSpec.template;
+
+      console.log(`[runtime-render] retry hydrated: target=${targetJobId} source=${resolvedFrom} recipe=${body.recipe} template=${body.template || ''} engine=${body.engine_target}`);
+
+      // Assign a fresh unique label for the retry run
+      const existingRuns = await getAcceptedRuns();
+      let candidateLabel = `${targetJobId.replace(/.*__/g, '')}-retry-${Date.now()}`;
+      let attempt = 0;
+      while (existingRuns.some((r) => sanitizeJobId(r.job_id) === sanitizeJobId(candidateLabel))) {
+        candidateLabel = `${targetJobId.replace(/.*__/g, '')}-retry-${Date.now()}-${++attempt}`;
+      }
+      body.job_label = candidateLabel;
+    }
+
+    const baseLabel = body.job_label || body.job || body.job_id || `rb-${Date.now()}`;
+    const canonicalJobId = sanitizeJobId(baseLabel);
+
+    // Duplicate Guard: Logical conflict returns 409, idempotent collapse returns 202
+    const existingRuns = await getAcceptedRuns();
+    const existing = existingRuns.find((r) => sanitizeJobId(r.job_id) === canonicalJobId);
+    if (existing) {
+      const isIdempotent = existing.parent_job_id === body.parent_job_id && existing.engine_target === body.engine_target;
+      if (isIdempotent) {
+        console.log(`[runtime-render] duplicate guard: idempotent collapse for ${canonicalJobId}`);
+        return json(res, 202, {
+          ok: true,
+          accepted: true,
+          status: existing.status || 'queued',
+          job_id: canonicalJobId,
+          message: 'idempotent_replay_collapse',
+        });
+      } else {
+        console.warn(`[runtime-render] duplicate guard: logical conflict for ${canonicalJobId}`);
+        return json(res, 409, { ok: false, error: 'conflict', message: 'Job ID already exists with different parameters' });
+      }
     }
 
     const preflight = await runPreflight({ requestBody: body });
@@ -123,8 +242,15 @@ const server = http.createServer(async (req, res) => {
       return json(res, 400, { ok: false, accepted: false, status: 'failed', preflight, dependency_status: preflight.dependency_status, errors: ['preflight failed'] });
     }
 
-    const baseLabel = body.job_label || body.job || body.job_id || `rb-${Date.now()}`;
-    const canonicalJobId = sanitizeJobId(baseLabel);
+    // Pre-spawn Identity Reservation: Reserve in accepted_runs with status queued
+    await persistAcceptedRun({
+      job_id: canonicalJobId,
+      parent_job_id: body.parent_job_id,
+      status: 'queued',
+      accepted_at: new Date().toISOString(),
+      engine_target: body.engine_target,
+      body_source: body, // Store parameters as hint for future retries
+    });
 
     const result = await invokeStudioRun(body, canonicalJobId);
     if (!result.ok) {
@@ -147,12 +273,9 @@ const server = http.createServer(async (req, res) => {
       });
     }
 
-    void persistAcceptedRun({
+    // Post-spawn Update: Only update runtime.pid after successful spawn
+    await persistAcceptedRun({
       job_id: canonicalJobId,
-      parent_job_id: body.parent_job_id,
-      status: 'queued',
-      accepted_at: new Date().toISOString(),
-      engine_target: body.engine_target,
       runtime: { pid: result.pid },
     });
 

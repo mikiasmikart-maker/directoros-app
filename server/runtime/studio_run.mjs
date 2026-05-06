@@ -40,13 +40,23 @@ export const invokeStudioRun = async (body = {}, jobId) => {
         cwd: path.dirname(runtimeConfig.studioRunPy),
         windowsHide: true,
         shell: false,
-        detached: true,
-        stdio: 'ignore', // Fully disconnect IO to prevent blocking/pipe issues
+        detached: false,
+        stdio: ['ignore', 'pipe', 'pipe'], // capture stdout/stderr
       });
 
-      // Crucial: Detach the child process from the parent's event loop
-      // so the server can survive or exit independently.
-      child.unref();
+      if (runtimeConfig.debug) {
+        child.stdout?.on('data', (d) => {
+          console.log('[studio_run stdout]', d.toString());
+        });
+
+        child.stderr?.on('data', (d) => {
+          console.error('[studio_run stderr]', d.toString());
+        });
+      }
+
+      child.on('exit', (code) => {
+        console.log('[studio_run exit]', code);
+      });
 
       // Listen for the initial result to return 202 status or immediate error
       child.on('error', (error) => {

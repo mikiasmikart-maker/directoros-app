@@ -14,6 +14,7 @@ export const runtimeConfig = {
   comfyHealthUrl: env.COMFY_HEALTH_URL || 'http://127.0.0.1:8188/object_info',
   healthTimeoutMs: Number(env.DIRECTOROS_RUNTIME_HEALTH_TIMEOUT_MS || 2500),
   mockPromptCompiler: env.DIRECTOROS_MOCK_COMPILER === 'true',
+  debug: env.DIRECTOROS_RUNTIME_DEBUG === 'true',
 };
 
 export const derivedPaths = {
