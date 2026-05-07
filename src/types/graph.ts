@@ -33,7 +33,9 @@ export type ShotRuntimeState =
   | 'completed'
   | 'blocked'
   | 'failed'
-  | 'skipped';
+  | 'skipped'
+  | 'preflight'
+  | 'packaging';
 
 export interface PostPipelineStageState {
   stage: PostPipelineStage;

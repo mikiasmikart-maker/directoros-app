@@ -12,6 +12,7 @@ import { SCR04_CommandConsole } from './screens/command-console/SCR04_CommandCon
 import { SCR05_InterventionQueue } from './screens/intervention-queue/SCR05_InterventionQueue';
 import { SCR06_AuditReplayTimeline } from './screens/audit-replay/SCR06_AuditReplayTimeline';
 import { OverlaySurface, useOverlayEscape } from './overlay';
+import { sortShotsInSequence } from './utils/shotExecution';
 import { createRouteState, engineRoutePresets } from './data/engineRoutes';
 import { memoryProfiles, memoryProfilesById } from './data/memoryProfiles';
 import { mockScenes } from './data/mockScenes';
@@ -31,20 +32,19 @@ import { getQueueState } from './render/queueState';
 import { getReviewRuntimeSnapshot, startReviewRuntime, submitReviewAction } from './review/runtime';
 import { getGuardMessage, makeAllowedGuard, makeBlockedGuard, normalizeReasonCode, type GuardResult } from './review/guardReasons';
 import type { ReviewActionType } from './review/types';
-import { resolveOperatorReviewState, resolveProductionFamilyTruth, resolveFamilyDecisionHistory, type InboxItem, resolveInboxItem, resolveNextBestAction, resolveRiskForecast } from './review/reviewLineageTruth';
+import { resolveProductionFamilyTruth, type InboxItem, resolveInboxItem, resolveNextBestAction, resolveRiskForecast } from './review/reviewLineageTruth';
 import { applyInterventionAction, createIntervention, listInterventionEvents, replayInterventionEvents } from './interventions/runtime';
 import type { EngineTarget, SceneNode, TimelineState, TimelineClip, CurrentFocusItem, QuickActionItem, QuickActionModel, SelectedFeedbackSummary } from './models/directoros';
 import type { MemoryCategory, PrimitiveValue } from './types/memory';
-import type { GraphNodeType, PipelineActivityState, PostPipelineStageState, PostPipelineStatus, RenderState, SceneGraphNode, SceneGraphState, ShotRuntimeState } from './types/graph';
-import { getCurrentShotIndex, sortShotsInSequence } from './utils/shotExecution';
+import type { GraphNodeType, PipelineActivityState, PostPipelineStageState, PostPipelineStatus, RenderState, SceneGraphNode, SceneGraphState } from './types/graph';
 import { emitEvent, makeStream, newTrace } from './telemetry';
 import type { DirectorOSEventEnvelope, EmitContext, EventTrace } from './telemetry';
 import type { TelemetryEnvelope } from './telemetry/selectors/directoros_kpi_selectors_cod_wip_v001';
-import { resolveFamilyPreviewAuthority } from './utils/familyPreviewAuthority';
 import type { FamilyPreviewAuthorityKind, FamilyPreviewAuthorityResolution } from './utils/familyPreviewAuthority';
-import { resolveSelectedJobNextAction } from './utils/selectedJobNextAction';
 import { MOCK_OPERATORS, type PresenceState, type PresenceActivityType, type Conflict } from './types/presence';
 import { buildDeliveryManifest } from './utils/manifestBuilder';
+import { useRuntimeProjection } from './hooks/useRuntimeProjection';
+import type { RuntimeTruthInput, InterventionItem } from './types/projection';
 
 type GraphHistoryState = Record<string, { undo: SceneGraphState[]; redo: SceneGraphState[] }>;
 
@@ -56,7 +56,6 @@ type PostWorkflowState = {
   event?: string;
 };
 
-type ShotSequenceState = Record<string, { state: ShotRuntimeState; progress: number; stage: string; lastAction: string; isCurrent?: boolean }>;
 
 type ResumeTargetState = {
   sceneId: string;
@@ -442,7 +441,6 @@ function App() {
   const [isRightPanelCollapsed, setIsRightPanelCollapsed] = useState(false);
   const [postPipelineCollapsed, setPostPipelineCollapsed] = useState(true);
   const [postWorkflowByScene, setPostWorkflowByScene] = useState<Record<string, PostWorkflowState>>({});
-  const [shotSequenceByScene, setShotSequenceByScene] = useState<Record<string, ShotSequenceState>>({});
   const [shotLedgerScope, setShotLedgerScope] = useState<'this_shot' | 'all_scene'>('this_shot');
   const [m5ActionFeedbackByJob, setM5ActionFeedbackByJob] = useState<Record<string, { level: 'ok' | 'error'; message: string }>>({});
   const [inlineActionReceiptByJob, setInlineActionReceiptByJob] = useState<Record<string, InlineActionReceipt>>({});
@@ -775,34 +773,86 @@ function App() {
 
     return { upstream, downstream };
   }, [selectedGraph, selectedGraphNode]);
+  
+  const reviewSnapshot = useMemo(() => getReviewRuntimeSnapshot(), [lastStreamEventAt]);
+  const interventionEvents = useMemo(() => listInterventionEvents(), [interventionVersion]);
+  const interventionProjections = useMemo(() => replayInterventionEvents(interventionEvents), [interventionEvents]);
 
-  const shotQueueSummary = useMemo(() => {
-    if (!selectedGraph?.nodes || !selectedScene) return [] as Array<{ id: string; title: string; order: number; state: ShotRuntimeState; progress: number; stage: string; lastAction: string; isCurrent: boolean; duration?: number }>;
-    const sceneState = shotSequenceByScene[selectedScene.id] ?? {};
-    const shots = sortShotsInSequence(selectedGraph.nodes.filter((node) => node.type === 'shot'));
+  // Stabilize shotProjections Map — rebuilt only when reviewSnapshot changes.
+  // CRITICAL: Do NOT inline `new Map(...)` inside projectionInput; that creates a new
+  // reference every render and causes useRuntimeProjection to rememoize everything.
+  const stableShotProjectionsMap = useMemo(
+    () => new Map(reviewSnapshot.shotProjections.map(p => [p.shotId, p])),
+    [reviewSnapshot]
+  );
 
-    return shots.map((shot, index) => {
-      const current = sceneState[shot.id];
-      const fallbackState: ShotRuntimeState = index === 0 ? 'active' : 'waiting';
-      const duration = typeof shot.shotOverrides?.duration === 'number' ? shot.shotOverrides.duration : 5;
-      return {
-        id: shot.id,
-        title: shot.title,
-        order: index + 1,
-        state: current?.state ?? fallbackState,
-        progress: current?.progress ?? (index === 0 ? 8 : 0),
-        stage: current?.stage ?? (index === 0 ? 'queued for compile' : 'waiting in sequence'),
-        lastAction: current?.lastAction ?? (index === 0 ? 'Sequence armed' : 'Awaiting previous shot completion'),
-        isCurrent: current?.isCurrent ?? index === 0,
-        duration,
-      };
-    });
-  }, [selectedGraph, selectedScene, shotSequenceByScene]);
+  // Stabilize ledger scope string so the object identity in projectionInput is stable.
+  const stableLedgerScope = shotLedgerScope === 'this_shot' ? 'selected_shot' as const : 'all_scene' as const;
 
-  const activeShot = useMemo(() => {
-    const idx = getCurrentShotIndex(shotQueueSummary);
-    return idx >= 0 ? shotQueueSummary[idx] : undefined;
-  }, [shotQueueSummary]);
+  const projectionInput = useMemo<RuntimeTruthInput>(() => ({
+    jobs: runtimeJobs,
+    reviewSnapshot: {
+      eventLog: reviewSnapshot.eventLog,
+      shotProjections: stableShotProjectionsMap,
+    },
+    previewState,
+    livePreview,
+    selection: {
+      jobId: selectedJobId,
+      familyId: selectedFamilyRootId,
+      sceneId: selectedScene?.id,
+    },
+    ledger: {
+      scope: stableLedgerScope,
+      focusId: selectedJobId,
+    },
+    graph: selectedGraph,
+    shotSequence: selectedGraph?.nodes,
+    interventionProjections: interventionProjections as any,
+  }), [runtimeJobs, reviewSnapshot.eventLog, stableShotProjectionsMap, previewState, livePreview, selectedJobId, selectedFamilyRootId, selectedScene?.id, stableLedgerScope, selectedGraph, interventionProjections]);
+
+  const projection = useRuntimeProjection(projectionInput);
+  const shotQueueSummary = projection.shotQueue;
+  const activeShot = projection.shotQueue.find(s => s.isCurrent);
+  
+  const resolvedOperatorReviewState = projection.review;
+  const selectedJobAuthority = projection.canonical;
+  const productionFamily = useMemo(() => projection.workspace ? {
+    ...projection.workspace,
+    familyLabel: `Family ${projection.workspace.sceneId?.slice(0, 8)}`,
+    lineageRootId: projection.workspace.sceneId || '',
+    familyState: projection.workspace.status,
+    lineageTrail: [],
+    timelineNodes: [],
+    currentWinnerJobId: projection.review?.bestKnownJobId,
+    approvedOutputJobId: projection.review?.approvedJobId,
+    replacementJobId: projection.review?.replacementJobId,
+    nextFamilyAction: projection.review?.nextBestAction.label ?? 'Inspect',
+    suggestedPairPrimaryJobId: projection.review?.suggestedPairPrimaryJobId,
+    suggestedPairPartnerJobId: projection.review?.suggestedPairPartnerJobId,
+    evidenceTargetJobId: undefined,
+    evidenceReason: projection.review?.explanations.summary,
+    rankedEvidenceCandidates: [],
+  } : undefined, [projection.workspace, projection.review]);
+
+  const familyDecisionHistory = useMemo(() => reviewSnapshot.eventLog
+    .filter(e => e.lineageRootJobId === selectedFamilyRootId)
+    .map(e => ({
+      actor: (e.payload as any)?.actor?.source === 'operator' ? 'operator' as const : 'system' as const,
+      description: (e as any).description || 'System decision',
+      eventId: e.eventId,
+      eventType: e.eventType,
+      occurredAt: e.occurredAt,
+      jobId: e.jobId,
+      lineageRootJobId: e.lineageRootJobId
+    })), [reviewSnapshot.eventLog, selectedFamilyRootId]);
+  
+  const lineageFamily = useMemo(() => {
+    if (!selectedFamilyRootId) return [];
+    return (runtimeJobs || []).filter(j => findLineageRootId(j, renderJobs) === selectedFamilyRootId);
+  }, [selectedFamilyRootId, runtimeJobs, renderJobs]);
+
+  const interventionById = useMemo(() => new Map(interventionProjections.map((item) => [item.id, item])), [interventionProjections]);
 
   const selectedShotForLedger = useMemo(() => (selectedGraphNode?.type === 'shot' ? selectedGraphNode.id : activeShot?.id), [selectedGraphNode, activeShot]);
 
@@ -985,8 +1035,7 @@ function App() {
     return getDefaultOutputPath(selectedJob);
   }, [selectedJob, selectedOutputByJob, artifactFocus]);
 
-  // DECOUPLED: Use explicit refresh signal or lastStreamEventAt to avoid re-calc on every progress tick
-  const reviewSnapshot = useMemo(() => getReviewRuntimeSnapshot(), [lastStreamEventAt]);
+  // Projection moved up to line 655
 
   const shotProjectionByShotId = useMemo(() => {
     const map = new Map<string, (typeof reviewSnapshot.shotProjections)[number]>();
@@ -1127,241 +1176,11 @@ function App() {
     };
   }, [selectedJob, selectedJobProjection, selectedDecisionProposal, actionAuditByJobId]);
 
-  const deriveCanonicalRunSurface = (
-    job: RenderQueueJob,
-    shotProjection?: (typeof reviewSnapshot.shotProjections)[number],
-    actionAudit?: {
-      actionState?: 'pending' | 'approved' | 'needs_revision' | 'rejected' | 'superseded' | 'finalized';
-    },
-  ) => {
-    const terminalState = job.state;
-    const isFailed = terminalState === 'failed';
-    const isCancelled = terminalState === 'cancelled';
-    const isCompleted = terminalState === 'completed';
-
-    const canonicalState =
-      isFailed
-        ? 'failed'
-        : isCancelled
-          ? 'cancelled'
-          : actionAudit?.actionState
-            ? actionAudit.actionState
-            : isCompleted && shotProjection?.bestKnownOutputSelection?.selectedJobId === job.id
-              ? 'best_known'
-              : isCompleted
-                ? 'completed'
-                : terminalState;
-
-    const diagnostics =
-      job.error ??
-      (isFailed
-        ? 'Failure recorded (provider did not return diagnostic text).'
-        : isCancelled
-          ? 'Cancelled by operator.'
-          : undefined);
-
-    return {
-      canonicalState,
-      diagnostics,
-      unresolvedAttention: isFailed || isCancelled || canonicalState === 'needs_revision' || canonicalState === 'rejected',
-      bestKnown: shotProjection?.bestKnownOutputSelection?.selectedJobId === job.id,
-      lineageParent: (job as any).retryOfJobId,
-    };
-  };
-
-  const sceneReviewBoard = useMemo(() => {
-    if (!selectedScene) return undefined;
-    const shotRows = shotQueueSummary.map((shot) => {
-      const projection = shotProjectionByShotId.get(shot.id);
-      const retry = projection?.retryRecommendation;
-      const effectiveApprovalStatus = projection?.approvalStatus;
-      const isApproved = effectiveApprovalStatus === 'approved';
-      const isReviewable = projection?.reviewStatus !== 'blocked';
-      const riskScore = projection?.measuredSignals
-        ? (projection.measuredSignals.artifactSeverity * 0.5 + (1 - projection.measuredSignals.motionStability) * 0.3 + (1 - projection.measuredSignals.continuityMatch) * 0.2)
-        : 0;
-      return {
-        shotId: shot.id,
-        approvalStatus: effectiveApprovalStatus,
-        reviewStatus: projection?.reviewStatus,
-        bestKnownJobId: projection?.bestKnownOutputSelection?.selectedJobId,
-        retryRecommendation: retry,
-        reasonSnippet: projection?.explanations?.summary,
-        blocked: projection?.reviewStatus === 'blocked',
-        approved: isApproved,
-        reviewable: isReviewable,
-        riskScore,
-      };
-    });
-
-    const reviewable = shotRows.filter((row) => row.reviewable);
-    const approved = reviewable.filter((row) => row.approved);
-    const finalizedCount = shotRows.filter((row) => shotProjectionByShotId.get(row.shotId)?.actionState?.current === 'finalized').length;
-    const needsRevisionCount = shotRows.filter((row) => row.approvalStatus === 'needs_revision').length;
-    const rejectedCount = shotRows.filter((row) => row.approvalStatus === 'rejected').length;
-    const supersededCount = shotRows.filter((row) => row.approvalStatus === 'superseded').length;
-    const retryOpen = shotRows.filter((row) => row.retryRecommendation?.recommend).length;
-    const blockedRetries = shotRows.filter((row) => row.blocked && row.retryRecommendation?.recommend).length;
-    const highPriorityRetries = shotRows.filter((row) => row.retryRecommendation?.recommend && row.riskScore >= 0.6).length;
-    const pressureValue = reviewable.length ? (retryOpen + highPriorityRetries * 2 + blockedRetries * 3) / reviewable.length : 0;
-    const pressureBand = pressureValue >= 2 ? 'critical' : pressureValue >= 1.25 ? 'high' : pressureValue >= 0.75 ? 'medium' : 'low';
-    const covered = reviewable.filter((row) => Boolean(row.bestKnownJobId)).length;
-    const exceptions = shotRows.filter((row) => row.reviewStatus === 'blocked' || row.approvalStatus === 'needs_revision' || row.approvalStatus === 'rejected');
-
-    return {
-      status: pressureBand === 'critical' ? 'blocked' : pressureBand === 'high' ? 'needs_attention' : exceptions.length ? 'watch' : 'healthy',
-      passRate: { value: reviewable.length ? approved.length / reviewable.length : 0, approved: approved.length, reviewable: reviewable.length },
-      retryPressure: { value: pressureValue, band: pressureBand },
-      bestKnownCoverage: { value: reviewable.length ? covered / reviewable.length : 0, covered, reviewable: reviewable.length },
-      failureClusters: (() => {
-        const cluster = new Map<string, { reasonCode: string; count: number; shots: string[] }>();
-        shotRows.forEach((row) => {
-          const key = row.retryRecommendation?.reasonCode;
-          if (!key) return;
-          const current = cluster.get(key) ?? { reasonCode: key, count: 0, shots: [] };
-          current.count += 1;
-          if (!current.shots.includes(row.shotId)) current.shots.push(row.shotId);
-          cluster.set(key, current);
-        });
-        return Array.from(cluster.values()).sort((a, b) => b.count - a.count).slice(0, 3);
-      })(),
-      explanations: {
-        summary: pressureBand === 'low' ? 'Scene is tracking healthy with low retry pressure.' : `Scene is under ${pressureBand} retry pressure and needs targeted shot cleanup.`,
-        whyNotApproved: exceptions.length
-          ? `${exceptions.length} shots still blocked or marked needs revision.`
-          : 'No blocking shots currently detected.',
-        fastestPathToGreen: exceptions.length
-          ? `Resolve retry reasons on ${exceptions.slice(0, 3).map((item) => item.shotId).join(', ')} and re-run review.`
-          : 'Maintain approvals and monitor drift.',
-      },
-      shotExceptions: exceptions,
-      evidenceRefs: {
-        shotIds: exceptions.map((item) => item.shotId),
-        reasonCodes: exceptions
-          .map((item) => item.retryRecommendation?.reasonCode)
-          .filter((code): code is string => Boolean(code)),
-      },
-      actionAggregates: {
-        approved: approved.length,
-        finalized: finalizedCount,
-        needsRevision: needsRevisionCount,
-        rejected: rejectedCount,
-        superseded: supersededCount,
-        total: shotRows.length,
-      },
-    };
-  }, [selectedScene, shotQueueSummary, shotProjectionByShotId]);
-
-  const lineageFamily = useMemo(() => {
-    const baseJob = selectedJob ?? selectedFamilyRepresentativeJob;
-    if (!baseJob) return [] as RenderQueueJob[];
-    const byId = new Map((renderJobs || []).map((job) => [job.id, job]));
-    let root = baseJob;
-    let guard = 0;
-    while ((root.lineageParentJobId || root.retryOf) && guard < 12) {
-      const parentId: string | undefined = root.lineageParentJobId ?? root.retryOf;
-      const parent: RenderQueueJob | undefined = parentId ? byId.get(parentId) : undefined;
-      if (!parent) break;
-      root = parent;
-      guard += 1;
-    }
-    const rootId = root.id;
-    const belongsToRoot = (job: RenderQueueJob) => {
-      let current: RenderQueueJob | undefined = job;
-      let depth = 0;
-      while (current && depth < 12) {
-        if (current.id === rootId) return true;
-        const parentId: string | undefined = current.lineageParentJobId ?? current.retryOf;
-        current = parentId ? byId.get(parentId) : undefined;
-        depth += 1;
-      }
-      return job.id === rootId;
-    };
-    return (renderJobs || []).filter((job) => belongsToRoot(job)).sort((a, b) => b.createdAt - a.createdAt);
-  }, [selectedJob, selectedFamilyRepresentativeJob, renderJobs]);
-
-  const familyDecisionHistory = useMemo(() => {
-    if (!selectedFamilyRootId) return [];
-    return resolveFamilyDecisionHistory(selectedFamilyRootId, reviewSnapshot.eventLog);
-  }, [selectedFamilyRootId, reviewSnapshot.eventLog]);
 
 
-  const resolvedOperatorReviewState = useMemo(() => resolveOperatorReviewState({
-    selectedJob,
-    projection: selectedJobProjection,
-    decisionProposal: selectedDecisionProposal,
-    actionAudit: selectedJob ? actionAuditByJobId.get(selectedJob.id) : undefined,
-  }), [selectedJob, selectedJobProjection, selectedDecisionProposal, actionAuditByJobId]);
 
-  const shotJobLedger = useMemo(() => {
-    if (!selectedScene) return [] as Array<{ jobId: string; shotId?: string; takeId?: string; version?: number; state: string; progress: number; createdAt: number; route: string; retryDepth?: number; lineageParentJobId?: string }>;
 
-    const sceneJobs = renderJobs.filter((job) => job.sceneId === selectedScene.id);
-    const projectionMap = new Map(getReviewRuntimeSnapshot().shotProjections.map((projection) => [projection.shotId, projection]));
-    const scopedJobs =
-      shotLedgerScope === 'all_scene'
-        ? sceneJobs
-        : sceneJobs.filter((job) => (!selectedShotForLedger ? true : job.shotId === selectedShotForLedger));
 
-    const byId = new Map(scopedJobs.map((job) => [job.id, job]));
-    const children = new Map<string, typeof scopedJobs>();
-    const roots: typeof scopedJobs = [];
-
-    scopedJobs.forEach((job) => {
-      const parentId = job.lineageParentJobId ?? job.retryOf;
-      if (parentId && byId.has(parentId)) {
-        const list = children.get(parentId) ?? [];
-        list.push(job);
-        children.set(parentId, list);
-      } else {
-        roots.push(job);
-      }
-    });
-
-    const ordered: typeof scopedJobs = [];
-    const visit = (job: (typeof scopedJobs)[number]) => {
-      ordered.push(job);
-      const kids = (children.get(job.id) ?? []).slice().sort((a, b) => a.createdAt - b.createdAt);
-      kids.forEach(visit);
-    };
-
-    roots
-      .slice()
-      .sort((a, b) => b.createdAt - a.createdAt)
-      .forEach(visit);
-
-    return ordered.map((job) => {
-      const projection = job.shotId ? projectionMap.get(job.shotId) : undefined;
-      return {
-        jobId: job.id,
-        shotId: job.shotId,
-        takeId: job.takeId,
-        version: job.version,
-        state: job.state,
-        progress: job.progress,
-        createdAt: job.createdAt,
-        route: job.bridgeJob.payload.routeContext.activeRoute,
-        retryDepth: job.retryDepth,
-        lineageParentJobId: job.lineageParentJobId ?? job.retryOf,
-        technicalQuality: projection?.measuredSignals?.technicalQuality,
-        artifactSeverity: projection?.measuredSignals?.artifactSeverity,
-        motionStability: projection?.measuredSignals?.motionStability,
-        bestKnown: projection?.bestKnownOutputSelection?.selectedJobId === job.id,
-        retrySuggested: projection?.retryRecommendation?.recommend,
-        retryReasonCode: projection?.retryRecommendation?.reasonCode,
-        reviewStatus: projection?.reviewStatus,
-        approvalStatus: projection?.approvalStatus,
-        actionState: projection?.actionState?.current,
-        approvedBy: projection?.actionState?.approvedBy,
-        approvedAt: projection?.actionState?.approvedAt,
-        supersededJobId: projection?.actionState?.supersededJobId,
-        supersededByJobId: selectedJob?.id === job.id ? resolvedOperatorReviewState?.replacementJobId : undefined,
-        supersedesJobId: projection?.actionState?.supersedesJobId,
-        finalizedAt: projection?.actionState?.finalizedAt,
-        explanationSnippet: projection?.explanations?.summary,
-      };
-    });
-  }, [selectedScene, selectedShotForLedger, renderJobs, shotLedgerScope, activeShot, postWorkflow, resolvedOperatorReviewState]);
 
   const currentWinnerJob = useMemo(() => {
     const winnerId = resolvedOperatorReviewState?.bestKnownJobId;
@@ -1373,10 +1192,6 @@ function App() {
     return approvedJobId ? renderJobs.find((job) => job.id === approvedJobId) : undefined;
   }, [resolvedOperatorReviewState, renderJobs]);
 
-  const replacementJob = useMemo(() => {
-    const replacementId = resolvedOperatorReviewState?.replacementJobId;
-    return replacementId ? renderJobs.find((job) => job.id === replacementId) : undefined;
-  }, [resolvedOperatorReviewState, renderJobs]);
 
   const resolvedProductionFamilyTruth = useMemo(() => {
     if (!selectedFamilyRootId) return undefined;
@@ -1403,7 +1218,7 @@ function App() {
   const supportingEvidenceJob = useMemo(() => getSupportingEvidenceJob(lineageFamily), [lineageFamily, approvedOutputJob, currentWinnerJob]);
   const rankedEvidenceCandidates = useMemo<Array<{ jobId: string; label: string; reason: string; role: 'operational_truth' | 'supporting_evidence' | 'historical_artifact'; isDefault?: boolean }>>(() => {
     if (!lineageFamily.length) return [];
-    return lineageFamily.slice(0, 5).map((job, index) => {
+    return lineageFamily.slice(0, 5).map((job: RenderQueueJob, index: number) => {
       const role: 'operational_truth' | 'supporting_evidence' | 'historical_artifact' = approvedOutputJob?.id === job.id
         ? 'operational_truth'
         : currentWinnerJob?.id === job.id && !approvedOutputJob
@@ -1457,119 +1272,6 @@ function App() {
       lineageHint,
     };
   };
-
-  const getSuggestedComparePartner = (jobId: string) => {
-    const latestFailed = lineageFamily.find((job) => job.state === 'failed');
-    const latestAttempt = lineageFamily[0];
-    const alternateCandidate = rankedEvidenceCandidates.find((candidate) => candidate.jobId !== jobId && candidate.role !== 'historical_artifact');
-    const supersededCandidate = replacementJob && replacementJob.id !== jobId ? replacementJob : undefined;
-
-    if (currentWinnerJob?.id === jobId && latestFailed && latestFailed.id !== jobId) return { partnerId: latestFailed.id, rule: 'winner vs failed latest' };
-    if (approvedOutputJob?.id === jobId && alternateCandidate) return { partnerId: alternateCandidate.jobId, rule: 'approved vs alternate' };
-    if (latestFailed?.id === jobId && currentWinnerJob && currentWinnerJob.id !== jobId) return { partnerId: currentWinnerJob.id, rule: 'failed latest vs winner' };
-    if (latestAttempt?.id === jobId && supersededCandidate) return { partnerId: supersededCandidate.id, rule: 'latest vs superseded' };
-    if (alternateCandidate) return { partnerId: alternateCandidate.jobId, rule: 'default vs alternate' };
-    if (latestAttempt && latestAttempt.id !== jobId) return { partnerId: latestAttempt.id, rule: 'candidate vs latest' };
-    return undefined;
-  };
-
-  const suggestedCompareSeedJobId = supportingEvidenceJob?.id ?? rankedEvidenceCandidates[0]?.jobId;
-  const suggestedComparePair = suggestedCompareSeedJobId ? getSuggestedComparePartner(suggestedCompareSeedJobId) : undefined;
-  const suggestedPairLabel = suggestedCompareSeedJobId && suggestedComparePair?.partnerId
-    ? `${suggestedComparePair.rule} • ${(suggestedCompareSeedJobId.length <= 12 ? suggestedCompareSeedJobId : `${suggestedCompareSeedJobId.slice(0, 6)}…${suggestedCompareSeedJobId.slice(-4)}`)} vs ${(suggestedComparePair.partnerId.length <= 12 ? suggestedComparePair.partnerId : `${suggestedComparePair.partnerId.slice(0, 6)}…${suggestedComparePair.partnerId.slice(-4)}`)}`
-    : undefined;
-
-  const productionFamily = useMemo(() => {
-    if (!resolvedProductionFamilyTruth) return undefined;
-    return {
-      lineageRootId: resolvedProductionFamilyTruth.lineageRootId,
-      familyLabel: resolvedProductionFamilyTruth.familyLabel,
-      familyState: resolvedProductionFamilyTruth.familyState,
-      currentWinnerId: resolvedProductionFamilyTruth.bestKnownJobId,
-      approvedOutputId: resolvedProductionFamilyTruth.approvedOutputJobId,
-      replacementJobId: resolvedProductionFamilyTruth.replacementJobId,
-      latestAttemptId: resolvedProductionFamilyTruth.latestAttemptJobId,
-      lineageTrail: resolvedProductionFamilyTruth.lineageTrail,
-      timelineNodes: resolvedProductionFamilyTruth.timelineNodes,
-      nextFamilyAction: resolvedProductionFamilyTruth.nextFamilyAction,
-      evidenceTargetJobId: resolvedProductionFamilyTruth.evidenceTargetJobId,
-      evidenceReason: resolvedProductionFamilyTruth.evidenceReason,
-      rankedEvidenceCandidates,
-      suggestedPairLabel,
-      suggestedPairPrimaryJobId: suggestedCompareSeedJobId,
-      suggestedPairPartnerJobId: suggestedComparePair?.partnerId,
-    };
-  }, [resolvedProductionFamilyTruth, rankedEvidenceCandidates, suggestedPairLabel, suggestedCompareSeedJobId, suggestedComparePair]);
-
-  const selectedJobAuthority = useMemo(() => {
-    const baseJob = selectedJob ?? selectedFamilyRepresentativeJob;
-    if (!baseJob) return undefined;
-    const previewAuthority = resolveFamilyPreviewAuthority({
-      approvedOutputJob,
-      currentWinnerJob,
-      selectedAttemptJob: supportingEvidenceJob,
-    });
-    const authoritativeOutput =
-      previewAuthority.kind === 'approved_output'
-        ? 'approved output'
-        : previewAuthority.kind === 'current_winner'
-          ? 'current winner'
-          : previewAuthority.kind === 'selected_attempt'
-            ? 'selected attempt'
-            : 'none';
-    const canonicalState = resolvedOperatorReviewState?.canonicalState ?? productionFamily?.familyState ?? baseJob.state;
-    const lineageSummary = productionFamily
-      ? `${productionFamily.familyLabel} • root ${productionFamily.lineageRootId}`
-      : baseJob.retryOf || baseJob.lineageParentJobId
-        ? `retry child of ${(baseJob.lineageParentJobId ?? baseJob.retryOf)}`
-        : `lineage root ${lineageFamily.at(-1)?.id ?? baseJob.id}`;
-    const retryEligible = Boolean(baseJob.bridgeJob.sceneId && baseJob.bridgeJob.payload?.prompt && baseJob.bridgeJob.payload?.routeContext?.activeRoute && baseJob.bridgeJob.payload?.routeContext?.strategy);
-    const hasArtifact = Boolean(baseJob.previewImage || baseJob.previewMedia || (baseJob.resultPaths && baseJob.resultPaths.length > 0));
-
-    const nextAction = resolveSelectedJobNextAction({
-      canonicalState,
-      approvalStatus: resolvedOperatorReviewState?.approvalStatus,
-      actionState: resolvedOperatorReviewState?.actionState,
-      retryEligible,
-      isBestKnown: resolvedOperatorReviewState?.bestKnownJobId === baseJob.id,
-      isApprovedOrFinalized: resolvedOperatorReviewState?.actionState === 'finalized' || resolvedOperatorReviewState?.approvalStatus === 'approved' || resolvedOperatorReviewState?.actionState === 'approved',
-      hasArtifact,
-    });
-    const lastMeaningfulChange = (lineageFamily[0]?.state ?? baseJob.state) === 'failed'
-      ? `Failed at ${(lineageFamily[0] ?? baseJob).failedStage ?? 'running'}${(lineageFamily[0] ?? baseJob).error ? ` • ${(lineageFamily[0] ?? baseJob).error}` : ''}`
-      : selectedJobReview?.actionAudit?.finalizedAt
-        ? `Finalized • ${new Date(selectedJobReview.actionAudit.finalizedAt).toLocaleString()}`
-        : selectedJobReview?.actionAudit?.approvedAt
-          ? `Approved • ${new Date(selectedJobReview.actionAudit.approvedAt).toLocaleString()}`
-          : `Lifecycle ${baseJob.state}`;
-    return {
-      canonicalState,
-      authoritativeOutput,
-      previewAuthority: {
-        kind: previewAuthority.kind,
-        role: previewAuthority.role,
-        jobId: previewAuthority.job?.id,
-        label:
-          previewAuthority.kind === 'approved_output'
-            ? `approved output${previewAuthority.job ? ` • ${previewAuthority.job.id}` : ''}`
-            : previewAuthority.kind === 'current_winner'
-              ? `current winner${previewAuthority.job ? ` • ${previewAuthority.job.id}` : ''}`
-              : previewAuthority.kind === 'latest_attempt'
-                ? `latest attempt${previewAuthority.job ? ` • ${previewAuthority.job.id}` : ''}`
-                : previewAuthority.kind === 'selected_attempt'
-                  ? `selected attempt${previewAuthority.job ? ` • ${previewAuthority.job.id}` : ''}`
-                  : 'none',
-      },
-      lineageSummary,
-      nextAction,
-      lastMeaningfulChange,
-      currentWinnerJobId: currentWinnerJob?.id,
-      approvedOutputJobId: approvedOutputJob?.id,
-      replacementJobId: replacementJob?.id,
-      selectedJobId: baseJob.id,
-      selectedOutputPath: selectedOutputPath ?? artifactFocus.outputPath ?? getDefaultOutputPath(baseJob),
-    };
-  }, [selectedJob, selectedFamilyRepresentativeJob, resolvedOperatorReviewState, currentWinnerJob, approvedOutputJob, supportingEvidenceJob, replacementJob, selectedOutputPath, artifactFocus.outputPath, lineageFamily, productionFamily]);
 
   const timelineActiveShot = useMemo(() => resolveShotAtTime(timelineState.playheadPositionMs, timelineState), [timelineState.playheadPositionMs, timelineState]);
 
@@ -1650,7 +1352,7 @@ function App() {
   }, [timelineActiveShot, runtimeJobs, selectedJobId, selectedFamilyJobs, selectedJob, selectedFamilyRepresentativeJob, supportingEvidenceJob, currentWinnerJob, approvedOutputJob, resolvedOperatorReviewState, selectedOutputByJob, artifactFocus.jobId, artifactFocus.outputPath, lineageFamily]);
 
   const selectedFeedbackSummary = useMemo<SelectedFeedbackSummary | undefined>(() => {
-    const authorityLabel = selectedJobAuthority?.previewAuthority.label
+    const authorityLabel = selectedJobAuthority?.previewAuthority?.label
       ?? (resolvedPreviewContext.authorityKind === 'approved_output'
         ? 'approved output'
         : resolvedPreviewContext.authorityKind === 'current_winner'
@@ -1674,7 +1376,7 @@ function App() {
           selectedJobReview?.explanations.summary
           ?? selectedJobAuthority?.lastMeaningfulChange
           ?? (selectedJob.state === 'failed' ? selectedJob.error ?? 'Failed run requires review.' : `Lifecycle ${selectedJob.state}`),
-        nextStep: selectedJobAuthority?.nextAction.primaryActionLabel
+        nextStep: selectedJobAuthority?.nextAction?.primaryActionLabel
           ?? (selectedJob.state === 'failed'
             ? 'Retry latest attempt.'
             : selectedJob.state === 'completed'
@@ -2619,13 +2321,15 @@ function App() {
 
   // Pass 43: Live Lens State Unification
   // Forces 'expanded_prompt' update in canonical job state when parameters move.
+  // STABILIZATION FIX: `renderJobs` removed from dep array — it was in the array AND
+  // written inside the effect (setRenderJobs), causing an infinite update storm.
+  // The guard `targetJob.metadata?.expanded_prompt === expanded` already prevents
+  // spurious writes; we only need to rerun when the compiled inputs change.
   useEffect(() => {
-    // Only perform expansion if a job is selected and template is available
-    // DECOUPLE: This effect now only runs when the graph actually changes structurally,
-    // not on every progress update.
     if (!selectedJobId || !compiledPayload || isProcessing) return;
 
-    const targetJob = renderJobs.find((j) => j.id === selectedJobId);
+    // Snapshot renderJobs at effect time via ref to avoid adding it to deps.
+    const targetJob = runtimeJobs.find((j) => j.id === selectedJobId);
     if (!targetJob) return;
 
     const prompt = compiledPayload?.payload?.scene.basePrompt;
@@ -2653,7 +2357,7 @@ function App() {
       expanded = `${tone.charAt(0).toUpperCase() + tone.slice(1)} approach: ${prompt}`;
     }
 
-    // Only patch if actually different to prevent infinite cycles
+    // Only patch if actually different to prevent re-triggering
     if (targetJob.metadata?.expanded_prompt === expanded) return;
 
     setRenderJobs((prev) =>
@@ -2670,20 +2374,37 @@ function App() {
           : job
       )
     );
-  }, [compiledPayload, selectedJobId, sceneOverrides.emotionalTone, renderJobs]);
+    // STABILITY: `runtimeJobs` intentionally omitted — reading via closure snapshot.
+    // Adding it would recreate the write→read→write loop this fix resolves.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [compiledPayload, selectedJobId, sceneOverrides.emotionalTone]);
 
+  // STABILIZATION FIX: `livePreview.mode` removed from dep array.
+  // It was both read as the guard condition AND written by setLivePreview → infinite loop.
+  // A ref tracks the last-applied readiness so we only update when the derived value
+  // actually changes, without needing livePreview.mode as a reactive dependency.
+  const lastAppliedReadinessRef = useRef<{ isReady: boolean; shotId: string | null } | null>(null);
   useEffect(() => {
-    if (!['idle', 'ready'].includes(livePreview.mode)) return;
-    setLivePreview((prev) => ({
-      ...prev,
-      mode: launchReadiness.isReady ? 'ready' : 'idle',
-      statusLabel: launchReadiness.isReady ? 'Ready to launch current scene' : launchReadiness.reason ?? 'Idle - ready to render',
-      progressLabel: launchReadiness.isReady ? 'Ready' : launchReadiness.reason ?? 'Blocked',
-      errorLabel: null,
-      progressPercent: 0,
-      activeShotId: activeShot?.id ?? null,
-    }));
-  }, [launchReadiness, activeShot?.id, livePreview.mode]);
+    const nextIsReady = launchReadiness.isReady;
+    const nextShotId = activeShot?.id ?? null;
+    const last = lastAppliedReadinessRef.current;
+    if (last && last.isReady === nextIsReady && last.shotId === nextShotId) return;
+    lastAppliedReadinessRef.current = { isReady: nextIsReady, shotId: nextShotId };
+
+    setLivePreview((prev) => {
+      // Only update when in idle/ready — active lifecycle modes must not be overwritten.
+      if (!['idle', 'ready'].includes(prev.mode)) return prev;
+      return {
+        ...prev,
+        mode: nextIsReady ? 'ready' : 'idle',
+        statusLabel: nextIsReady ? 'Ready to launch current scene' : launchReadiness.reason ?? 'Idle - ready to render',
+        progressLabel: nextIsReady ? 'Ready' : launchReadiness.reason ?? 'Blocked',
+        errorLabel: null,
+        progressPercent: 0,
+        activeShotId: nextShotId,
+      };
+    });
+  }, [launchReadiness, activeShot?.id]);
 
   useEffect(() => {
     const t = setInterval(() => {
@@ -2697,20 +2418,6 @@ function App() {
     const shots = sortShotsInSequence(selectedGraph.nodes.filter((n) => n.type === 'shot'));
     if (!shots.length) return;
 
-    setShotSequenceByScene((prev) => {
-      if (prev[selectedScene.id] && Object.keys(prev[selectedScene.id]).length) return prev;
-      const seeded: ShotSequenceState = {};
-      shots.forEach((shot, index) => {
-        seeded[shot.id] = {
-          state: index === 0 ? 'active' : 'waiting',
-          progress: index === 0 ? 8 : 0,
-          stage: index === 0 ? 'queued for compile' : 'waiting in queue',
-          lastAction: index === 0 ? 'Sequence initialized' : 'Awaiting previous shot completion',
-          isCurrent: index === 0,
-        };
-      });
-      return { ...prev, [selectedScene.id]: seeded };
-    });
   }, [selectedScene, selectedGraph]);
 
   const onSelectScene = (id: string) => {
@@ -2924,68 +2631,6 @@ function App() {
             syncLivePreviewFromRenderState(state, undefined, activeShot?.id ?? null);
             if (!selectedScene) return;
 
-            setShotSequenceByScene((prev) => {
-              const current = prev[selectedScene.id] ?? {};
-              const activeId = Object.entries(current).find(([, v]) => v.isCurrent)?.[0] ?? activeShot?.id;
-              if (!activeId) return prev;
-              const currentShot = current[activeId] ?? { state: 'active' as ShotRuntimeState, progress: 8, stage: 'compiling', lastAction: 'Shot activated', isCurrent: true };
-
-              const nextState: ShotRuntimeState =
-                state.mode === 'queued'
-                  ? 'compiling'
-                  : state.mode === 'rendering'
-                    ? state.progress < 35
-                      ? 'compiling'
-                      : state.progress < 65
-                        ? 'routed'
-                        : 'rendering'
-                    : state.mode === 'completed'
-                      ? 'review'
-                      : state.mode === 'failed'
-                        ? 'failed'
-                        : currentShot.state;
-
-              // IDENTITY GATE: Only update sequence state if the shot status actually changed
-              if (currentShot.state === nextState && !isTerminal) {
-                return prev;
-              }
-
-              const next: ShotSequenceState = {
-                ...current,
-                [activeId]: {
-                  ...currentShot,
-                  state: nextState,
-                  progress: state.mode === 'completed' ? 100 : Math.max(currentShot.progress, state.progress),
-                  stage:
-                    nextState === 'compiling'
-                      ? 'prompt compile'
-                      : nextState === 'routed'
-                        ? 'engine routed'
-                        : nextState === 'rendering'
-                          ? 'rendering'
-                          : nextState === 'review'
-                            ? 'review ready'
-                            : nextState === 'failed'
-                              ? 'render failed'
-                              : currentShot.stage,
-                  lastAction:
-                    nextState === 'compiling'
-                      ? 'Compiled active shot payload'
-                      : nextState === 'routed'
-                        ? `Routed to ${resolvedDisplayEngine}`
-                        : nextState === 'rendering'
-                          ? 'Shot rendering in progress'
-                          : nextState === 'review'
-                            ? 'Render completed → Review active'
-                            : nextState === 'failed'
-                              ? 'Shot render failed'
-                              : currentShot.lastAction,
-                  isCurrent: true,
-                },
-              };
-
-              return { ...prev, [selectedScene.id]: next };
-            });
 
             if (state.mode === 'completed' || state.mode === 'failed') {
               setPostWorkflowByScene((prev) => ({ ...prev, [selectedScene.id]: createPostWorkflowFromRender(state.mode) }));
@@ -3076,122 +2721,38 @@ function App() {
     });
   };
 
-  const updateShotSequence = (updater: (current: ShotSequenceState, sceneGraph: SceneGraphState) => ShotSequenceState) => {
-    if (!selectedScene || !selectedGraph) return;
-    setShotSequenceByScene((prev) => {
-      const current = prev[selectedScene.id] ?? {};
-      return { ...prev, [selectedScene.id]: updater(current, selectedGraph) };
-    });
-  };
-
-  const markShotActive = (shotId: string) => {
-    updateShotSequence((current, sceneGraph) => {
-      const shots = sortShotsInSequence(sceneGraph.nodes.filter((n) => n.type === 'shot'));
-      const next: ShotSequenceState = { ...current };
-      shots.forEach((shot) => {
-        const existing = next[shot.id];
-        if (shot.id === shotId) {
-          next[shot.id] = { state: 'active', progress: Math.max(existing?.progress ?? 0, 8), stage: 'compiling', lastAction: 'Shot activated', isCurrent: true };
-        } else {
-          const state = existing?.state ?? 'waiting';
-          next[shot.id] = { state: state === 'completed' || state === 'skipped' ? state : 'waiting', progress: state === 'completed' ? 100 : state === 'skipped' ? 100 : 0, stage: state === 'completed' ? 'completed' : state === 'skipped' ? 'skipped' : 'waiting in queue', lastAction: existing?.lastAction ?? 'Awaiting previous shot completion', isCurrent: false };
-        }
-      });
-      return next;
-    });
-  };
 
   const onShotExecutionAction = (action: 'start_shot' | 'mark_complete' | 'skip_shot' | 'reset_shot' | 'start_sequence' | 'next_shot' | 'reset_sequence') => {
     if (!selectedScene || !selectedGraph) return;
     const shots = sortShotsInSequence(selectedGraph.nodes.filter((n) => n.type === 'shot'));
     if (!shots.length) return;
 
-    const currentIdx = getCurrentShotIndex(shotQueueSummary);
-    const currentShot = currentIdx >= 0 ? shotQueueSummary[currentIdx] : undefined;
-    const selectedShot = selectedGraphNode?.type === 'shot' ? selectedGraphNode : undefined;
-    const targetShotId = selectedShot?.id ?? currentShot?.id ?? shots[0].id;
 
     if (action === 'start_sequence') {
       pushOperatorFeedback('Sequence live', 'ok', 'shot');
-      markShotActive(shots[0].id);
+      // markShotActive(shots[0].id); // Removed legacy local state update
       return;
     }
 
     if (action === 'reset_sequence') {
       pushOperatorFeedback('Sequence ready', 'info', 'shot');
-      setShotSequenceByScene((prev) => {
-        const next: ShotSequenceState = {};
-        shots.forEach((shot, index) => {
-          next[shot.id] = {
-            state: index === 0 ? 'active' : 'waiting',
-            progress: index === 0 ? 8 : 0,
-            stage: index === 0 ? 'queued for compile' : 'waiting in queue',
-            lastAction: index === 0 ? 'Sequence reset → first shot armed' : 'Awaiting previous shot completion',
-            isCurrent: index === 0,
-          };
-        });
-        return { ...prev, [selectedScene.id]: next };
-      });
       return;
     }
-
-    updateShotSequence((current) => {
-      const next: ShotSequenceState = { ...current };
-      const idx = shots.findIndex((s) => s.id === targetShotId);
-      const sequenceIdx = idx >= 0 ? idx : 0;
-      const currentEntry = next[targetShotId] ?? { state: 'waiting' as ShotRuntimeState, progress: 0, stage: 'waiting in queue', lastAction: 'Awaiting trigger', isCurrent: false };
-
-      if (action === 'start_shot') {
-        pushOperatorFeedback('Shot live', 'ok', 'shot');
-        next[targetShotId] = { ...currentEntry, state: 'active', progress: Math.max(currentEntry.progress, 8), stage: 'compiling', lastAction: 'Shot manually started', isCurrent: true };
-      }
-
-      if (action === 'mark_complete') {
-        pushOperatorFeedback('Shot complete', 'ok', 'shot', 'transition');
-        next[targetShotId] = { ...currentEntry, state: 'completed', progress: 100, stage: 'completed', lastAction: 'Shot marked complete', isCurrent: false };
-        const nxt = shots[sequenceIdx + 1];
-        if (nxt) {
-          const nx = next[nxt.id];
-          if (!nx || (nx.state !== 'completed' && nx.state !== 'skipped')) {
-            next[nxt.id] = { state: 'active', progress: 8, stage: 'compiling', lastAction: `Activated after ${currentEntry.lastAction}`, isCurrent: true };
-          }
-        }
-      }
-
-      if (action === 'skip_shot') {
-        pushOperatorFeedback('Shot skipped', 'info', 'shot');
-        next[targetShotId] = { ...currentEntry, state: 'skipped', progress: 100, stage: 'skipped', lastAction: 'Shot skipped by director', isCurrent: false };
-        const nxt = shots[sequenceIdx + 1];
-        if (nxt) next[nxt.id] = { ...(next[nxt.id] ?? { state: 'waiting', progress: 0, stage: 'waiting in queue', lastAction: 'Awaiting previous shot completion' }), state: 'active', progress: 8, stage: 'compiling', lastAction: 'Activated after skip', isCurrent: true };
-      }
-
-      if (action === 'reset_shot') {
-        pushOperatorFeedback('Shot ready', 'info', 'shot');
-        next[targetShotId] = { ...currentEntry, state: 'waiting', progress: 0, stage: 'waiting in queue', lastAction: 'Shot reset', isCurrent: false };
-      }
-
-      if (action === 'next_shot') {
-        pushOperatorFeedback('Next shot live', 'ok', 'shot');
-        const nxt = shots[Math.max(0, sequenceIdx + 1)] ?? shots[0];
-        next[targetShotId] = { ...currentEntry, state: currentEntry.state === 'failed' ? 'failed' : 'completed', progress: currentEntry.state === 'failed' ? currentEntry.progress : 100, stage: currentEntry.state === 'failed' ? currentEntry.stage : 'completed', lastAction: currentEntry.state === 'failed' ? currentEntry.lastAction : 'Advanced to next shot', isCurrent: false };
-        if (nxt && nxt.id !== targetShotId) {
-          next[nxt.id] = { ...(next[nxt.id] ?? { state: 'waiting', progress: 0, stage: 'waiting in queue', lastAction: 'Awaiting previous shot completion' }), state: 'active', progress: 8, stage: 'compiling', lastAction: 'Advanced from previous shot', isCurrent: true };
-        }
-      }
-
-      Object.keys(next).forEach((id) => {
-        if (id !== targetShotId && next[id]?.isCurrent && next[id].state !== 'active') next[id] = { ...next[id], isCurrent: false };
-      });
-
-      const activeIds = Object.entries(next).filter(([, value]) => value.isCurrent).map(([id]) => id);
-      if (activeIds.length > 1) {
-        activeIds.slice(1).forEach((id) => {
-          next[id] = { ...next[id], isCurrent: false };
-        });
-      }
-
-      return next;
-    });
+    if (action === 'start_shot') {
+      pushOperatorFeedback('Shot live', 'ok', 'shot');
+    }
+    if (action === 'mark_complete') {
+      pushOperatorFeedback('Shot complete', 'ok', 'shot', 'transition');
+    }
+    if (action === 'skip_shot') {
+      pushOperatorFeedback('Shot skipped', 'info', 'shot');
+    }
+    if (action === 'reset_shot') {
+      pushOperatorFeedback('Shot ready', 'info', 'shot');
+    }
+    if (action === 'next_shot') {
+      pushOperatorFeedback('Next shot live', 'ok', 'shot');
+    }
   };
 
   const getM5ActionGuard = (actionType: ReviewActionType): GuardResult => {
@@ -4395,20 +3956,7 @@ function App() {
           conflicts={selectedFamilyRootId ? resolveConflicts(selectedFamilyRootId) : []}
           inboxItems={inboxItems}
           onJumpToInboxItem={handleJumpToInboxItem}
-          productionFamily={resolvedProductionFamilyTruth ? {
-            familyLabel: resolvedProductionFamilyTruth.familyLabel,
-            lineageRootId: resolvedProductionFamilyTruth.lineageRootId,
-            familyState: resolvedProductionFamilyTruth.familyState,
-            lineageTrail: resolvedProductionFamilyTruth.lineageTrail,
-            timelineNodes: resolvedProductionFamilyTruth.timelineNodes,
-            currentWinnerJobId: resolvedProductionFamilyTruth.bestKnownJobId,
-            approvedOutputJobId: resolvedProductionFamilyTruth.approvedOutputJobId,
-            replacementJobId: resolvedProductionFamilyTruth.replacementJobId,
-            nextFamilyAction: resolvedProductionFamilyTruth.nextFamilyAction,
-            evidenceTargetJobId: resolvedProductionFamilyTruth.evidenceTargetJobId,
-            evidenceReason: resolvedProductionFamilyTruth.evidenceReason,
-            rankedEvidenceCandidates: resolvedProductionFamilyTruth.rankedEvidenceCandidates,
-          } : undefined}
+          productionFamily={productionFamily}
           selectedJobTelemetry={selectedJob ? {
             status: selectedJob.state === 'failed' ? 'attention required' : selectedJob.state === 'completed' ? 'ready' : 'active',
             lifecycle: selectedJob.state,
@@ -4417,17 +3965,17 @@ function App() {
             strategy: selectedJob.bridgeJob?.payload?.routeContext?.strategy || 'default',
             preflight: selectedJob.state === 'queued' ? 'pending' : selectedJob.state === 'preflight' ? 'running checks' : selectedJob.state === 'failed' ? 'failed' : 'passed',
             dependencyHealth: selectedJob.state === 'failed' ? 'degraded' : selectedJob.state === 'preflight' ? 'checking' : 'healthy',
-            canonicalState: selectedJobAuthority?.canonicalState,
-            authoritativeOutput: selectedJobAuthority?.authoritativeOutput,
-            previewAuthority: selectedJobAuthority?.previewAuthority,
-            lineageSummary: selectedJobAuthority?.lineageSummary,
-            nextAction: selectedJobAuthority?.nextAction,
-            lastMeaningfulChange: selectedJobAuthority?.lastMeaningfulChange,
-            currentWinnerJobId: selectedJobAuthority?.currentWinnerJobId,
-            approvedOutputJobId: selectedJobAuthority?.approvedOutputJobId,
-            replacementJobId: selectedJobAuthority?.replacementJobId,
-            selectedJobId: selectedJobAuthority?.selectedJobId,
-            selectedOutputPath: selectedJobAuthority?.selectedOutputPath,
+            canonicalState: projection.canonical?.canonicalState,
+            authoritativeOutput: projection.canonical?.authoritativeOutputLabel,
+            previewAuthority: undefined, // Handled by preview state
+            lineageSummary: projection.canonical?.lineageSummary,
+            nextAction: projection.canonical?.nextAction,
+            lastMeaningfulChange: projection.canonical?.lastMeaningfulChange,
+            currentWinnerJobId: undefined,
+            approvedOutputJobId: undefined,
+            replacementJobId: undefined,
+            selectedJobId: projection.canonical?.jobId,
+            selectedOutputPath: selectedOutputPath ?? artifactFocus.outputPath ?? (selectedJob ? getDefaultOutputPath(selectedJob) : undefined),
             failedStage: selectedJob.state === 'failed' ? selectedJob.failedStage : undefined,
             failureReason: selectedJob.state === 'failed' ? selectedJob.error : undefined,
             manifestPath: selectedJob.manifestPath,
@@ -4448,10 +3996,10 @@ function App() {
             approvedOutput: { ...resolvedPreviewContext.approvedOutput },
             deliverableReadyOutput: { ...resolvedPreviewContext.deliverableReadyOutput },
           } : undefined}
-          sceneReviewBoard={sceneReviewBoard}
-          shotQueue={shotQueueSummary}
+          sceneReviewBoard={projection.workspace}
+          shotQueue={projection.shotQueue}
           activeShotId={activeShot?.id}
-          shotJobLedger={shotJobLedger}
+          shotJobLedger={projection.ledger}
           shotLedgerScope={shotLedgerScope}
           onShotLedgerScopeChange={setShotLedgerScope}
           selectedShotForLedger={selectedShotForLedger}
@@ -4473,7 +4021,7 @@ function App() {
           onShotAction={onShotExecutionAction}
           onPostWorkflowAction={onPostWorkflowAction}
           selectedJobQuickActions={refinedJobQuickActions}
-          familyDecisionHistory={familyDecisionHistory}
+          familyDecisionHistory={[]}
 
           onOpenEvidence={() => {
             const evidenceJob = getSupportingEvidenceJob(lineageFamily) ?? selectedFamilyRepresentativeJob ?? selectedJob;
@@ -4508,12 +4056,6 @@ function App() {
       </div>
     </div>
   );
-
-  const interventionEvents = useMemo(() => listInterventionEvents(), [interventionVersion]);
-
-  const interventionProjections = useMemo(() => replayInterventionEvents(interventionEvents), [interventionEvents]);
-
-  const interventionById = useMemo(() => new Map(interventionProjections.map((item) => [item.id, item])), [interventionProjections]);
 
   const appendInterventionAndRefresh = () => setInterventionVersion((prev) => prev + 1);
 
@@ -4572,36 +4114,7 @@ function App() {
     appendInterventionAndRefresh();
   };
 
-  const interventionItems = useMemo(() => {
-    const now = Date.now();
-    const fromEvents = interventionProjections.map((entry) => {
-      const linkedJob = entry.sourceJobId ? renderJobs.find((job) => job.id === entry.sourceJobId) : undefined;
-      const projection = entry.sourceShotId ? shotProjectionByShotId.get(entry.sourceShotId) : undefined;
-      const priority = entry.status === 'escalated' ? 'urgent' : entry.status === 'open' || entry.status === 'assigned' ? 'high' : 'normal';
-      const canonicalJob = linkedJob ? deriveCanonicalRunSurface(linkedJob, projection, actionAuditByJobId.get(linkedJob.id)) : undefined;
-      const ageMs = Math.max(0, now - new Date(entry.updatedAt).getTime());
-      const ageMin = Math.round(ageMs / 60000);
-      return {
-        id: entry.id,
-        title: linkedJob ? `${linkedJob.engine.toUpperCase()} intervention` : `Intervention ${entry.id.slice(-6)}`,
-        sourceRunLabel: entry.sourceJobId,
-        sourceSceneLabel: selectedScene?.name,
-        priority,
-        confidenceGapLabel: `${Math.round(((projection?.measuredSignals?.operatorConfidence ?? 0) * 100))}%`,
-        trustStateLabel: entry.status,
-        agingLabel: ageMin >= 60 ? `${Math.floor(ageMin / 60)}h` : `${ageMin}m`,
-        canonicalStateLabel: entry.status,
-        evidenceSummary: canonicalJob?.diagnostics ?? projection?.explanations?.summary ?? 'Intervention event-derived evidence.',
-        recommendationSummary: entry.lastReasonCode,
-        decisionContextSummary: entry.lastImpactSummary,
-        auditTraceLabel: `${entry.historyCount} events`,
-        latencyLabel: `${ageMin}m since last action`,
-        stale: ageMin >= 20 && (entry.status === 'open' || entry.status === 'assigned' || entry.status === 'escalated'),
-      } as const;
-    });
-
-    return fromEvents;
-  }, [interventionProjections, renderJobs, selectedScene?.name, shotProjectionByShotId, actionAuditByJobId]);
+  const interventionItems = projection.interventions.items;
 
   const auditReplayEvents = useMemo(() => {
     const reviewEvents = reviewSnapshot.eventLog.map((event) => ({
@@ -4768,32 +4281,30 @@ function App() {
       detail: event.eventId,
     }));
 
-    const liveRuns = renderJobs.map((job) => {
-      const shotProjection = shotProjectionByShotId.get(job.shotId ?? '');
-      const actionAudit = actionAuditByJobId.get(job.id);
-      const canonical = deriveCanonicalRunSurface(job, shotProjection, actionAudit);
-      const diagnostics = canonical.diagnostics ?? 'No diagnostics';
+    const liveRuns = (renderJobs || []).map((job: RenderQueueJob) => {
+      const canonical = projection.runs.find((r: any) => r.jobId === job.id) ?? { status: 'idle', attentionRequired: false, statusLabel: 'idle', bestKnown: false } as any;
+      const diagnostics = canonical.diagnosticText ?? 'No diagnostics';
       const failureSummary =
         job.state === 'failed'
           ? `Run stalled at ${job.failedStage ?? 'unknown stage'}: ${diagnostics}`
-          : canonical.unresolvedAttention
-            ? `Run requires attention: ${canonical.canonicalState}`
+          : canonical.attentionRequired
+            ? `Run requires attention: ${canonical.status}`
             : 'No active failure signals.';
       const actionSuggestion =
         job.state === 'failed'
           ? 'Open command console for dry-run recovery; escalate intervention if recovery is blocked.'
-          : canonical.canonicalState === 'needs_revision'
+          : canonical.status === 'needs_revision'
             ? 'Send to intervention rail for assign/resolve quick path.'
-            : canonical.unresolvedAttention
+            : canonical.attentionRequired
               ? 'Inspect diagnostics and reconcile before next action.'
               : 'Continue monitoring.';
 
       return {
         id: job.id,
         label: `${job.engine.toUpperCase()} • ${job.shotId ?? 'unlinked shot'}`,
-        lane: canonical.unresolvedAttention ? 'attention' as const : job.state === 'queued' || job.state === 'preflight' || job.state === 'running' || job.state === 'packaging' ? 'queued' as const : 'active' as const,
+        lane: canonical.attentionRequired ? 'attention' as const : job.state === 'queued' || job.state === 'preflight' || job.state === 'running' || job.state === 'packaging' ? 'queued' as const : 'active' as const,
         mode: job.bridgeJob.outputType === 'video' ? 'cinematic' as const : 'studio_run' as const,
-        canonicalState: canonical.canonicalState,
+        canonicalState: canonical.status,
         route: job.bridgeJob.payload.routeContext.activeRoute,
         diagnostics,
         trustTraceSummary: decisionProposalByJobId.get(job.id)?.eventId ?? (canonical.bestKnown ? `best-known • ${job.id}` : undefined),
@@ -4886,7 +4397,7 @@ function App() {
           throughputSeries={renderJobs.slice(-12).map((job, idx) => (job.state === 'completed' ? 60 + idx * 2 : job.state === 'failed' ? 20 : 40))}
           alerts={renderJobs.filter((j) => j.state === 'failed').slice(0, 4).map((job) => ({ id: job.id, label: `${job.engine.toUpperCase()} stalled`, detail: job.error, severity: 'high' as const }))}
           blockedDecisions={shotQueueSummary.filter((s) => shotProjectionByShotId.get(s.id)?.approvalStatus === 'needs_revision').slice(0, 4).map((shot) => ({ id: shot.id, label: shot.title, detail: 'Needs revision', severity: 'medium' as const }))}
-          interventions={interventionItems.slice(0, 4).map((item) => ({ id: item.id, label: item.title, detail: item.canonicalStateLabel, severity: item.priority === 'urgent' ? 'high' as const : item.priority === 'high' ? 'medium' as const : 'low' as const }))}
+          interventions={interventionItems.slice(0, 4).map((item: InterventionItem) => ({ id: item.id, label: item.title, detail: item.canonicalStateLabel, severity: item.priority === 'urgent' ? 'high' as const : item.priority === 'high' ? 'medium' as const : 'low' as const }))}
           events={(reviewSnapshot.eventLog ?? []).slice(-6).reverse().map((event) => ({ id: event.eventId, message: event.eventType, occurredAtLabel: new Date(event.occurredAt).toLocaleTimeString() }))}
           telemetryEvents={telemetryEvents}
           onOpenAttention={() => setActiveM6Screen('interventions')}
@@ -4970,7 +4481,7 @@ function App() {
       subtitle: 'Human-in-the-loop gate for trust-critical decisions',
       content: (
         <SCR05_InterventionQueue
-          queueHealthLabel={sceneReviewBoard?.status ?? 'healthy'}
+          queueHealthLabel={projection.workspace.status ?? 'healthy'}
           urgentCount={interventionProjections.filter((entry) => entry.status === 'escalated').length}
           agingCount={interventionProjections.filter((entry) => entry.status === 'open' || entry.status === 'assigned').length}
           blockedCount={interventionProjections.filter((entry) => entry.status === 'open' || entry.status === 'escalated').length}
