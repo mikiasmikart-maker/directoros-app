@@ -4810,7 +4810,14 @@ function App() {
       ...operatorProjection,
       liveRuns,
       commandLog,
-      resultTraceLines: reviewSnapshot.eventLog.slice(-10).map((event) => `${new Date(event.occurredAt).toISOString()} ${event.eventType}`),
+      resultTraceLines: [
+        ...reviewSnapshot.eventLog
+          .slice(-8)
+          .map((event) => `${new Date(event.occurredAt).toISOString()} [review-event] ${event.eventType}`),
+        ...runtimeTimeline
+          .slice(0, 8)
+          .map((event) => `${new Date(event.created_at || Date.now()).toISOString()} [runtime lifecycle projection • display-only] ${event.job_id} ${event.status}`),
+      ],
       recentOutcomeSummary: commandValidationPreview || reviewSnapshot.eventLog.at(-1)?.eventType,
       interventions: interventionItems,
       auditEvents: auditReplayEvents,

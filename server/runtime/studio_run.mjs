@@ -1,5 +1,6 @@
 import { spawn } from 'node:child_process';
 import path from 'node:path';
+import fs from 'node:fs';
 import { runtimeConfig } from './config.mjs';
 
 const buildRenderArgs = (body = {}, jobId) => {
@@ -44,27 +45,79 @@ export const invokeStudioRun = async (body = {}, jobId) => {
         stdio: ['ignore', 'pipe', 'pipe'], // capture stdout/stderr
       });
 
-      if (runtimeConfig.debug) {
-        child.stdout?.on('data', (d) => {
-          console.log('[studio_run stdout]', d.toString());
-        });
+      // --- Pipe Handoff Hardening ---
+      // We MUST drain stdout/stderr to prevent the child process from hanging
+      // when the OS pipe buffer fills up.
+      const logPath = path.join(runtimeConfig.studioPipelineRoot, 'outputs', 'runtime', 'studio_run.log');
+      const logStream = fs.createWriteStream(logPath, { flags: 'a', encoding: 'utf8' });
+      let logWritable = true;
+      const backlog = [];
 
-        child.stderr?.on('data', (d) => {
-          console.error('[studio_run stderr]', d.toString());
-        });
-      }
+      const writeLog = (line) => {
+        if (!line) return;
+        if (!logWritable) {
+          if (runtimeConfig.debug) console.warn('[studio_run log fallback]', line.trim());
+          return;
+        }
+        if (backlog.length) {
+          while (backlog.length && logWritable) {
+            const queued = backlog.shift();
+            if (!logStream.write(queued)) {
+              backlog.unshift(queued);
+              return;
+            }
+          }
+        }
+        if (!logStream.write(line)) {
+          backlog.push(line);
+        }
+      };
 
-      child.on('exit', (code) => {
-        console.log('[studio_run exit]', code);
+      logStream.on('drain', () => {
+        while (backlog.length && logWritable) {
+          const next = backlog.shift();
+          if (!logStream.write(next)) {
+            backlog.unshift(next);
+            break;
+          }
+        }
       });
 
-      // Listen for the initial result to return 202 status or immediate error
+      logStream.on('error', (err) => {
+        logWritable = false;
+        backlog.length = 0;
+        console.warn('[studio_run] log stream unavailable; continuing drain without file logging:', err?.message || err);
+      });
+
+      const timestamp = new Date().toISOString();
+      writeLog(`\n[${timestamp}] SPAWN: ${runtimeConfig.pythonBin} ${args.join(' ')}\n`);
+
+      child.stdout?.on('data', (data) => {
+        const str = data.toString();
+        writeLog(`[STDOUT] ${str}`);
+        if (runtimeConfig.debug) console.log('[studio_run stdout]', str);
+      });
+
+      child.stderr?.on('data', (data) => {
+        const str = data.toString();
+        writeLog(`[STDERR] ${str}`);
+        if (runtimeConfig.debug) console.error('[studio_run stderr]', str);
+      });
+
+      child.on('exit', (code) => {
+        writeLog(`[${new Date().toISOString()}] EXIT: ${code}\n`);
+        if (logWritable) logStream.end();
+        if (runtimeConfig.debug) console.log('[studio_run exit]', code);
+      });
+
       child.on('error', (error) => {
+        writeLog(`[${new Date().toISOString()}] ERROR: ${error.message}\n`);
+        if (logWritable) logStream.end();
         resolve({ ok: false, accepted: false, spawned: false, error: error.message });
       });
 
       child.on('spawn', () => {
-        // Process is now running in the background, isolated.
+        // Process is now running in the background, isolated and being drained.
         resolve({ ok: true, accepted: true, spawned: true, pid: child.pid });
       });
     } catch (err) {
