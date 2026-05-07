@@ -311,6 +311,21 @@ const emitForRenderEvent = (sourceEvent: RenderJobEvent) => {
   const job = sourceEvent.job;
   if (!job?.shotId) return;
 
+  if (sourceEvent.type === 'job.created' || sourceEvent.type === 'job.queued' || sourceEvent.type === 'job.preflight.started') {
+    persistReviewEvent(
+      createEnvelope(
+        'review.job.lifecycle.updated',
+        sourceEvent,
+        {
+          state: job.state,
+          phase: sourceEvent.type,
+        },
+        `lifecycle.${sourceEvent.type}`
+      )
+    );
+    return;
+  }
+
   if (sourceEvent.type === 'job.running' || sourceEvent.type === 'job.progress') {
     const lastProgress = lastProgressByJob.get(job.id) ?? -1;
     const currentProgress = job.progress;

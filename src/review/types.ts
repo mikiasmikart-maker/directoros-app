@@ -7,6 +7,7 @@ export type ReviewEventType =
   | 'review.retry.enqueued'
   | 'review.status.changed'
   | 'review.approval.changed'
+  | 'review.job.lifecycle.updated'
   | 'review.action.approved'
   | 'review.action.revision_requested'
   | 'review.action.rejected'
