@@ -49,7 +49,7 @@ const evidenceRoleTone = (role?: EvidenceRole) =>
   role === 'operational_truth'
     ? 'rounded border border-[var(--m6-state-active-border)] bg-[var(--m6-state-active-bg)] text-[var(--m6-state-active-fg)]'
     : role === 'supporting_evidence'
-      ? 'rounded border border-cyan-400/35 bg-cyan-500/10 text-cyan-100'
+      ? 'rounded border border-[rgba(34,211,238,0.35)] bg-cyan-500/10 text-cyan-100'
       : 'rounded border border-[var(--m6-border-soft)] bg-panel/30 text-textMuted/78';
 
 const lifecycleStages: RenderQueueJob['state'][] = ['queued', 'preflight', 'running', 'packaging', 'completed', 'failed', 'cancelled'];
@@ -198,7 +198,7 @@ const getSelectedJobHistoryRail = (params: {
   if (selectedJob.retryOf || selectedJob.lineageParentJobId) {
     items.push({
       label: 'Retry',
-      tone: 'border-indigo-300/24 bg-indigo-500/10 text-indigo-100',
+      tone: 'border-[rgba(129,140,248,0.24)] bg-indigo-500/10 text-indigo-100',
       detail: `from previous take`,
     });
   } else {
@@ -212,7 +212,7 @@ const getSelectedJobHistoryRail = (params: {
   if (selectedJob.state === 'failed') {
     items.push({
       label: 'Failed',
-      tone: 'border-rose-300/24 bg-rose-500/10 text-rose-100',
+      tone: 'border-[rgba(252,165,165,0.24)] bg-rose-500/10 text-rose-100',
       detail: selectedJob.failedStage ? `at ${mapTechnicalState(selectedJob.failedStage)}` : 'Attempt failed',
     });
   }
@@ -223,21 +223,21 @@ const getSelectedJobHistoryRail = (params: {
   if (isWinner && isLatest) {
     items.push({
       label: 'Winner + Latest',
-      tone: 'border-cyan-300/35 bg-cyan-500/12 text-cyan-100',
+      tone: 'border-[rgba(103,232,249,0.35)] bg-cyan-500/12 text-cyan-100',
       detail: 'current best and newest attempt',
     });
   } else {
     if (isWinner) {
       items.push({
         label: 'Winner',
-        tone: 'border-cyan-300/24 bg-cyan-500/10 text-cyan-100',
+        tone: 'border-[rgba(103,232,249,0.24)] bg-cyan-500/10 text-cyan-100',
         detail: 'current best-known result',
       });
     }
     if (isLatest) {
       items.push({
         label: 'Latest',
-        tone: 'border-indigo-400/34 bg-indigo-500/14 text-indigo-100',
+        tone: 'border-[rgba(129,140,248,0.34)] bg-indigo-500/14 text-indigo-100',
         detail: 'newest attempt in lineage',
       });
     }
@@ -254,7 +254,7 @@ const getSelectedJobHistoryRail = (params: {
   if (productionFamily?.replacementJobId === selectedJob.id) {
     items.push({
       label: 'Superseded',
-      tone: 'border-amber-300/24 bg-amber-500/10 text-amber-100',
+      tone: 'border-[rgba(252,211,77,0.24)] bg-amber-500/10 text-amber-100',
       detail: 'current winner has been superseded',
     });
   }
@@ -874,7 +874,7 @@ export const CenterWorkspace = ({
                   <div
                     key={act.operatorId}
                     title={`${operator.name} intent: ${act.type.replace('_', ' ')}`}
-                    className={`flex items-center gap-1.5 rounded-full border border-white/[0.04] bg-panel/34 px-1.5 py-0.5 text-[9px] transition-all hover:bg-panel/46 ${isActiveIntent ? 'border-amber-500/30 ring-1 ring-amber-500/10' : 'opacity-60'}`}
+                    className={`flex items-center gap-1.5 rounded-full border border-[rgba(255,255,255,0.04)] bg-panel/34 px-1.5 py-0.5 text-[9px] transition-all hover:bg-panel/46 ${isActiveIntent ? 'border-amber-500/30 ring-1 ring-amber-500/10' : 'opacity-60'}`}
                   >
                     <span className={`h-1.5 w-1.5 rounded-full ${act.type === 'viewing' ? 'animate-pulse' : ''}`} style={{ backgroundColor: operator.color }} />
                     <span className="font-medium text-textMuted/80">{operator.initials}</span>
@@ -1329,7 +1329,7 @@ export const CenterWorkspace = ({
                     ) : productionFamily ? (
                       <div
                         ref={activeFamilyDecisionRef}
-                        className={`mt-2 rounded px-2.5 py-2.5 text-[11px] text-textMuted/80 border border-cyan-300/16 bg-[linear-gradient(180deg,rgba(25,25,25,0.72)_0%,rgba(18,18,18,0.72)_100%)] shadow-[0_0_0_1px_rgba(56,189,248,0.06),0_10px_28px_rgba(8,24,40,0.22)] ${
+                        className={`mt-2 rounded px-2.5 py-2.5 text-[11px] text-textMuted/80 border border-[rgba(103,232,249,0.16)] bg-[linear-gradient(180deg,rgba(25,25,25,0.72)_0%,rgba(18,18,18,0.72)_100%)] shadow-[0_0_0_1px_rgba(56,189,248,0.06),0_10px_28px_rgba(8,24,40,0.22)] ${
                           selectedFamilyRootId === returningPulseId ? 'm6-return-anchor' : ''
                         }`}
                       >
@@ -1337,7 +1337,7 @@ export const CenterWorkspace = ({
                           <div className="min-w-0">
                             <div className="flex items-center gap-2">
                               <span className="text-slate-100/90 font-medium">Family Lineage</span>
-                              <span className={`text-[9px] font-semibold uppercase tracking-[0.06em] px-1.5 py-0.5 rounded border border-white/[0.04] bg-panel/30 ${getFamilyHealth(productionFamily).tone}`}>
+                              <span className={`text-[9px] font-semibold uppercase tracking-[0.06em] px-1.5 py-0.5 rounded border border-[rgba(255,255,255,0.04)] bg-panel/30 ${getFamilyHealth(productionFamily).tone}`}>
                                 {getFamilyHealth(productionFamily).label}
                               </span>
                             </div>
@@ -1346,7 +1346,7 @@ export const CenterWorkspace = ({
                             </div>
                           </div>
                           {productionFamily.lineageRootId === selectedFamilyRootId && !selectedJob ? (
-                            <span className="rounded border border-cyan-300/24 bg-cyan-500/10 px-1.5 py-0.5 text-[9px] uppercase tracking-[0.08em] text-cyan-100/82">Active Focus</span>
+                            <span className="rounded border border-[rgba(103,232,249,0.24)] bg-cyan-500/10 px-1.5 py-0.5 text-[9px] uppercase tracking-[0.08em] text-cyan-100/82">Active Focus</span>
                           ) : null}
                         </div>
                         <div className="mt-1 text-[10px] text-slate-500/62">Default focus target: {productionFamily?.evidenceTargetJobId ? `${shortJobId(productionFamily.evidenceTargetJobId)} • ${productionFamily.evidenceReason ?? 'supporting output'}` : 'none'}</div>

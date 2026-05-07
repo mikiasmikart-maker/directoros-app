@@ -37,7 +37,7 @@ export const BottomTimeline = ({
     <footer className="col-start-2 row-start-2 p-1">
       <Panel
         title="Temporal Map"
-        className="border-white/[0.045] bg-[rgba(18,18,20,0.44)] shadow-[0_4px_12px_rgba(2,6,23,0.09)]"
+        className="border-[rgba(255,255,255,0.045)] bg-[rgba(18,18,20,0.44)] shadow-[0_4px_12px_rgba(2,6,23,0.09)]"
         rightSlot={
           <span className="text-[10px] tabular-nums text-textMuted/78">
             {formatTime(playheadPositionMs - sessionStartMs)} / {formatTime(sessionEndMs - sessionStartMs)}

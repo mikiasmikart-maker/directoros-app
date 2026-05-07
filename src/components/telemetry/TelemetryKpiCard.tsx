@@ -10,7 +10,7 @@ export interface TelemetryKpiCardProps {
 
 export const TelemetryKpiCard = ({ title, valueLabel, subLabel, stale = false, icon }: TelemetryKpiCardProps) => {
   return (
-    <article className={`rounded-md border px-3 py-2.5 ${stale ? 'border-amber-300/30 bg-amber-500/8' : 'border-panel/40 bg-panel/45'}`}>
+    <article className={`rounded-md border px-3 py-2.5 ${stale ? 'border-amber-300/30 bg-amber-500/8' : 'border-[rgba(20,20,22,0.40)] bg-panel/45'}`}>
       <div className="mb-1 flex items-center justify-between gap-2">
         <div className="text-[10px] uppercase tracking-[0.12em] text-textMuted/90">{title}</div>
         <div className="text-[10px] text-textMuted/75">{stale ? 'stale-safe' : icon ?? 'live'}</div>

@@ -62,12 +62,12 @@ const laneTone: Record<RunLane, string> = {
 
 const getCanonicalStateTone = (canonicalState: string) =>
   canonicalState === 'cancelled'
-    ? 'rounded-sm border border-amber-300/15 bg-amber-500/10 text-amber-100/70'
+    ? 'rounded-sm border border-[rgba(252,211,77,0.15)] bg-amber-500/10 text-amber-100/70'
     : canonicalState === 'failed'
-      ? 'rounded-sm border border-rose-300/25 bg-rose-500/10 text-rose-100/80'
+      ? 'rounded-sm border border-[rgba(252,165,165,0.25)] bg-rose-500/10 text-rose-100/80'
       : canonicalState === 'completed'
-        ? 'rounded-sm border border-emerald-300/15 bg-emerald-500/5 text-emerald-100/60'
-        : 'rounded-sm border border-cyan-300/25 bg-cyan-500/10 text-cyan-100';
+        ? 'rounded-sm border border-[rgba(110,231,183,0.15)] bg-emerald-500/5 text-emerald-100/60'
+        : 'rounded-sm border border-[rgba(103,232,249,0.25)] bg-cyan-500/10 text-cyan-100';
 
 const getDetailLabels = (canonicalState: string) =>
   canonicalState === 'cancelled'
@@ -228,7 +228,7 @@ export const SCR02_LiveRunsBoard = ({
                         <button
                           key={shot.id}
                           onClick={() => onJumpToShot?.(shot.id)}
-                          className="rounded-sm border border-panel/50 bg-panel/30 px-2 py-1 text-[10px] text-textMuted hover:bg-panel/50 hover:text-text transition-all"
+                          className="rounded-sm border border-[rgba(20,20,22,0.5)] bg-panel/30 px-2 py-1 text-[10px] text-textMuted hover:bg-panel/50 hover:text-text transition-all"
                         >
                           {shot.title}
                         </button>
@@ -263,7 +263,7 @@ export const SCR02_LiveRunsBoard = ({
                               className={`group relative w-full rounded-md border px-3.5 py-3 text-left transition-all duration-120 ${
                                 selected 
                                   ? 'border-[#8144C0]/40 bg-[#8144C0]/10 shadow-[0_4px_16px_rgba(129,68,192,0.12)]' 
-                                  : 'border-white/[0.06] bg-panel/40 hover:bg-panel/52 hover:border-white/[0.12] shadow-sm'
+                                  : 'border-[rgba(255,255,255,0.06)] bg-panel/40 hover:bg-panel/52 hover:border-[rgba(255,255,255,0.12)] shadow-sm'
                               } ${isCompleted && !selected ? 'opacity-60 grayscale-[0.5]' : ''}`}
                             >
                               <div className="flex items-center justify-between gap-2">

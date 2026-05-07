@@ -12,11 +12,13 @@ interface InspectorFieldsProps {
 }
 
 const sourceTone: Record<SourceTag, string> = {
-  scene: 'text-slate-300/78 border-slate-300/15 bg-slate-400/5',
-  memory: 'text-cyan-300/78 border-cyan-300/20 bg-cyan-500/8',
-  manual: 'text-fuchsia-300/78 border-fuchsia-300/20 bg-fuchsia-500/8',
-  mixed: 'text-amber-300/80 border-amber-300/20 bg-amber-500/8',
-  timeline: 'text-emerald-300/80 border-emerald-300/20 bg-emerald-500/8',
+  // rgba() used explicitly — Tailwind cannot generate opacity variants for non-standard
+  // steps (15, 20) from CSS-var or standard palette colors reliably.
+  scene:    'text-slate-300/78   border-[rgba(203,213,225,0.15)] bg-slate-400/5',
+  memory:   'text-cyan-300/78    border-[rgba(103,232,249,0.20)] bg-cyan-500/8',
+  manual:   'text-fuchsia-300/78 border-[rgba(240,171,252,0.20)] bg-fuchsia-500/8',
+  mixed:    'text-amber-300/80   border-[rgba(252,211,77,0.20)]  bg-amber-500/8',
+  timeline: 'text-emerald-300/80 border-[rgba(110,231,183,0.20)] bg-emerald-500/8',
 };
 
 const sourceLabels: Record<SourceTag, string> = {
