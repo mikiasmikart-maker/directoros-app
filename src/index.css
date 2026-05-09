@@ -7,8 +7,7 @@
 /* === DirectorOS Border Reset ===
  * Tailwind base sets `*, ::before, ::after { border-color: rgb(229,231,235) }`.
  * This overrides it to `transparent` so any border utility that fails to generate
- * (e.g. border-panel/N with CSS-var colors, or fractional steps not in the scale)
- * falls back to invisible instead of showing a white/light-gray stroke.
+ * (e.g. border-panel/40, border-cyan-300/16) falls back to invisible instead of showing a white/light-gray stroke.
  */
 @layer base {
   *, ::before, ::after {
