@@ -1,5 +1,6 @@
 import { DeliveryRegistry } from '../../components/review/DeliveryRegistry';
 import { mapTechnicalState } from '../../utils/operationalLanguage';
+import { EvidenceStack, type EvidenceItemData } from '../../components/shared/EvidenceStack';
 type RunLane = 'active' | 'queued' | 'attention';
 type RunMode = 'cinematic' | 'studio_run' | 'all' | 'delivery';
 
@@ -55,19 +56,19 @@ const laneTitle: Record<RunLane, string> = {
 };
 
 const laneTone: Record<RunLane, string> = {
-  active: ' border-t-2 border-[#8144C0] bg-panel/20',
+  active: ' border-t-2 border-dos-sig-continuity bg-panel/20',
   queued: ' border-t-2 border-white/5 bg-panel/10',
-  attention: ' border-t-2 border-rose-500/20 bg-rose-500/5',
+  attention: ' border-t-2 border-dos-sig-warning/20 bg-dos-sig-warning/5',
 };
 
 const getCanonicalStateTone = (canonicalState: string) =>
   canonicalState === 'cancelled'
-    ? 'rounded-sm border border-[rgba(252,211,77,0.15)] bg-amber-500/10 text-amber-100/70'
+    ? 'rounded-sm border border-dos-sig-warning/15 bg-dos-sig-warning/10 text-dos-sig-warning/70'
     : canonicalState === 'failed'
-      ? 'rounded-sm border border-[rgba(252,165,165,0.25)] bg-rose-500/10 text-rose-100/80'
+      ? 'rounded-sm border border-dos-sig-warning/25 bg-dos-sig-warning/10 text-dos-sig-warning/80'
       : canonicalState === 'completed'
-        ? 'rounded-sm border border-[rgba(110,231,183,0.15)] bg-emerald-500/5 text-emerald-100/60'
-        : 'rounded-sm border border-[rgba(103,232,249,0.25)] bg-cyan-500/10 text-cyan-100';
+        ? 'rounded-sm border border-dos-sig-trust/15 bg-dos-sig-trust/5 text-dos-sig-trust/60'
+        : 'rounded-sm border border-dos-sig-runtime/25 bg-dos-sig-runtime/10 text-dos-sig-runtime';
 
 const getDetailLabels = (canonicalState: string) =>
   canonicalState === 'cancelled'
@@ -75,6 +76,42 @@ const getDetailLabels = (canonicalState: string) =>
     : canonicalState === 'completed'
       ? { summaryLabel: 'Reason', summaryFallback: 'Output is ready.', actionLabel: 'Action', actionFallback: 'Open output.' }
       : { summaryLabel: 'Reason', summaryFallback: 'Runtime stalled.', actionLabel: 'Action', actionFallback: 'Initiate recovery or inspect output.' };
+
+const mapRunToEvidence = (run: LiveRunItem): EvidenceItemData[] => {
+  const items: EvidenceItemData[] = [];
+  
+  if (run.diagnostics) {
+    items.push({
+      id: `${run.id}-diag`,
+      label: 'System Diagnostic',
+      value: run.diagnostics,
+      state: run.canonicalState === 'running' ? 'active' : 'evidence',
+      sourceLabel: 'Runtime'
+    });
+  }
+  
+  if (run.failureSummary) {
+    items.push({
+      id: `${run.id}-fail`,
+      label: 'Critical Fault',
+      value: run.failureSummary,
+      state: 'broken',
+      sourceLabel: 'Forensics'
+    });
+  }
+
+  if (run.trustTraceSummary) {
+    items.push({
+      id: `${run.id}-trust`,
+      label: 'Trust Verification',
+      value: run.trustTraceSummary,
+      state: 'sealed',
+      sourceLabel: 'Registry'
+    });
+  }
+  
+  return items;
+};
 
 export const SCR02_LiveRunsBoard = ({
   modeFilter = 'all',
@@ -112,20 +149,20 @@ export const SCR02_LiveRunsBoard = ({
   };
 
   return (
-    <main className="h-full min-w-0 bg-[#050505]">
+    <main className="h-full min-w-0 bg-dos-bgPure">
       <div className="flex h-full flex-col">
         <header className="flex h-12 shrink-0 items-center border-b border-white/5 bg-black/20 px-4">
           <div className="grid w-full gap-4 lg:grid-cols-[auto_auto_1fr_auto]">
             <div className="flex items-center gap-1 rounded bg-white/[0.03] p-1 text-[9px] font-mono uppercase tracking-wider">
               {(['cinematic', 'studio_run', 'all', 'delivery'] as RunMode[]).map((mode) => (
-                <button key={mode} type="button" onClick={() => onModeFilterChange?.(mode)} className={`rounded px-2 py-0.5 transition-colors ${modeFilter === mode ? 'bg-[#8144C0]/20 text-[#8144C0]' : 'text-neutral-500 hover:bg-white/[0.05] hover:text-neutral-300'}`}>
+                <button key={mode} type="button" onClick={() => onModeFilterChange?.(mode)} className={`rounded px-2 py-0.5 transition-colors ${modeFilter === mode ? 'bg-dos-sig-continuity/20 text-dos-sig-continuity' : 'text-neutral-500 hover:bg-white/[0.05] hover:text-neutral-300'}`}>
                   {mode}
                 </button>
               ))}
             </div>
             <div className="flex items-center gap-1 rounded bg-white/[0.03] p-1 text-[9px] font-mono uppercase tracking-wider">
               {(['all', 'active', 'queued', 'attention'] as Array<RunLane | 'all'>).map((lane) => (
-                <button key={lane} type="button" onClick={() => onLaneFilterChange?.(lane)} className={`rounded px-2 py-0.5 transition-colors ${laneFilter === lane ? 'bg-[#8144C0]/20 text-[#8144C0]' : 'text-neutral-500 hover:bg-white/[0.05] hover:text-neutral-300'}`}>
+                <button key={lane} type="button" onClick={() => onLaneFilterChange?.(lane)} className={`rounded px-2 py-0.5 transition-colors ${laneFilter === lane ? 'bg-dos-sig-continuity/20 text-dos-sig-continuity' : 'text-neutral-500 hover:bg-white/[0.05] hover:text-neutral-300'}`}>
                   {lane}
                 </button>
               ))}
@@ -150,17 +187,17 @@ export const SCR02_LiveRunsBoard = ({
         </header>
         <section className="flex-1 min-h-0">
           {modeFilter === 'delivery' ? (
-            <div className="h-full rounded-md bg-emerald-500/5 p-4 m6-tier-1">
-              <div className="mb-4 flex items-center justify-between border-b border-emerald-500/10 pb-2 text-[10px] uppercase tracking-[0.15em]">
+            <div className="h-full rounded-md bg-dos-sig-trust/5 p-4 m6-tier-1">
+              <div className="mb-4 flex items-center justify-between border-b border-dos-sig-trust/10 pb-2 text-[10px] uppercase tracking-[0.15em]">
                 <div className="flex items-center gap-3">
-                  <span className="text-emerald-400/80">Delivery Registry • Sealed Truth</span>
+                  <span className="text-dos-sig-trust/80">Delivery Registry • Sealed Truth</span>
                   {sequenceReadiness && (
                     <span className={`rounded-sm px-2 py-0.5 font-bold transition-colors ${
                       activeSequenceSealEntry
-                        ? 'bg-amber-500/20 text-amber-300'
+                        ? 'bg-dos-sig-warning/20 text-dos-sig-warning'
                         : sequenceReadiness.isReady
-                          ? 'bg-emerald-500/20 text-emerald-400'
-                          : 'bg-panel/40 text-textMuted/70'
+                          ? 'bg-dos-sig-trust/20 text-dos-sig-trust'
+                          : 'bg-dos-panel/40 text-textMuted/70'
                     }`}>
                       {activeSequenceSealEntry ? 'APPROVED FOR DELIVERY' : sequenceReadiness.isReady ? 'READY TO APPROVE' : 'NOT READY'}
                     </span>
@@ -172,7 +209,7 @@ export const SCR02_LiveRunsBoard = ({
                       Missing {sequenceReadiness.missingShots.length} shot{sequenceReadiness.missingShots.length > 1 ? 's' : ''}
                     </span>
                   )}
-                  <span className="text-emerald-400/80">{deliveryRegistryItems.length} / {sequenceReadiness?.totalCount ?? 0} Items</span>
+                  <span className="text-dos-sig-trust/80">{deliveryRegistryItems.length} / {sequenceReadiness?.totalCount ?? 0} Items</span>
                 </div>
               </div>
               <div className="h-[calc(100%-2rem)] flex flex-col min-h-0">
@@ -188,7 +225,7 @@ export const SCR02_LiveRunsBoard = ({
                 )}
                 {/* Phase 4 Vector E — Seal Action Zone */}
                 {sequenceReadiness && sequenceReadiness.totalCount > 0 && !activeSequenceSealEntry && sequenceReadiness.isReady && (
-                  <div className="mt-4 flex items-center justify-between border-t border-emerald-500/15 pt-4">
+                  <div className="mt-4 flex items-center justify-between border-t border-dos-sig-trust/15 pt-4">
                     <span className="text-[9px] uppercase tracking-wider text-textMuted/60">
                       All {sequenceReadiness.totalCount} shot{sequenceReadiness.totalCount !== 1 ? 's' : ''} confirmed
                     </span>
@@ -196,7 +233,7 @@ export const SCR02_LiveRunsBoard = ({
                       id="btn-approve-sequence"
                       type="button"
                       onClick={onSealSequence}
-                      className="rounded border border-emerald-500/40 bg-emerald-500/15 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-emerald-300 transition-all hover:bg-emerald-500/28 hover:border-emerald-500/60 active:scale-[0.97]"
+                      className="rounded border border-dos-sig-trust/40 bg-dos-sig-trust/15 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-dos-sig-trust transition-all hover:bg-dos-sig-trust/28 hover:border-dos-sig-trust/60 active:scale-[0.97]"
                     >
                       Approve for Delivery
                     </button>
@@ -204,9 +241,9 @@ export const SCR02_LiveRunsBoard = ({
                 )}
                 {/* Phase 4 Vector E — Inline Seal Receipt */}
                 {activeSequenceSealEntry && (
-                  <div className="mt-4 flex items-center justify-between border-t border-emerald-500/20 pt-4">
+                  <div className="mt-4 flex items-center justify-between border-t border-dos-sig-trust/20 pt-4">
                     <div className="space-y-0.5">
-                      <div className="text-[10px] font-bold uppercase tracking-[0.15em] text-emerald-400">
+                      <div className="text-[10px] font-bold uppercase tracking-[0.15em] text-dos-sig-trust">
                         ✦ Approved for Delivery
                       </div>
                       <div className="text-[9px] text-textMuted/60">
@@ -215,20 +252,20 @@ export const SCR02_LiveRunsBoard = ({
                         {' · '}{new Date(activeSequenceSealEntry.sealedAt).toLocaleTimeString()}
                       </div>
                     </div>
-                    <span className="rounded-sm border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[9px] uppercase tracking-wide text-emerald-400/80">
+                    <span className="rounded-sm border border-dos-sig-trust/30 bg-dos-sig-trust/10 px-2 py-0.5 text-[9px] uppercase tracking-wide text-dos-sig-trust/80">
                       locked
                     </span>
                   </div>
                 )}
                 {sequenceReadiness && !sequenceReadiness.isReady && sequenceReadiness.totalCount > 0 && sequenceReadiness.missingShots.length > 0 && (
-                  <div className="mt-4 border-t border-emerald-500/10 pt-4">
+                  <div className="mt-4 border-t border-dos-sig-trust/10 pt-4">
                     <div className="mb-2 text-[9px] uppercase tracking-wider text-textMuted/60 font-medium">Missing Approval for {sequenceReadiness.missingShots.length} shot{sequenceReadiness.missingShots.length > 1 ? 's' : ''}</div>
                     <div className="flex flex-wrap gap-1.5">
                       {sequenceReadiness.missingShots.map(shot => (
                         <button
                           key={shot.id}
                           onClick={() => onJumpToShot?.(shot.id)}
-                          className="rounded-sm border border-[rgba(20,20,22,0.5)] bg-panel/30 px-2 py-1 text-[10px] text-textMuted hover:bg-panel/50 hover:text-text transition-all"
+                          className="rounded-sm border border-white/5 bg-dos-panel/30 px-2 py-1 text-[10px] text-textMuted hover:bg-dos-panel/50 hover:text-text transition-all"
                         >
                           {shot.title}
                         </button>
@@ -262,15 +299,15 @@ export const SCR02_LiveRunsBoard = ({
                               onClick={() => onSelectRun?.(run.id)} 
                               className={`group relative w-full rounded-md border px-3.5 py-3 text-left transition-all duration-120 ${
                                 selected 
-                                  ? 'border-[#8144C0]/40 bg-[#8144C0]/10 shadow-[0_4px_16px_rgba(129,68,192,0.12)]' 
-                                  : 'border-[rgba(255,255,255,0.06)] bg-panel/40 hover:bg-panel/52 hover:border-[rgba(255,255,255,0.12)] shadow-sm'
+                                  ? 'border-dos-sig-continuity/40 bg-dos-sig-continuity/10 shadow-[0_4px_16px_rgba(207,140,255,0.12)]' 
+                                  : 'border-white/6 bg-dos-panel/40 hover:bg-dos-panel/52 hover:border-white/12 shadow-sm'
                               } ${isCompleted && !selected ? 'opacity-60 grayscale-[0.5]' : ''}`}
                             >
                               <div className="flex items-center justify-between gap-2">
                                 <span className={`truncate text-[11px] font-medium tracking-tight ${selected ? 'text-white' : isActive ? 'text-white/90' : 'text-white/70'}`}>
                                   {run.label}
                                 </span>
-                                {run.pinned && <span className="text-[8px] text-amber-500/60 uppercase tracking-widest">pinned</span>}
+                                {run.pinned && <span className="text-[8px] text-dos-sig-warning/60 uppercase tracking-widest">pinned</span>}
                               </div>
                               <div className="mt-1.5 flex flex-wrap items-center gap-2">
                                 <span className={`px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wider ${getCanonicalStateTone(run.canonicalState)}`}>
@@ -281,8 +318,8 @@ export const SCR02_LiveRunsBoard = ({
                                 </span>
                                 {isActive && (
                                   <div className="ml-auto flex items-center gap-1.5">
-                                    <div className="h-1 w-1 rounded-full bg-[#8144C0] animate-pulse" />
-                                    <span className="text-[8px] text-[#8144C0]/60 uppercase tracking-widest font-bold">Signal Live</span>
+                                    <div className="h-1 w-1 rounded-full bg-dos-sig-continuity animate-pulse" />
+                                    <span className="text-[8px] text-dos-sig-continuity/60 uppercase tracking-widest font-bold">Signal Live</span>
                                   </div>
                                 )}
                               </div>
@@ -301,7 +338,7 @@ export const SCR02_LiveRunsBoard = ({
               <aside className="flex flex-col overflow-hidden rounded-sm border border-white/5 bg-black/10">
                 <header className="flex h-10 shrink-0 items-center gap-3 border-b border-white/5 bg-black/20 px-3">
                   <div className="flex items-center gap-2 text-[9px] font-mono uppercase tracking-[0.2em] text-neutral-500">
-                    <div className="h-3 w-1 bg-[#8144C0]" />
+                    <div className="h-3 w-1 bg-dos-sig-continuity" />
                     Inspector
                   </div>
                 </header>
@@ -330,11 +367,11 @@ export const SCR02_LiveRunsBoard = ({
                           <span className="text-[10px] text-slate-300 font-medium">{selectedRun.latencyLabel ?? 'steady'}</span>
                         </div>
                         
-                        <div className="border-t border-white/[0.03] pt-2 mt-1">
-                          <div className="text-[8px] uppercase tracking-widest text-neutral-600 font-bold mb-1">Diagnostics</div>
-                          <div className="text-[10px] text-slate-400 leading-relaxed italic">
-                            {selectedRun.diagnostics ?? 'No diagnostic signals recorded.'}
-                          </div>
+                        <div className="border-t border-white/[0.03] pt-3 mt-1">
+                          <EvidenceStack 
+                            title="Diagnostics" 
+                            items={mapRunToEvidence(selectedRun)} 
+                          />
                         </div>
 
                         <div className="border-t border-white/[0.03] pt-2">
@@ -346,21 +383,21 @@ export const SCR02_LiveRunsBoard = ({
 
                         <div className="border-t border-white/[0.03] pt-2">
                           <div className="text-[8px] uppercase tracking-widest text-neutral-600 font-bold mb-1">Recommended Action</div>
-                          <div className="text-[10.5px] text-[#8144C0] font-bold tracking-tight">
+                          <div className="text-[10.5px] text-dos-sig-continuity font-bold tracking-tight">
                             {selectedRun.actionSuggestion ?? selectedRunDetailLabels?.actionFallback}
                           </div>
                         </div>
                       </div>
 
                       <div className="grid grid-cols-2 gap-2 text-[10px] uppercase tracking-wider font-bold">
-                        <button type="button" onClick={() => onTogglePinRun?.(selectedRun.id)} className="rounded bg-amber-500/10 py-2 text-amber-500/80 hover:bg-amber-500/15 transition-colors border border-amber-500/10">Pin</button>
-                        <button type="button" onClick={() => onOpenWorkspace?.(selectedRun.id)} className="rounded bg-[#8144C0]/10 py-2 text-[#8144C0] hover:bg-[#8144C0]/20 transition-colors border border-[#8144C0]/20">Workspace</button>
+                        <button type="button" onClick={() => onTogglePinRun?.(selectedRun.id)} className="rounded bg-dos-sig-warning/10 py-2 text-dos-sig-warning hover:bg-dos-sig-warning/15 transition-colors border border-dos-sig-warning/10">Pin</button>
+                        <button type="button" onClick={() => onOpenWorkspace?.(selectedRun.id)} className="rounded bg-dos-sig-continuity/10 py-2 text-dos-sig-continuity hover:bg-dos-sig-continuity/20 transition-colors border border-dos-sig-continuity/20">Workspace</button>
                         <button type="button" onClick={() => onOpenOutputs?.(selectedRun.id)} className="rounded bg-white/[0.03] py-2 text-neutral-400 hover:bg-white/[0.06] hover:text-white transition-all border border-white/5">Open Output</button>
                         <button type="button" onClick={() => onOpenManifest?.(selectedRun.id)} className="rounded bg-white/[0.03] py-2 text-neutral-400 hover:bg-white/[0.06] hover:text-white transition-all border border-white/5">Manifest</button>
-                        <button type="button" onClick={() => onEscalateToIntervention?.(selectedRun.id)} className="rounded bg-rose-500/10 py-2 text-rose-500/80 hover:bg-rose-500/15 transition-colors border border-rose-500/10">Escalate</button>
+                        <button type="button" onClick={() => onEscalateToIntervention?.(selectedRun.id)} className="rounded bg-dos-sig-warning/10 py-2 text-dos-sig-warning hover:bg-dos-sig-warning/15 transition-colors border border-dos-sig-warning/10">Escalate</button>
                         <button type="button" onClick={() => onOpenCommandConsole?.(selectedRun.id)} className="rounded bg-indigo-500/10 py-2 text-indigo-400 hover:bg-indigo-500/15 transition-colors border border-indigo-500/10">Console</button>
                         {['queued', 'preflight', 'running', 'packaging'].includes(selectedRun.canonicalState) && (
-                          <button type="button" onClick={() => onCancelRun?.(selectedRun.id)} className="rounded bg-rose-500/10 py-2 text-rose-500 hover:bg-rose-500/20 transition-colors border border-rose-500/20">Cancel Run</button>
+                          <button type="button" onClick={() => onCancelRun?.(selectedRun.id)} className="rounded bg-dos-sig-warning/10 py-2 text-dos-sig-warning hover:bg-dos-sig-warning/20 transition-colors border border-dos-sig-warning/20">Cancel Run</button>
                         )}
                       </div>
                     </div>
