@@ -69,9 +69,9 @@ export const SCR05_InterventionQueue = ({
   const selected = interventions.find((item) => item.id === selectedInterventionId) ?? interventions[0];
 
   return (
-    <main className="h-full min-w-0 p-3">
+    <div className="flex h-full flex-col p-3">
       <div className="grid h-full min-h-0 grid-rows-[auto_1fr_auto] gap-3">
-        <section className="m6-tier-2 rounded-md px-4 py-3 border border-white/5">
+        <section className="m6-tier-2 rounded-md px-4 py-3 border border-[var(--m6-border-soft)]">
           <div className="grid grid-cols-[repeat(6,minmax(0,1fr))] gap-2 text-[10px] uppercase tracking-wide">
             <div className="rounded border border-dos-border bg-dos-panel/45 px-2 py-1.5 text-textMuted">Queue Health: <span className="text-text/92">{queueHealthLabel}</span></div>
             <div className="rounded border border-dos-sig-warning/30 bg-dos-sig-warning/8 px-2 py-1.5 text-dos-sig-warning/90">Urgent: {urgentCount}</div>
@@ -111,7 +111,7 @@ export const SCR05_InterventionQueue = ({
                   );
                 })
               ) : (
-                <div className="rounded border-white/6 bg-dos-panel/40 px-2 py-2 text-[11px] text-textMuted/75">No interventions queued.</div>
+                <div className="rounded border border-[var(--m6-border-soft)] bg-dos-panel/40 px-2 py-2 text-[11px] text-textMuted/75">No interventions queued.</div>
               )}
             </div>
           </section>
@@ -126,7 +126,7 @@ export const SCR05_InterventionQueue = ({
                   <div className="mb-1 text-[10px] uppercase tracking-[0.12em] text-textMuted/80">Evidence</div>
                   <div className="text-text/90">{selected.evidenceSummary ?? 'No evidence summary provided.'}</div>
                 </section>
-                <section className="rounded bg-dos-panel/40 p-3 ring-1 ring-white/5">
+                <section className="rounded bg-dos-panel/40 p-3 ring-1 ring-[var(--m6-border-soft)]">
                   <div className="mb-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-dos-sig-runtime">Next Move</div>
                   <div className="text-[12px] font-bold text-text/95">{selected.recommendationSummary ?? 'Pending Analysis...'}</div>
                   <div className="mt-1 text-[11px] text-textMuted/85">{selected.decisionContextSummary ?? 'Calculating optimal path...'}</div>
@@ -164,7 +164,7 @@ export const SCR05_InterventionQueue = ({
           </aside>
         </section>
 
-        <section className="rounded-md border border-white/5 bg-dos-panel/40 px-4 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.01)]">
+        <section className="rounded-md border border-[var(--m6-border-soft)] bg-dos-panel/40 px-4 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.01)]">
           <div className="flex items-center justify-between gap-6">
             <div className="flex items-center gap-1.5">
               <button 
@@ -175,7 +175,7 @@ export const SCR05_InterventionQueue = ({
               >
                 Resolve
               </button>
-              <div className="h-8 w-px bg-white/10 mx-2" />
+              <div className="h-8 w-px bg-[var(--m6-border-soft)] mx-2" />
               <div className="flex items-center gap-1 text-[10px] uppercase tracking-wide opacity-50">
                 <button type="button" disabled={!selected} onClick={() => selected && onAssign?.(selected.id)} className="px-2 py-1 hover:text-text hover:opacity-100 disabled:opacity-40">Assign</button>
                 <button type="button" disabled={!selected} onClick={() => selected && onRevise?.(selected.id)} className="px-2 py-1 hover:text-text hover:opacity-100 disabled:opacity-40">Revise</button>
@@ -185,12 +185,12 @@ export const SCR05_InterventionQueue = ({
             </div>
             
             <div className="flex items-center gap-2">
-              <button type="button" disabled={!selected} onClick={() => selected && onSupersede?.(selected.id)} className="rounded border border-white/10 px-3 py-1.5 text-[10px] uppercase tracking-wide text-textMuted hover:bg-white/5 hover:text-text disabled:opacity-40">Close</button>
+              <button type="button" disabled={!selected} onClick={() => selected && onSupersede?.(selected.id)} className="rounded border border-[var(--m6-border-soft)] px-3 py-1.5 text-[10px] uppercase tracking-wide text-textMuted hover:bg-white/5 hover:text-text disabled:opacity-40">Close</button>
               <button type="button" onClick={onCreateQuickIntervention} className="rounded border border-dos-sig-continuity/30 bg-dos-sig-continuity/10 px-3 py-1.5 text-[10px] uppercase tracking-wide text-dos-sig-continuity/90 hover:bg-dos-sig-continuity/20">Manual Override</button>
             </div>
           </div>
         </section>
       </div>
-    </main>
+    </div>
   );
 };

@@ -4336,6 +4336,7 @@ function App() {
   }, [
     reviewSnapshot.eventLog,
     renderJobs,
+    projection,
     shotProjectionByShotId,
     actionAuditByJobId,
     decisionProposalByJobId,

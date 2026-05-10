@@ -2,20 +2,29 @@ import fs from 'fs';
 import path from 'path';
 import assert from 'assert';
 
+import { fileURLToPath } from 'url';
+
 console.log('--- UNIT TEST: operationalLanguage.ts ---');
 
-const filePath = path.resolve('src/utils/operationalLanguage.ts');
+// Use relative path from this file to find the source
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const filePath = path.resolve(__dirname, '../../src/utils/operationalLanguage.ts');
 const content = fs.readFileSync(filePath, 'utf8');
 
-// Guard 1: Verify SEALED mapping
-assert.ok(content.includes("'SEALED'"), 'Missing mapping to SEALED');
-assert.ok(content.match(/s === 'completed'.*return 'SEALED'/s), 'Logic for SEALED mapping is broken');
+const requiredMappings = [
+  { key: 'queued', label: 'IDLE' },
+  { key: 'preflight', label: 'PRECHECK' },
+  { key: 'running', label: 'FLOWING' },
+  { key: 'packaging', label: 'SEALING' },
+  { key: 'completed', label: 'SEALED' },
+  { key: 'failed', label: 'BROKEN' },
+  { key: 'cancelled', label: 'CANCELLED' }
+];
 
-// Guard 2: Verify BROKEN mapping
-assert.ok(content.includes("'BROKEN'"), 'Missing mapping to BROKEN');
-assert.ok(content.match(/s === 'failed'.*return 'BROKEN'/s), 'Logic for BROKEN mapping is broken');
+requiredMappings.forEach(({ key, label }) => {
+  assert.ok(content.includes(`'${key}': '${label}'`), `Missing mapping for ${key} -> ${label}`);
+});
 
-// Guard 3: Verify ACTIVE fallback
 assert.ok(content.includes("'ACTIVE'"), 'Missing fallback to ACTIVE');
 
-console.log('PASS: Operational language mappings verified statically.');
+console.log('PASS: All constitutional operational labels verified.');

@@ -5,9 +5,16 @@
 
 export const mapTechnicalState = (state: string): string => {
   const s = state.toLowerCase();
-  if (s === 'completed') return 'SEALED';
-  if (s === 'failed') return 'BROKEN';
-  return 'ACTIVE';
+  const mapping: Record<string, string> = {
+    'queued': 'IDLE',
+    'preflight': 'PRECHECK',
+    'running': 'FLOWING',
+    'packaging': 'SEALING',
+    'completed': 'SEALED',
+    'failed': 'BROKEN',
+    'cancelled': 'CANCELLED',
+  };
+  return mapping[s] || 'ACTIVE';
 };
 
 /**

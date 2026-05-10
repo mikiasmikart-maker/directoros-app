@@ -12,13 +12,11 @@ interface InspectorFieldsProps {
 }
 
 const sourceTone: Record<SourceTag, string> = {
-  // rgba() used explicitly — Tailwind cannot generate opacity variants for non-standard
-  // steps (15, 20) from CSS-var or standard palette colors reliably.
-  scene:    'text-slate-300/78   border-[rgba(203,213,225,0.15)] bg-slate-400/5',
-  memory:   'text-cyan-300/78    border-[rgba(103,232,249,0.20)] bg-cyan-500/8',
-  manual:   'text-fuchsia-300/78 border-[rgba(240,171,252,0.20)] bg-fuchsia-500/8',
-  mixed:    'text-amber-300/80   border-[rgba(252,211,77,0.20)]  bg-amber-500/8',
-  timeline: 'text-emerald-300/80 border-[rgba(110,231,183,0.20)] bg-emerald-500/8',
+  scene:    'text-slate-300/78   border-white/15 bg-white/5',
+  memory:   'text-dos-sig-runtime/78    border-dos-sig-runtime/20 bg-dos-sig-runtime/8',
+  manual:   'text-dos-sig-continuity/78 border-dos-sig-continuity/20 bg-dos-sig-continuity/8',
+  mixed:    'text-dos-sig-warning/80   border-dos-sig-warning/20  bg-dos-sig-warning/8',
+  timeline: 'text-dos-sig-trust/80 border-dos-sig-trust/20 bg-dos-sig-trust/8',
 };
 
 const sourceLabels: Record<SourceTag, string> = {
@@ -56,7 +54,7 @@ export const InspectorFields = ({ fields, scene, values, sources, onOverrideChan
     .filter((entry) => entry.fields.length > 0);
 
   const renderControl = (field: InspectorField, value: PrimitiveValue) => {
-    const baseClassName = 'm6-control mt-1.5 w-full rounded-md border border-[rgba(255,255,255,0.035)] bg-[rgba(9,13,22,0.6)] px-2.5 py-1.5 text-xs font-medium text-text/82';
+    const baseClassName = 'm6-control mt-1.5 w-full rounded-md border border-white/[0.035] bg-dos-panel/60 px-2.5 py-1.5 text-xs font-medium text-text/82';
 
     if (field.type === 'textarea') {
       return (
@@ -111,7 +109,7 @@ export const InspectorFields = ({ fields, scene, values, sources, onOverrideChan
             max={field.max ?? 100}
             step={field.step ?? 1}
             onChange={(event) => onOverrideChange(field.key, Number(event.target.value))}
-            className="w-full accent-[rgba(120,160,255,0.9)]"
+            className="w-full accent-dos-sig-runtime/90"
           />
           <div className="text-[10px] text-slate-400/64">{numericValue}</div>
         </div>
@@ -120,13 +118,13 @@ export const InspectorFields = ({ fields, scene, values, sources, onOverrideChan
 
     if (field.type === 'toggle') {
       return (
-        <label className="mt-1.5 flex items-center justify-between gap-3 rounded-md border border-[rgba(255,255,255,0.035)] bg-[rgba(9,13,22,0.6)] px-2.5 py-2 text-xs text-text/82">
+        <label className="mt-1.5 flex items-center justify-between gap-3 rounded-md border border-white/[0.035] bg-dos-panel/60 px-2.5 py-2 text-xs text-text/82">
           <span>{toToggleValue(value) ? 'Enabled' : 'Disabled'}</span>
           <input
             type="checkbox"
             checked={toToggleValue(value)}
             onChange={(event) => onOverrideChange(field.key, event.target.checked)}
-            className="h-4 w-4 accent-[rgba(120,160,255,0.9)]"
+            className="h-4 w-4 accent-dos-sig-runtime/90"
           />
         </label>
       );

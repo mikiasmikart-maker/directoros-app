@@ -56,8 +56,8 @@ const laneTitle: Record<RunLane, string> = {
 };
 
 const laneTone: Record<RunLane, string> = {
-  active: ' border-t-2 border-dos-sig-continuity bg-panel/20',
-  queued: ' border-t-2 border-white/5 bg-panel/10',
+  active: ' border-t-2 border-dos-sig-continuity bg-dos-panel/20',
+  queued: ' border-t-2 border-[var(--m6-border-soft)] bg-dos-panel/10',
   attention: ' border-t-2 border-dos-sig-warning/20 bg-dos-sig-warning/5',
 };
 
@@ -149,9 +149,8 @@ export const SCR02_LiveRunsBoard = ({
   };
 
   return (
-    <main className="h-full min-w-0 bg-dos-bgPure">
-      <div className="flex h-full flex-col">
-        <header className="flex h-12 shrink-0 items-center border-b border-white/5 bg-black/20 px-4">
+    <div className="flex h-full flex-col">
+        <header className="flex h-12 shrink-0 items-center border-b border-[var(--m6-border-soft)] bg-dos-panel/20 px-4">
           <div className="grid w-full gap-4 lg:grid-cols-[auto_auto_1fr_auto]">
             <div className="flex items-center gap-1 rounded bg-white/[0.03] p-1 text-[9px] font-mono uppercase tracking-wider">
               {(['cinematic', 'studio_run', 'all', 'delivery'] as RunMode[]).map((mode) => (
@@ -265,7 +264,7 @@ export const SCR02_LiveRunsBoard = ({
                         <button
                           key={shot.id}
                           onClick={() => onJumpToShot?.(shot.id)}
-                          className="rounded-sm border border-white/5 bg-dos-panel/30 px-2 py-1 text-[10px] text-textMuted hover:bg-dos-panel/50 hover:text-text transition-all"
+                          className="rounded-sm border border-[var(--m6-border-soft)] bg-dos-panel/30 px-2 py-1 text-[10px] text-textMuted hover:bg-dos-panel/50 hover:text-text transition-all"
                         >
                           {shot.title}
                         </button>
@@ -280,7 +279,7 @@ export const SCR02_LiveRunsBoard = ({
               <section className="grid min-h-0 gap-3 md:grid-cols-3">
                 {(['active', 'queued', 'attention'] as RunLane[]).map((lane) => (
                   <div key={lane} className={`flex flex-col min-h-0 rounded-md overflow-hidden ${laneTone[lane]}`}>
-                    <div className="flex items-center justify-between border-b border-white/[0.03] bg-black/10 px-3 py-2 text-[9px] uppercase tracking-[0.15em] text-neutral-500 font-bold">
+                    <div className="flex items-center justify-between border-b border-white/[0.03] bg-dos-panel/10 px-3 py-2 text-[9px] uppercase tracking-[0.15em] text-neutral-500 font-bold">
                       <span>{laneTitle[lane]}</span>
                       <span className="text-neutral-700">{runsByLane[lane].length}</span>
                     </div>
@@ -327,7 +326,7 @@ export const SCR02_LiveRunsBoard = ({
                           );
                         })
                       ) : (
-                        <div className="flex flex-col items-center justify-center h-24 rounded border border-dashed border-white/5 bg-white/[0.01] text-[10px] text-neutral-700 italic">
+                        <div className="flex flex-col items-center justify-center h-24 rounded border border-dashed border-[var(--m6-border-soft)] bg-white/[0.01] text-[10px] text-neutral-700 italic">
                           No runs in lane.
                         </div>
                       )}
@@ -335,8 +334,8 @@ export const SCR02_LiveRunsBoard = ({
                   </div>
                 ))}
               </section>
-              <aside className="flex flex-col overflow-hidden rounded-sm border border-white/5 bg-black/10">
-                <header className="flex h-10 shrink-0 items-center gap-3 border-b border-white/5 bg-black/20 px-3">
+              <aside className="flex flex-col overflow-hidden rounded-sm border border-[var(--m6-border-soft)] bg-dos-panel/10">
+                <header className="flex h-10 shrink-0 items-center gap-3 border-b border-[var(--m6-border-soft)] bg-dos-panel/20 px-3">
                   <div className="flex items-center gap-2 text-[9px] font-mono uppercase tracking-[0.2em] text-neutral-500">
                     <div className="h-3 w-1 bg-dos-sig-continuity" />
                     Inspector
@@ -392,8 +391,8 @@ export const SCR02_LiveRunsBoard = ({
                       <div className="grid grid-cols-2 gap-2 text-[10px] uppercase tracking-wider font-bold">
                         <button type="button" onClick={() => onTogglePinRun?.(selectedRun.id)} className="rounded bg-dos-sig-warning/10 py-2 text-dos-sig-warning hover:bg-dos-sig-warning/15 transition-colors border border-dos-sig-warning/10">Pin</button>
                         <button type="button" onClick={() => onOpenWorkspace?.(selectedRun.id)} className="rounded bg-dos-sig-continuity/10 py-2 text-dos-sig-continuity hover:bg-dos-sig-continuity/20 transition-colors border border-dos-sig-continuity/20">Workspace</button>
-                        <button type="button" onClick={() => onOpenOutputs?.(selectedRun.id)} className="rounded bg-white/[0.03] py-2 text-neutral-400 hover:bg-white/[0.06] hover:text-white transition-all border border-white/5">Open Output</button>
-                        <button type="button" onClick={() => onOpenManifest?.(selectedRun.id)} className="rounded bg-white/[0.03] py-2 text-neutral-400 hover:bg-white/[0.06] hover:text-white transition-all border border-white/5">Manifest</button>
+                        <button type="button" onClick={() => onOpenOutputs?.(selectedRun.id)} className="rounded bg-white/[0.03] py-2 text-neutral-400 hover:bg-white/[0.06] hover:text-white transition-all border border-[var(--m6-border-soft)]">Open Output</button>
+                        <button type="button" onClick={() => onOpenManifest?.(selectedRun.id)} className="rounded bg-white/[0.03] py-2 text-neutral-400 hover:bg-white/[0.06] hover:text-white transition-all border border-[var(--m6-border-soft)]">Manifest</button>
                         <button type="button" onClick={() => onEscalateToIntervention?.(selectedRun.id)} className="rounded bg-dos-sig-warning/10 py-2 text-dos-sig-warning hover:bg-dos-sig-warning/15 transition-colors border border-dos-sig-warning/10">Escalate</button>
                         <button type="button" onClick={() => onOpenCommandConsole?.(selectedRun.id)} className="rounded bg-indigo-500/10 py-2 text-indigo-400 hover:bg-indigo-500/15 transition-colors border border-indigo-500/10">Console</button>
                         {['queued', 'preflight', 'running', 'packaging'].includes(selectedRun.canonicalState) && (
@@ -412,7 +411,7 @@ export const SCR02_LiveRunsBoard = ({
             </div>
           )}
         </section>
-        <footer className="border-t border-white/5 bg-black/40 px-4 py-2">
+        <footer className="border-t border-[var(--m6-border-soft)] bg-dos-panel/40 px-4 py-2">
           <div className="grid gap-8 md:grid-cols-2 text-[9px] font-mono uppercase tracking-[0.2em]">
             <div className="flex items-center gap-3">
               <span className="text-neutral-600">Queue Pressure:</span>
@@ -425,6 +424,5 @@ export const SCR02_LiveRunsBoard = ({
           </div>
         </footer>
       </div>
-    </main>
-  );
+    );
 };

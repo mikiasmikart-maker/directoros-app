@@ -37,7 +37,7 @@ export const DeliveryRegistry = memo(({ items, onJumpToShot }: DeliveryRegistryP
             
             <button
               onClick={() => onJumpToShot(item.shotId)}
-              className={`${interactionClass} flex items-center gap-1.5 rounded-sm bg-accent/10 px-2 py-1 text-[9px] font-bold uppercase tracking-wide text-accent transition-all hover:bg-accent/20`}
+              className={`${interactionClass('primary')} flex items-center gap-1.5 rounded-sm bg-accent/10 px-2 py-1 text-[9px] font-bold uppercase tracking-wide text-accent transition-all hover:bg-accent/20`}
             >
               Jump to Lineage
               <span className="text-[8px] opacity-60">→</span>

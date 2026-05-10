@@ -49,7 +49,7 @@ export const M6_AppShell = ({
 }: M6AppShellProps) => {
   return (
     <div className="min-h-screen bg-bg text-text">
-      <header className="sticky top-0 z-40 border-b border-white/[0.035] bg-[rgba(18,18,18,0.86)] backdrop-blur-[12px] shadow-[0_8px_24px_rgba(2,6,23,0.14)]">
+      <header className="sticky top-0 z-40 border-b border-white/[0.035] bg-dos-bg/86 backdrop-blur-[12px] shadow-m6tier1">
         <div className="mx-auto w-full max-w-[1880px] px-4 py-2.5">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div className="flex items-center gap-3">
@@ -71,7 +71,7 @@ export const M6_AppShell = ({
                   onOpenInterventions?.();
                   onNavigate?.('interventions');
                 }}
-                className="m6-tab-btn m6-control inline-flex items-center justify-center rounded bg-rose-500/10 px-2 py-1 text-rose-100 transition-[color,background-color,box-shadow,transform] duration-180 motion-reduce:transition-none hover:bg-rose-500/12 active:bg-rose-500/10 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-rose-300/24 disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:bg-rose-500/10"
+                className="m6-tab-btn m6-control inline-flex items-center justify-center rounded bg-dos-sig-warning/10 px-2 py-1 text-dos-sig-warning transition-[color,background-color,box-shadow,transform] duration-180 motion-reduce:transition-none hover:bg-dos-sig-warning/15 active:bg-dos-sig-warning/10 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-dos-sig-warning/24 disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:bg-dos-sig-warning/10"
               >
                 {attentionLabel}
               </button>
@@ -100,7 +100,7 @@ export const M6_AppShell = ({
       </header>
 
       <main className={`mx-auto w-full max-w-[1880px] py-4 ${activeScreen === 'workspace' ? 'px-2' : 'px-6'}`}>
-        <section className={`mb-3 flex flex-wrap items-end justify-between gap-4 rounded-md bg-[rgba(20,20,22,0.46)] px-3 py-2.5 m6-tier-2 ${activeScreen === 'workspace' ? 'mx-0.5' : ''}`}>
+        <section className={`mb-3 flex flex-wrap items-end justify-between gap-4 rounded-md bg-dos-panel/46 px-3 py-2.5 m6-tier-2 ${activeScreen === 'workspace' ? 'mx-0.5' : ''}`}>
           <div>
             <div className="m6-section-title">M6 Control Room</div>
             <h1 className="text-[18px] font-semibold tracking-[0.02em] text-text">{screenTitle}</h1>
@@ -114,16 +114,16 @@ export const M6_AppShell = ({
           {overlaySlot}
         </section>
       </main>
-      <footer className="sticky bottom-0 z-40 border-t border-white/[0.035] bg-[rgba(14,14,16,0.94)] backdrop-blur-[12px] py-2 px-6 shadow-[0_-8px_32px_rgba(0,0,0,0.5)]">
+      <footer className="sticky bottom-0 z-40 border-t border-white/[0.035] bg-dos-bg/94 backdrop-blur-[12px] py-2 px-6 shadow-[0_-8px_32px_rgba(0,0,0,0.5)]">
         <div className="mx-auto flex w-full max-w-[1880px] items-center justify-between gap-4">
           <div className="flex items-center gap-4 text-[9px] uppercase tracking-[0.15em] text-slate-500/70 font-bold">
-            <span className="flex items-center gap-2"><span className="h-1.5 w-1.5 rounded-full bg-emerald-500/40" />System Persistence Active</span>
+            <span className="flex items-center gap-2"><span className="h-1.5 w-1.5 rounded-full bg-dos-sig-trust/40" />System Persistence Active</span>
             <span className="flex items-center gap-2"><span className="h-1.5 w-1.5 rounded-full bg-slate-700" />VRAM Buffer: Guarded</span>
           </div>
           <div className="flex items-center gap-3">
             <span className="text-[9px] uppercase tracking-[0.12em] text-slate-500 font-bold">Live Throughput</span>
             <div className="flex items-center gap-1 rounded bg-black/40 border border-white/[0.03] px-2.5 py-1 text-[10px] font-mono shadow-[inset_0_1px_0_rgba(255,255,255,0.01)]">
-              <span className="text-cyan-400/90 font-bold">{queueModeLabel.split('/')[0].trim()}</span>
+              <span className="text-dos-sig-runtime font-bold">{queueModeLabel.split('/')[0].trim()}</span>
               <span className="text-slate-600 px-1 opacity-40">/</span>
               <span className="text-slate-400/80">{queueModeLabel.split('/')[1]?.trim() ?? '0 queued'}</span>
             </div>
