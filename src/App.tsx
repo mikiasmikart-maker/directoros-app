@@ -4475,6 +4475,8 @@ function App() {
     console: {
       title: 'SCR-04 Command Console',
       subtitle: 'Deterministic operator command and validation surface',
+      // Contract: Console intentionally preserves the shared SCR-03 workspace baseline.
+      // SCR-04 is hosted via OverlaySurface so operators can validate commands without losing context.
       content: workspaceView,
     },
     interventions: {
@@ -4532,6 +4534,7 @@ function App() {
 
   const currentScreen = m6Screens[activeM6Screen];
 
+  // Contract: SCR-04 renders as an overlay layer on top of the workspace baseline.
   const commandConsoleOverlay = (
     <OverlaySurface
       id="scr-04-command-console"
@@ -4611,7 +4614,9 @@ function App() {
       streamStateLabel={streamState}
       queueModeLabel={`${runtimeJobCounts.rendering} active / ${runtimeJobCounts.queued} queued`}
       activeContextLabel={selectedScene?.name ?? 'no active scene'}
-      attentionLabel={`operator attention ${runtimeJobs.filter((job) => job.state === 'failed').length}`}
+      attentionLabel={isCommandConsoleOpen
+        ? `operator attention ${runtimeJobs.filter((job) => job.state === 'failed').length} • console overlay active`
+        : `operator attention ${runtimeJobs.filter((job) => job.state === 'failed').length}`}
       onNavigate={(screen) => {
         if (screen === 'console') {
           openCommandConsole();
