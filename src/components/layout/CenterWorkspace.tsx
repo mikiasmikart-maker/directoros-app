@@ -3,7 +3,6 @@ import type { SceneNode, CurrentFocusItem, QuickActionItem, QuickActionModel, Se
 import type { RenderJobCounts, RenderQueueJob } from '../../render/jobQueue';
 import { RenderPreview, type LaunchReadinessState, type LivePreviewState, type RuntimeSignalContext, type ShootoutState } from '../workspace/RenderPreview';
 import { SceneProductionTimeline } from '../workspace/SceneProductionTimeline';
-import { Panel } from '../shared/Panel';
 import { RuntimeOfflineStatus } from '../shared/RuntimeOfflineStatus';
 import { SceneGraphCanvas } from '../graph/SceneGraphCanvas';
 import { asyncFeedbackClass, interactionClass } from '../shared/interactionContract';
@@ -858,11 +857,10 @@ export const CenterWorkspace = ({
   }, [visibleJobs, selectedJobId, onSelectJob, onOpenSelectedOutput, onTogglePinSelectedJob, selectedOutputCandidates, selectedOutputPath, onSelectOutput]);
 
   return (
-    <main className={`h-full min-w-0 bg-[#0a0a0a] ${isFocusMode ? 'operator-focus-mode' : ''}`}>
-      <Panel
-        title="Workspace"
-        className="h-full min-h-[340px]"
-        rightSlot={
+    <div className={`relative flex h-full flex-col min-w-0 min-h-0 overflow-hidden ${isFocusMode ? 'operator-focus-mode' : ''}`}>
+      <div className="flex flex-col h-full min-h-0">
+        <header className="flex h-12 shrink-0 items-center justify-between px-2 md:px-4">
+          <div /> {/* Left empty space since M6_AppShell handles the title */}
           <div className="flex items-center gap-2 pr-1">
             {presenceActivities
               .filter((act) => act.targetId === (selectedFamilyRootId ?? selectedJobId) && act.operatorId !== 'op_alpha')
@@ -890,8 +888,7 @@ export const CenterWorkspace = ({
               <span className="text-[8px] text-textMuted/30 italic tracking-wider">Solo focus</span>
             )}
           </div>
-        }
-      >
+        </header>
         <div className="flex flex-col gap-3.5 flex-1 min-h-0 overflow-y-auto m6-scrollbar-thin p-4">
           <section className="px-1 py-2 flex flex-col group">
             <span className="text-[9px] uppercase font-semibold tracking-[0.2em] text-neutral-600 mb-1.5">Active Scene</span>
@@ -1486,9 +1483,9 @@ export const CenterWorkspace = ({
                   </div>
                 </section>
               </div>
-            </Panel>
-          </main>
-        );
-      };
+      </div>
+    </div>
+  );
+};
 
 
