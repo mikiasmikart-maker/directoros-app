@@ -14,6 +14,8 @@ export default {
         dos: {
           bg: 'var(--dos-bg)',
           bgPure: 'var(--dos-bg-pure)',
+          text: 'var(--dos-text)',
+          textMuted: 'var(--dos-text-muted)',
           panel: 'var(--dos-panel)',
           panelSoft: 'var(--dos-panel-soft)',
           border: 'var(--dos-border)',
