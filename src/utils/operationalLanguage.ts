@@ -4,7 +4,7 @@
  */
 
 export const mapTechnicalState = (state: string): string => {
-  const s = state.toLowerCase();
+  const s = state?.toLowerCase() || '';
   const mapping: Record<string, string> = {
     'queued': 'IDLE',
     'preflight': 'PRECHECK',
