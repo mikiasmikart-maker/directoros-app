@@ -364,12 +364,12 @@ export const RightInspector = memo(({
 
   if (isCollapsed) {
     return (
-      <aside className={`h-full border-l border-white/5 bg-[#050505] p-1 ${isFocusMode ? 'focus-dim' : ''}`}>
+      <aside className={`h-full border-l border-dos-border bg-dos-bg-pure p-1 ${isFocusMode ? 'focus-dim' : ''}`}>
         <button
           type="button"
           aria-label="Expand inspector panel"
           onClick={onToggleCollapse}
-          className="group inline-flex h-full w-full items-center justify-center rounded-md border border-white/5 bg-white/[0.02] text-neutral-600 transition-all hover:bg-white/[0.04] hover:text-neutral-400 active:scale-[0.98]"
+          className="group inline-flex h-full w-full items-center justify-center rounded-md border border-dos-border bg-white/[0.02] text-dos-text-muted transition-all hover:bg-white/[0.04] hover:text-dos-text active:scale-[0.98]"
         >
           <span className="text-lg leading-none transition-transform duration-180 group-hover:-translate-x-[1px]">‹</span>
         </button>
@@ -378,20 +378,20 @@ export const RightInspector = memo(({
   }
 
   return (
-    <aside className={`h-full min-h-0 flex flex-col overflow-hidden border-l border-white/5 bg-[#050505] ${isFocusMode ? 'focus-dim' : ''}`}>
+    <aside className={`h-full min-h-0 flex flex-col overflow-hidden border-l border-dos-border bg-dos-bg-pure ${isFocusMode ? 'focus-dim' : ''}`}>
       {/* 1. UNIFIED HEADER */}
-      <header className="flex h-12 shrink-0 items-center justify-between border-b border-white/5 px-4 bg-black/20">
+      <header className="flex h-12 shrink-0 items-center justify-between border-b border-dos-border px-4 bg-black/20">
         <div className="flex items-center gap-3">
           <button
             type="button"
             aria-label="Collapse inspector panel"
             onClick={onToggleCollapse}
-            className="text-[11px] text-neutral-600 hover:text-neutral-400 transition-colors"
+            className="text-[11px] text-dos-text-muted hover:text-dos-text transition-colors"
           >
             ›
           </button>
-          <div className="flex items-center gap-2 text-[9px] font-mono uppercase tracking-[0.2em] text-neutral-500">
-            <div className="w-1 h-3 bg-[#8144C0]" />
+          <div className="flex items-center gap-2 text-[9px] font-mono uppercase tracking-[0.2em] text-dos-text-muted">
+            <div className="w-1 h-3 bg-dos-sig-continuity" />
             Inspector
           </div>
         </div>
@@ -406,9 +406,9 @@ export const RightInspector = memo(({
               Cancel Run
             </button>
           )}
-          <div className="flex items-center gap-1.5 rounded-full bg-black/40 px-2 py-0.5 border border-white/5">
-            <div className="h-1 w-1 rounded-full bg-[#8144C0] animate-pulse shadow-[0_0_8px_rgba(129,68,192,0.4)]" />
-            <span className="text-[8px] font-mono text-[#8144C0]/80 uppercase tracking-widest font-bold">Signal Live</span>
+          <div className="flex items-center gap-1.5 rounded-full bg-black/40 px-2 py-0.5 border border-dos-border">
+            <div className="h-1 w-1 rounded-full bg-dos-sig-continuity animate-pulse shadow-[0_0_8px_rgba(207,140,255,0.4)]" />
+            <span className="text-[8px] font-mono text-dos-sig-continuity/80 uppercase tracking-widest font-bold">Signal Live</span>
           </div>
         </div>
       </header>
@@ -419,15 +419,15 @@ export const RightInspector = memo(({
           {scene?.name ?? 'No_Scene'} <span className="text-neutral-700 mx-1">//</span> {activeShot?.title ?? 'No_Shot'}
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-[8px] font-mono text-neutral-600 uppercase">Registry:</span>
-          <span className="text-[8px] font-mono text-neutral-500">
+          <span className="text-[8px] font-mono text-dos-text-muted uppercase">Registry:</span>
+          <span className="text-[8px] font-mono text-dos-text-muted/80">
             {selectedJobTelemetry?.selectedJobId ? formatOperatorId(selectedJobTelemetry.selectedJobId, 'JOB') : 'NONE_PTR'}
           </span>
         </div>
       </div>
 
       {/* 2. TABS: Manifest Navigation */}
-      <nav className="flex items-center border-b border-white/[0.03] bg-black/20">
+      <nav className="flex items-center border-b border-dos-border bg-black/20">
         {(['decision', 'intelligence', 'activity', 'pipeline'] as InspectorTab[]).map((tab) => {
           const isActive = activeTab === tab;
           const hasSignal = tab === 'decision' && isActionRequired;
@@ -437,13 +437,13 @@ export const RightInspector = memo(({
               onClick={() => setActiveTab(tab)}
               className={`flex-1 py-2.5 text-[9px] font-mono uppercase tracking-[0.1em] transition-all relative ${
                 isActive 
-                  ? 'text-white bg-white/[0.03]' 
-                  : 'text-neutral-500 hover:text-neutral-400 hover:bg-white/[0.01]'
+                  ? 'text-dos-text bg-white/[0.03]' 
+                  : 'text-dos-text-muted hover:text-dos-text hover:bg-white/[0.01]'
               }`}
             >
               {tab}
-              {isActive && <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#8144C0]" />}
-              {hasSignal && <span className="absolute right-2 top-2 h-1 w-1 rounded-full bg-[#8144C0]" />}
+              {isActive && <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-dos-sig-continuity" />}
+              {hasSignal && <span className="absolute right-2 top-2 h-1 w-1 rounded-full bg-dos-sig-continuity" />}
             </button>
           );
         })}
@@ -456,9 +456,9 @@ export const RightInspector = memo(({
         {!hasExplicitSelection ? (
           <div className="flex flex-col px-6 pt-16 pb-8 h-full animate-in fade-in duration-1000 ease-out">
             <div className="mb-12">
-              <div className="mb-2 text-[9px] uppercase font-bold tracking-[0.3em] text-white/10 select-none">System Presence</div>
-              <div className="text-[12px] text-white/30 leading-[1.7] font-light">
-                Awaiting operator selection to populate inspector fields. Use <span className="text-white/50 font-medium select-none">ESC</span> to clear focus stacks.
+              <div className="mb-2 text-[9px] uppercase font-bold tracking-[0.3em] text-dos-text-muted/20 select-none">System Presence</div>
+              <div className="text-[12px] text-dos-text-muted/40 leading-[1.7] font-light">
+                Awaiting operator selection to populate inspector fields. Use <span className="text-dos-text-muted/60 font-medium select-none">ESC</span> to clear focus stacks.
               </div>
             </div>
 
@@ -468,16 +468,16 @@ export const RightInspector = memo(({
                   <div className="mb-2.5 text-[10px] uppercase tracking-[0.15em] text-textMuted/40 group-hover:text-textMuted/60 transition-colors">Pending Handoff</div>
                   <div className="p-3.5 rounded bg-panel/20 border border-[var(--m6-border-soft)] shadow-sm">
                     <div className="flex items-center justify-between mb-1.5">
-                      <div className="text-[11px] font-medium text-text/90">{inboxItems[0].label}</div>
-                      <div className="text-[9px] text-textMuted/50 tabular-nums">01</div>
+                      <div className="text-[11px] font-medium text-dos-text/90">{inboxItems[0].label}</div>
+                      <div className="text-[9px] text-dos-text-muted/50 tabular-nums">01</div>
                     </div>
-                    <div className="text-[10px] text-textMuted/50 mb-4 leading-relaxed">
+                    <div className="text-[10px] text-dos-text-muted/50 mb-4 leading-relaxed">
                       {inboxItems[0].reason} • {inboxItems[0].priority.replace('_', ' ')}
                     </div>
 
                     <button
                       onClick={() => onJumpToInboxItem?.(inboxItems[0])}
-                      className="w-full py-2.5 rounded bg-panel/40 hover:bg-panel/60 text-text/90 text-[10px] uppercase tracking-[0.2em] font-medium transition-[background-color,border-color,transform] duration-120 border border-[var(--m6-border-soft)] active:scale-[0.98]"
+                      className="w-full py-2.5 rounded bg-panel/40 hover:bg-panel/60 text-dos-text/90 text-[10px] uppercase tracking-[0.2em] font-medium transition-[background-color,border-color,transform] duration-120 border border-[var(--m6-border-soft)] active:scale-[0.98]"
                     >
                       Jump to Next Context ›
                     </button>
@@ -487,16 +487,16 @@ export const RightInspector = memo(({
                 <div className="grid grid-cols-2 gap-x-6">
                   <div>
                     <div className="mb-1.5 text-[9px] uppercase tracking-[0.13em] text-textMuted/40 text-left">Pressure</div>
-                    <div className={`text-xs font-medium ${sceneReviewBoard?.retryPressure.band === 'critical' ? 'text-rose-400/80' :
-                        sceneReviewBoard?.retryPressure.band === 'high' ? 'text-amber-400/80' :
-                          'text-cyan-400/70'
+                    <div className={`text-xs font-medium ${sceneReviewBoard?.retryPressure.band === 'critical' ? 'text-dos-sig-warning/80' :
+                        sceneReviewBoard?.retryPressure.band === 'high' ? 'text-dos-sig-warning/60' :
+                          'text-dos-sig-runtime/70'
                       }`}>
                       {sceneReviewBoard?.retryPressure.band.toUpperCase() ?? 'STABLE'}
                     </div>
                   </div>
                   <div>
                     <div className="mb-1.5 text-[9px] uppercase tracking-[0.13em] text-textMuted/40 text-left">Pipeline</div>
-                    <div className="text-xs font-medium text-textMuted/80">
+                    <div className="text-xs font-medium text-dos-text-muted/80">
                       {sceneReviewBoard?.actionAggregates?.approved ?? 0} / {sceneReviewBoard?.actionAggregates?.total ?? 0}
                     </div>
                   </div>
@@ -505,20 +505,20 @@ export const RightInspector = memo(({
             ) : (
               <div className="animate-in fade-in slide-in-from-bottom-2 duration-1000">
                 <div className="mb-6">
-                  <div className="mb-3 text-[9px] uppercase font-bold tracking-[0.2em] text-white/10">Queue Status</div>
-                  <div className="p-5 rounded border border-dashed border-white/[0.03] bg-white/[0.01] text-[11px] text-white/20 leading-relaxed italic font-light">
+                  <div className="mb-3 text-[9px] uppercase font-bold tracking-[0.2em] text-dos-text-muted/10">Queue Status</div>
+                  <div className="p-5 rounded border border-dashed border-dos-border bg-white/[0.01] text-[11px] text-dos-text-muted/30 leading-relaxed italic font-light">
                     Inbox is quiet. All pending triage signals have been cleared or dismissed.
                   </div>
                 </div>
 
                 <div className="space-y-4">
                   <div className="flex items-center justify-between text-[10px] tracking-wide">
-                    <span className="text-textMuted/40 uppercase">Scene Health</span>
-                    <span className="text-cyan-400/60 font-medium">{sceneReviewBoard?.status.toUpperCase() ?? 'HEALTHY'}</span>
+                    <span className="text-dos-text-muted/40 uppercase">Scene Health</span>
+                    <span className="text-dos-sig-runtime/60 font-medium">{sceneReviewBoard?.status.toUpperCase() ?? 'HEALTHY'}</span>
                   </div>
                   <div className="flex items-center justify-between text-[10px] tracking-wide">
-                    <span className="text-textMuted/40 uppercase">Approval Coverage</span>
-                    <span className="text-textMuted/80 font-medium">
+                    <span className="text-dos-text-muted/40 uppercase">Approval Coverage</span>
+                    <span className="text-dos-text-muted/80 font-medium">
                       {Math.round((sceneReviewBoard?.bestKnownCoverage.value ?? 0) * 100)}%
                     </span>
                   </div>
@@ -527,7 +527,7 @@ export const RightInspector = memo(({
             )}
 
             <div className="mt-auto border-t border-[var(--m6-border-soft)] pt-6 text-center">
-              <div className="text-[9px] uppercase tracking-[0.3em] text-textMuted/20 font-light">
+              <div className="text-[9px] uppercase tracking-[0.3em] text-dos-text-muted/20 font-light">
                 DirectorOS • Operator Shell
               </div>
             </div>
@@ -621,10 +621,10 @@ export const RightInspector = memo(({
               </div>
               <div className="mt-2 pt-2">
                 {postPipelineSummary.activeStage === 'Review' ? (
-                  <button onClick={() => onPostWorkflowAction?.('approve_review')} disabled={streamState === 'offline'} className="inline-flex items-center justify-center rounded bg-accent/10 px-2 py-1 text-[10px] text-accent transition-[background-color,color,box-shadow,transform] duration-180 ease-out hover:bg-accent/12 active:scale-[0.98] focus-visible:outline-none focus-visible:m6-focus-ring disabled:cursor-not-allowed disabled:opacity-35">Approve Review</button>
+                  <button onClick={() => onPostWorkflowAction?.('approve_review')} disabled={streamState === 'offline'} className="inline-flex items-center justify-center rounded bg-dos-sig-trust/10 px-2 py-1 text-[10px] text-dos-sig-trust transition-[background-color,color,box-shadow,transform] duration-180 ease-out hover:bg-dos-sig-trust/12 active:scale-[0.98] focus-visible:outline-none focus-visible:m6-focus-ring disabled:cursor-not-allowed disabled:opacity-35">Approve Review</button>
                 ) : null}
                 {postPipelineSummary.activeStage === 'Edit' ? (
-                  <button onClick={() => onPostWorkflowAction?.('complete_edit')} disabled={streamState === 'offline'} className="inline-flex items-center justify-center rounded bg-accent/10 px-2 py-1 text-[10px] text-accent transition-[background-color,color,box-shadow,transform] duration-180 motion-reduce:transition-none hover:bg-accent/12 active:bg-accent/10 focus-visible:outline-none focus-visible:m6-focus-ring disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:bg-accent/10">Approve Edit</button>
+                  <button onClick={() => onPostWorkflowAction?.('complete_edit')} disabled={streamState === 'offline'} className="inline-flex items-center justify-center rounded bg-dos-sig-trust/10 px-2 py-1 text-[10px] text-dos-sig-trust transition-[background-color,color,box-shadow,transform] duration-180 motion-reduce:transition-none hover:bg-dos-sig-trust/12 active:bg-dos-sig-trust/10 focus-visible:outline-none focus-visible:m6-focus-ring disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:bg-dos-sig-trust/10">Approve Edit</button>
                 ) : null}
                 {postPipelineSummary.activeStage === 'Export' ? (
                   <div className="flex items-center gap-1.5">
@@ -633,7 +633,7 @@ export const RightInspector = memo(({
                   </div>
                 ) : null}
                 {(postPipelineSummary.activeStage === 'Delivery' || postPipelineSummary.overallStatus?.includes('delivery ready')) ? (
-                  <button onClick={() => onPostWorkflowAction?.('complete_delivery')} disabled={streamState === 'offline'} className="inline-flex items-center justify-center rounded bg-accent/10 px-2 py-1 text-[10px] text-accent transition-[background-color,color,box-shadow,transform] duration-180 motion-reduce:transition-none hover:bg-accent/12 active:bg-accent/10 focus-visible:outline-none focus-visible:m6-focus-ring disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:bg-accent/10">Approve Delivery</button>
+                  <button onClick={() => onPostWorkflowAction?.('complete_delivery')} disabled={streamState === 'offline'} className="inline-flex items-center justify-center rounded bg-dos-sig-trust/10 px-2 py-1 text-[10px] text-dos-sig-trust transition-[background-color,color,box-shadow,transform] duration-180 motion-reduce:transition-none hover:bg-dos-sig-trust/12 active:bg-dos-sig-trust/10 focus-visible:outline-none focus-visible:m6-focus-ring disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:bg-dos-sig-trust/10">Approve Delivery</button>
                 ) : null}
 
                 <details className="mt-2">
@@ -662,10 +662,10 @@ export const RightInspector = memo(({
                       onClick={selectedJobPrimaryControl?.onTrigger}
                       className={`rounded border px-2 py-0.5 text-[9px] font-bold tracking-[0.12em] uppercase transition-all active:scale-[0.98] ${
                         selectedJobPrimaryControl && !selectedJobPrimaryControl.disabled
-                          ? 'border-accent/40 bg-accent/10 text-accent hover:bg-accent/20'
+                          ? 'border-dos-sig-trust/40 bg-dos-sig-trust/10 text-dos-sig-trust hover:bg-dos-sig-trust/20'
                           : selectedJobTelemetry?.status === 'failed' 
-                            ? 'border-rose-500/20 bg-rose-500/5 text-rose-400/80' 
-                            : 'border-[var(--m6-border-soft)] bg-panel/12 text-slate-500/60 cursor-not-allowed'
+                            ? 'border-dos-sig-warning/20 bg-dos-sig-warning/5 text-dos-sig-warning/80' 
+                            : 'border-dos-border bg-panel/12 text-dos-text-muted/60 cursor-not-allowed'
                       }`}
                     >
                       {decisionActionLabel}
@@ -737,7 +737,7 @@ export const RightInspector = memo(({
                         <button
                           type="button"
                           onClick={selectedJobPrimaryControl.onTrigger}
-                          className={`text-[10px] font-bold tracking-tight px-2 py-0.5 rounded transition-all hover:bg-accent/10 active:scale-[0.98] ${deliveryReadiness.isReady ? 'text-accent' : 'text-slate-300'}`}
+                          className={`text-[10px] font-bold tracking-tight px-2 py-0.5 rounded transition-all hover:bg-dos-sig-trust/10 active:scale-[0.98] ${deliveryReadiness.isReady ? 'text-dos-sig-trust' : 'text-dos-text'}`}
                         >
                           {deliveryReadiness.nextAction} ›
                         </button>
