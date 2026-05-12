@@ -276,19 +276,20 @@ export const SCR02_LiveRunsBoard = ({
             </div>
           ) : (
             <div className="grid h-full min-h-0 gap-3 [grid-template-columns:minmax(0,13fr)_minmax(0,7fr)]">
-              <section className="grid min-h-0 gap-3 md:grid-cols-3">
+              <section className="grid min-h-0 gap-3 md:grid-cols-[minmax(0,1.35fr)_minmax(0,0.85fr)_minmax(0,0.9fr)]">
                 {(['active', 'queued', 'attention'] as RunLane[]).map((lane) => (
-                  <div key={lane} className={`flex flex-col min-h-0 rounded-md overflow-hidden ${laneTone[lane]}`}>
-                    <div className="flex items-center justify-between border-b border-dos-border bg-dos-panel/10 px-3 py-2 text-[9px] uppercase tracking-[0.15em] text-dos-text-muted/60 font-bold">
+                  <div key={lane} className={`flex flex-col min-h-0 rounded-md overflow-hidden ${laneTone[lane]} ${lane === 'active' ? 'shadow-[0_0_0_1px_rgba(207,140,255,0.04)]' : ''}`}>
+                    <div className={`flex items-center justify-between border-b border-dos-border bg-dos-panel/10 px-3 text-[9px] uppercase tracking-[0.15em] font-bold ${lane === 'active' ? 'py-2.5 text-dos-text-muted/70' : 'py-2 text-dos-text-muted/50'}`}>
                       <span>{laneTitle[lane]}</span>
                       <span className="text-dos-text-muted/40">{runsByLane[lane].length}</span>
                     </div>
-                    <div className="flex-1 overflow-auto m6-scrollbar-thin p-1.5 space-y-1.5">
+                    <div className={`flex-1 overflow-auto m6-scrollbar-thin ${lane === 'active' ? 'p-2 space-y-2' : 'p-1.5 space-y-1.5'}`}>
                       {runsByLane[lane].length ? (
                         runsByLane[lane].map((run) => {
-                          const selected = run.id === selectedRunId;
+                          const visuallySelected = run.id === selectedRun?.id;
                           const isActive = lane === 'active';
                           const isCompleted = run.canonicalState === 'completed';
+                          const isSediment = (isCompleted || run.stale) && !visuallySelected;
                           const title = mapTechnicalState(run.canonicalState);
                           
                           return (
@@ -296,26 +297,31 @@ export const SCR02_LiveRunsBoard = ({
                               key={run.id} 
                               type="button" 
                               onClick={() => onSelectRun?.(run.id)} 
-                              className={`group relative w-full rounded-md border px-3.5 py-3 text-left transition-all duration-120 ${
-                                selected 
-                                  ? 'border-dos-sig-continuity/40 bg-dos-sig-continuity/10 shadow-[0_4px_16px_rgba(207,140,255,0.08)]' 
-                                  : 'border-dos-border/60 bg-dos-panel/30 hover:bg-dos-panel/50 hover:border-dos-border shadow-sm'
-                              } ${isCompleted && !selected ? 'opacity-50 grayscale-[0.3]' : ''}`}
+                              className={`group relative w-full overflow-hidden rounded-md border text-left transition-all duration-120 ${
+                                visuallySelected
+                                  ? 'border-dos-sig-continuity/60 bg-dos-sig-continuity/10 shadow-[0_6px_18px_rgba(207,140,255,0.10)]'
+                                  : isSediment
+                                    ? 'border-dos-border/30 bg-dos-panel/10 opacity-45 grayscale-[0.25] shadow-none hover:opacity-70 hover:bg-dos-panel/20 hover:border-dos-border/50'
+                                    : isActive
+                                      ? 'border-dos-sig-continuity/20 bg-dos-panel/35 shadow-sm hover:bg-dos-panel/55 hover:border-dos-sig-continuity/35'
+                                      : 'border-dos-border/55 bg-dos-panel/22 shadow-sm hover:bg-dos-panel/40 hover:border-dos-border'
+                              } ${isActive && !isSediment ? 'px-4 py-3.5' : isSediment ? 'px-2.5 py-1.5' : 'px-3 py-2.5'}`}
                             >
+                              {visuallySelected && <div className="absolute inset-y-2 left-0 w-0.5 rounded-r bg-dos-sig-continuity/80" />}
                               <div className="flex items-center justify-between gap-2">
-                                <span className={`truncate text-[11px] font-medium tracking-tight ${selected ? 'text-white' : isActive ? 'text-white/90' : 'text-white/70'}`}>
+                                <span className={`truncate font-medium tracking-tight ${visuallySelected ? 'text-white' : isSediment ? 'text-white/45' : isActive ? 'text-white/95' : 'text-white/70'} ${isActive && !isSediment ? 'text-[12px]' : isSediment ? 'text-[10px]' : 'text-[11px]'}`}>
                                   {run.label}
                                 </span>
                                 {run.pinned && <span className="text-[8px] text-dos-sig-warning/60 uppercase tracking-widest">pinned</span>}
                               </div>
-                              <div className="mt-1.5 flex flex-wrap items-center gap-2">
-                                <span className={`px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wider ${getCanonicalStateTone(run.canonicalState)}`}>
+                              <div className={`flex flex-wrap items-center ${isSediment ? 'mt-1 gap-1.5' : 'mt-1.5 gap-2'}`}>
+                                <span className={`px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wider ${getCanonicalStateTone(run.canonicalState)} ${isSediment ? 'opacity-70' : ''}`}>
                                   {title}
                                 </span>
-                                <span className="text-[9px] font-mono text-dos-text-muted/40 uppercase tracking-tighter">
+                                <span className={`font-mono uppercase tracking-tighter ${isSediment ? 'text-[8px] text-dos-text-muted/25' : 'text-[9px] text-dos-text-muted/40'}`}>
                                   {run.route}
                                 </span>
-                                {isActive && (
+                                {isActive && !isSediment && (
                                   <div className="ml-auto flex items-center gap-1.5">
                                     <div className="h-1 w-1 rounded-full bg-dos-sig-continuity animate-pulse" />
                                     <span className="text-[8px] text-dos-sig-continuity/60 uppercase tracking-widest font-bold">Signal Live</span>
