@@ -49,12 +49,12 @@ export const LeftSidebar = memo(({
 }: LeftSidebarProps) => {
   if (isCollapsed) {
     return (
-      <aside className={`h-full border-r border-white/5 bg-[#050505] p-1 ${isFocusMode ? 'focus-dim' : ''}`}>
+      <aside className={`h-full border-r border-white/[0.022] bg-dos-bg/92 p-1 ${isFocusMode ? 'focus-dim' : ''}`}>
         <button
           type="button"
           aria-label="Expand scenes panel"
           onClick={onToggleCollapse}
-          className="group inline-flex h-full w-full items-center justify-center rounded-md border border-white/5 bg-white/[0.02] text-neutral-600 transition-all hover:bg-white/[0.04] hover:text-neutral-400 active:scale-[0.98]"
+          className="group inline-flex h-full w-full items-center justify-center rounded-md border border-white/[0.022] bg-dos-panel/20 text-neutral-600 transition-all hover:bg-dos-panel/30 hover:text-neutral-400 active:scale-[0.98]"
         >
           <span className="text-lg leading-none transition-transform duration-180 group-hover:translate-x-[1px]">›</span>
         </button>
@@ -63,7 +63,7 @@ export const LeftSidebar = memo(({
   }
 
   return (
-    <aside className={`h-full min-h-0 flex flex-col overflow-hidden border-r border-white/5 bg-[#050505] ${isFocusMode ? 'focus-dim' : ''}`}>
+    <aside className={`h-full min-h-0 flex flex-col overflow-hidden border-r border-white/[0.022] bg-dos-bg/92 ${isFocusMode ? 'focus-dim' : ''}`}>
       <Panel
         title="Scenes"
         className="h-full"

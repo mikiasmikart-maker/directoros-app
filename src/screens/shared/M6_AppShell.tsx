@@ -100,7 +100,7 @@ export const M6_AppShell = ({
       </header>
 
       <main className={`mx-auto w-full max-w-[1880px] py-4 ${activeScreen === 'workspace' ? 'px-2' : 'px-6'}`}>
-        <section className={`mb-3 flex flex-wrap items-end justify-between gap-4 rounded-md bg-dos-panel/34 px-3 py-2.5 m6-tier-2 ${activeScreen === 'workspace' ? 'mx-0.5' : ''}`}>
+        <section className={`mb-3 flex flex-wrap items-end justify-between gap-4 rounded-md px-3 py-2.5 m6-tier-2 ${activeScreen === 'workspace' ? 'mx-0.5' : ''}`}>
           <div>
             <div className="m6-section-title">M6 Control Room</div>
             <h1 className="text-[18px] font-semibold tracking-[0.02em] text-dos-text">{screenTitle}</h1>
@@ -109,7 +109,7 @@ export const M6_AppShell = ({
           {actionsSlot ? <div className="flex flex-wrap items-center gap-1.5">{actionsSlot}</div> : null}
         </section>
 
-        <section className="relative min-h-[calc(100vh-190px)] rounded-md border border-white/[0.02] bg-panelSoft/26 p-1.5">
+        <section className="m6-tier-3 relative min-h-[calc(100vh-190px)] rounded-md p-1.5">
           {children}
           {overlaySlot}
         </section>
@@ -122,7 +122,7 @@ export const M6_AppShell = ({
           </div>
           <div className="flex items-center gap-3">
             <span className="text-[9px] uppercase tracking-[0.12em] text-dos-text-muted font-bold">Live Throughput</span>
-            <div className="flex items-center gap-1 rounded bg-black/30 border border-white/[0.02] px-2.5 py-1 text-[10px] font-mono shadow-[inset_0_1px_0_rgba(255,255,255,0.006)]">
+            <div className="flex items-center gap-1 rounded bg-dos-panel/26 border border-white/[0.02] px-2.5 py-1 text-[10px] font-mono shadow-[inset_0_1px_0_rgba(255,255,255,0.006)]">
               <span className="text-dos-sig-runtime font-bold">{queueModeLabel.split('/')[0].trim()}</span>
               <span className="text-dos-text-muted px-1 opacity-40">/</span>
               <span className="text-dos-text-muted/80">{queueModeLabel.split('/')[1]?.trim() ?? '0 queued'}</span>
