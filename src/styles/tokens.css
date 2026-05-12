@@ -9,12 +9,28 @@
   --dos-text: rgba(226, 232, 240, 0.9);
   --dos-text-muted: rgba(148, 163, 184, 0.72);
 
+  /* --- Alpha-aware RGB Channels --- */
+  --dos-bg-rgb: 10 10 10;
+  --dos-bg-pure-rgb: 5 5 5;
+  --dos-panel-rgb: 20 20 22;
+  --dos-panel-soft-rgb: 18 18 20;
+  --dos-border-rgb: 255 255 255;
+  --dos-accent-rgb: 120 160 255;
+  --dos-text-rgb: 226 232 240;
+  --dos-text-muted-rgb: 148 163 184;
+
   /* --- Operational Semantic Signals --- */
   --dos-sig-warning: #ffb340;   /* Warning Orange: Degradation / Intervention */
   --dos-sig-trust: #00c853;     /* Trust Green: Verified Truth (SEALED) */
   --dos-sig-drift: #ffca28;     /* Drift Amber: Lineage Divergence */
   --dos-sig-runtime: #00d1ff;   /* Runtime Cyan: Active Flow (FLOWING) */
   --dos-sig-continuity: #cf8cff; /* Continuity Violet: Ancestry / Evidence */
+
+  --dos-sig-warning-rgb: 255 179 64;
+  --dos-sig-trust-rgb: 0 200 83;
+  --dos-sig-drift-rgb: 255 202 40;
+  --dos-sig-runtime-rgb: 0 209 255;
+  --dos-sig-continuity-rgb: 207 140 255;
 
   /* --- Material Tiers --- */
   --m6-tier1-bg: rgba(10, 16, 28, 0.78);
@@ -37,9 +53,20 @@
 
   /* --- Legacy Aliases (For gradual migration) --- */
   --m6-state-active-fg: var(--dos-sig-trust);
+  --m6-state-active-bg: rgba(0, 200, 83, 0.08);
+  --m6-state-active-border: rgba(0, 200, 83, 0.22);
+
   --m6-state-warn-fg: var(--dos-sig-warning);
+  --m6-state-warn-bg: rgba(255, 179, 64, 0.08);
+  --m6-state-warn-border: rgba(255, 179, 64, 0.22);
+
   --m6-state-critical-fg: #b48484; /* To be deprecated by Warning/Stop */
+  --m6-state-critical-bg: rgba(180, 132, 132, 0.1);
+  --m6-state-critical-border: rgba(180, 132, 132, 0.24);
+
   --m6-state-stop-fg: #9b4a4a;
+  --m6-state-stop-bg: rgba(155, 74, 74, 0.1);
+  --m6-state-stop-border: rgba(155, 74, 74, 0.26);
 
   --m6-state-focus-border: rgba(226, 232, 240, 0.4);
   --m6-state-focus-glow: 0 0 12px rgba(255, 255, 255, 0.12);
