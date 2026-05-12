@@ -3,8 +3,8 @@
   --dos-bg: #0a0a0a;
   --dos-bg-pure: #050505;
   --dos-panel: rgba(20, 20, 22, 0.65);
-  --dos-panel-soft: rgba(18, 18, 20, 0.78);
-  --dos-border: rgba(255, 255, 255, 0.06);
+  --dos-panel-soft: rgba(17, 17, 18, 0.62);
+  --dos-border: rgba(255, 255, 255, 0.045);
   --dos-accent: #78a0ff;
   --dos-text: rgba(226, 232, 240, 0.9);
   --dos-text-muted: rgba(148, 163, 184, 0.72);
@@ -13,7 +13,7 @@
   --dos-bg-rgb: 10 10 10;
   --dos-bg-pure-rgb: 5 5 5;
   --dos-panel-rgb: 20 20 22;
-  --dos-panel-soft-rgb: 18 18 20;
+  --dos-panel-soft-rgb: 17 17 18;
   --dos-border-rgb: 255 255 255;
   --dos-accent-rgb: 120 160 255;
   --dos-text-rgb: 226 232 240;
@@ -33,23 +33,23 @@
   --dos-sig-continuity-rgb: 207 140 255;
 
   /* --- Material Tiers --- */
-  --m6-tier1-bg: rgba(10, 16, 28, 0.78);
-  --m6-tier1-border: rgba(255, 255, 255, 0.05);
-  --m6-tier1-shadow: 0 8px 24px rgba(2, 6, 23, 0.22);
+  --m6-tier1-bg: rgba(13, 13, 15, 0.64);
+  --m6-tier1-border: rgba(255, 255, 255, 0.038);
+  --m6-tier1-shadow: 0 8px 24px rgba(2, 6, 23, 0.18);
 
-  --m6-tier2-bg: rgba(10, 16, 28, 0.6);
-  --m6-tier2-border: rgba(255, 255, 255, 0.045);
+  --m6-tier2-bg: rgba(12, 12, 14, 0.48);
+  --m6-tier2-border: rgba(255, 255, 255, 0.034);
 
-  --m6-tier3-bg: rgba(8, 12, 20, 0.34);
-  --m6-tier3-border: rgba(255, 255, 255, 0.04);
+  --m6-tier3-bg: rgba(10, 10, 12, 0.26);
+  --m6-tier3-border: rgba(255, 255, 255, 0.03);
 
-  --m6-border-soft: rgba(255, 255, 255, 0.04);
-  --m6-border-soft-hover: rgba(255, 255, 255, 0.08);
-  --m6-border-soft-active: rgba(255, 255, 255, 0.12);
+  --m6-border-soft: rgba(255, 255, 255, 0.03);
+  --m6-border-soft-hover: rgba(255, 255, 255, 0.055);
+  --m6-border-soft-active: rgba(255, 255, 255, 0.085);
 
-  --m6-surface-idle: rgba(255, 255, 255, 0.016);
-  --m6-surface-hover: rgba(255, 255, 255, 0.034);
-  --m6-surface-active: rgba(255, 255, 255, 0.06);
+  --m6-surface-idle: rgba(255, 255, 255, 0.012);
+  --m6-surface-hover: rgba(255, 255, 255, 0.026);
+  --m6-surface-active: rgba(255, 255, 255, 0.044);
 
   /* --- Legacy Aliases (For gradual migration) --- */
   --m6-state-active-fg: var(--dos-sig-trust);
@@ -68,8 +68,8 @@
   --m6-state-stop-bg: rgba(155, 74, 74, 0.1);
   --m6-state-stop-border: rgba(155, 74, 74, 0.26);
 
-  --m6-state-focus-border: rgba(226, 232, 240, 0.4);
-  --m6-state-focus-glow: 0 0 12px rgba(255, 255, 255, 0.12);
+  --m6-state-focus-border: rgba(226, 232, 240, 0.32);
+  --m6-state-focus-glow: 0 0 12px rgba(255, 255, 255, 0.09);
 
   /* --- Typography --- */
   --m6-font-screen-title: 18px;
