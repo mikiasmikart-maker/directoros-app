@@ -88,7 +88,7 @@ export const TimelineTrack = ({
           y1={0}
           x2={`${x}%`}
           y2={isMinute ? 8 : 4}
-          stroke="rgba(255,255,255,0.15)"
+          stroke="var(--dos-border)"
           strokeWidth="1"
         />
       );
@@ -118,7 +118,7 @@ export const TimelineTrack = ({
             key={`conn-${clip.id}`}
             d={`M ${x1}% ${y} C ${(x1 + x2) / 2}% ${y}, ${(x1 + x2) / 2}% ${y}, ${x2}% ${y}`}
             fill="none"
-            stroke="rgba(255,255,255,0.08)"
+            stroke="var(--dos-border)"
             strokeWidth="1"
             strokeDasharray="2,2"
           />
@@ -131,7 +131,7 @@ export const TimelineTrack = ({
   return (
     <div 
       ref={containerRef}
-      className="relative h-24 w-full cursor-crosshair select-none overflow-hidden bg-black/40"
+      className="relative h-24 w-full cursor-crosshair select-none overflow-hidden bg-dos-bg-pure/60"
       onMouseDown={onMouseDown}
     >
       <svg className="h-full w-full" style={{ shapeRendering: 'crispEdges' }}>
@@ -164,7 +164,7 @@ export const TimelineTrack = ({
                 y={rectY}
                 width={`${widthPercent}%`}
                 height={14}
-                fill={isSelected ? 'rgba(120, 160, 255, 0.4)' : 'rgba(255,255,255,0.15)'}
+                fill={isSelected ? 'rgba(0, 209, 255, 0.3)' : 'rgba(255, 255, 255, 0.08)'}
                 className="transition-colors duration-150"
               />
 
@@ -176,7 +176,7 @@ export const TimelineTrack = ({
                   width={`${widthPercent}%`}
                   height={14}
                   fill="none"
-                  stroke="#FFFFFF"
+                  stroke="var(--dos-text)"
                   strokeWidth="1"
                   className="pointer-events-none"
                 />
@@ -189,7 +189,7 @@ export const TimelineTrack = ({
                   y={rectY + 2}
                   width={4}
                   height={4}
-                  fill="#FFFFFF"
+                  fill="var(--dos-text)"
                   className="pointer-events-none"
                 />
               ) : isWinner ? (
@@ -199,7 +199,7 @@ export const TimelineTrack = ({
                   width={4}
                   height={4}
                   fill="none"
-                  stroke="#FFFFFF"
+                  stroke="var(--dos-text)"
                   strokeWidth="1"
                   className="pointer-events-none"
                 />
@@ -209,7 +209,7 @@ export const TimelineTrack = ({
                 <text
                   x={`${xPercent}%`}
                   y={rectY - 4}
-                  fill="white"
+                  fill="var(--dos-text)"
                   fontSize="8"
                   fontWeight="500"
                   className="pointer-events-none uppercase tracking-tighter opacity-60"
@@ -227,7 +227,7 @@ export const TimelineTrack = ({
           y1={0}
           x2={`${getTimeX(playheadPositionMs) * 100}%`}
           y2="100%"
-          stroke="#FFFFFF"
+          stroke="var(--dos-text)"
           strokeWidth="1"
           style={{ pointerEvents: 'none' }}
         />
