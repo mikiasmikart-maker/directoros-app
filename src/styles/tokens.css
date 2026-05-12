@@ -29,11 +29,11 @@
 
   --m6-border-soft: rgba(255, 255, 255, 0.04);
   --m6-border-soft-hover: rgba(255, 255, 255, 0.08);
-  --m6-border-soft-active: rgba(120, 160, 255, 0.2);
+  --m6-border-soft-active: rgba(255, 255, 255, 0.12);
 
   --m6-surface-idle: rgba(255, 255, 255, 0.016);
   --m6-surface-hover: rgba(255, 255, 255, 0.034);
-  --m6-surface-active: rgba(120, 160, 255, 0.11);
+  --m6-surface-active: rgba(255, 255, 255, 0.06);
 
   /* --- Legacy Aliases (For gradual migration) --- */
   --m6-state-active-fg: var(--dos-sig-trust);
@@ -41,8 +41,8 @@
   --m6-state-critical-fg: #b48484; /* To be deprecated by Warning/Stop */
   --m6-state-stop-fg: #9b4a4a;
 
-  --m6-state-focus-border: rgba(120, 160, 255, 0.6);
-  --m6-state-focus-glow: 0 0 12px rgba(120, 160, 255, 0.25);
+  --m6-state-focus-border: rgba(226, 232, 240, 0.4);
+  --m6-state-focus-glow: 0 0 12px rgba(255, 255, 255, 0.12);
 
   /* --- Typography --- */
   --m6-font-screen-title: 18px;

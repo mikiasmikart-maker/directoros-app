@@ -149,7 +149,7 @@ body {
   .m6-tab-btn[data-active='true'] {
     border-color: var(--m6-border-soft-active);
     background: var(--m6-surface-active);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03), 0 0 0 1px rgba(120, 160, 255, 0.1);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03), 0 0 0 1px rgba(255, 255, 255, 0.06);
   }
 
   .m6-tab-btn:active {
@@ -172,7 +172,7 @@ body {
   }
 
   .m6-control:hover {
-    border-color: rgba(120, 160, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.12);
     background: linear-gradient(180deg, rgba(13, 19, 30, 0.7) 0%, rgba(10, 16, 26, 0.68) 100%);
   }
 
@@ -202,15 +202,15 @@ body {
   }
 
   .m6-btn-primary {
-    border: 1px solid rgba(120, 160, 255, 0.3);
-    background: rgba(120, 160, 255, 0.12);
-    color: rgba(191, 219, 254, 0.9);
+    border: 1px solid rgba(0, 209, 255, 0.3);
+    background: rgba(0, 209, 255, 0.12);
+    color: rgba(226, 232, 240, 0.9);
     transition: background-color 180ms cubic-bezier(0.22, 1, 0.36, 1), border-color 180ms cubic-bezier(0.22, 1, 0.36, 1), color 180ms cubic-bezier(0.22, 1, 0.36, 1), opacity 180ms cubic-bezier(0.22, 1, 0.36, 1), transform 180ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .m6-btn-primary:hover {
-    background: rgba(120, 160, 255, 0.18);
-    border-color: rgba(120, 160, 255, 0.38);
+    background: rgba(0, 209, 255, 0.18);
+    border-color: rgba(0, 209, 255, 0.38);
   }
 
   .m6-meta {
@@ -376,7 +376,7 @@ body {
 
 @keyframes m6-one-shot-highlight {
   0% { background-color: transparent; }
-  20% { background-color: rgba(120, 160, 255, 0.12); }
+  20% { background-color: rgba(255, 255, 255, 0.12); }
   100% { background-color: transparent; }
 }
 
@@ -410,9 +410,9 @@ body {
 }
 
 @keyframes m6-pulse-once {
-  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(120, 160, 255, 0); }
-  20% { transform: scale(1.02); box-shadow: 0 0 8px 4px rgba(120, 160, 255, 0.12); }
-  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(120, 160, 255, 0); }
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+  20% { transform: scale(1.02); box-shadow: 0 0 8px 4px rgba(255, 255, 255, 0.12); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
 }
 
 .m6-pulse-once {
