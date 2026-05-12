@@ -12,7 +12,7 @@ interface InspectorFieldsProps {
 }
 
 const sourceTone: Record<SourceTag, string> = {
-  scene:    'text-slate-300/78   border-white/15 bg-white/5',
+  scene:    'text-dos-text-muted/78 border-[var(--m6-border-soft)] bg-panel/28',
   memory:   'text-dos-sig-runtime/78    border-dos-sig-runtime/20 bg-dos-sig-runtime/8',
   manual:   'text-dos-sig-continuity/78 border-dos-sig-continuity/20 bg-dos-sig-continuity/8',
   mixed:    'text-dos-sig-warning/80   border-dos-sig-warning/20  bg-dos-sig-warning/8',
@@ -54,7 +54,7 @@ export const InspectorFields = ({ fields, scene, values, sources, onOverrideChan
     .filter((entry) => entry.fields.length > 0);
 
   const renderControl = (field: InspectorField, value: PrimitiveValue) => {
-    const baseClassName = 'm6-control mt-1.5 w-full rounded-md border border-white/[0.035] bg-dos-panel/60 px-2.5 py-1.5 text-xs font-medium text-text/82';
+    const baseClassName = 'm6-control mt-1.5 w-full rounded-md border border-[var(--m6-border-soft)] bg-dos-panel/54 px-2.5 py-1.5 text-xs font-medium text-text/82';
 
     if (field.type === 'textarea') {
       return (
@@ -111,14 +111,14 @@ export const InspectorFields = ({ fields, scene, values, sources, onOverrideChan
             onChange={(event) => onOverrideChange(field.key, Number(event.target.value))}
             className="w-full accent-dos-sig-runtime/90"
           />
-          <div className="text-[10px] text-slate-400/64">{numericValue}</div>
+          <div className="text-[10px] text-dos-text-muted/58">{numericValue}</div>
         </div>
       );
     }
 
     if (field.type === 'toggle') {
       return (
-        <label className="mt-1.5 flex items-center justify-between gap-3 rounded-md border border-white/[0.035] bg-dos-panel/60 px-2.5 py-2 text-xs text-text/82">
+        <label className="mt-1.5 flex items-center justify-between gap-3 rounded-md border border-[var(--m6-border-soft)] bg-dos-panel/54 px-2.5 py-2 text-xs text-text/82">
           <span>{toToggleValue(value) ? 'Enabled' : 'Disabled'}</span>
           <input
             type="checkbox"
@@ -145,19 +145,19 @@ export const InspectorFields = ({ fields, scene, values, sources, onOverrideChan
     <div className="space-y-4">
       {groupedFields.map(({ group, fields: groupFields }) => (
         <section key={group} className="space-y-2.5">
-          <div className="px-0.5 text-[9px] font-light uppercase tracking-[0.14em] text-neutral-500">{groupLabels[group]}</div>
+          <div className="px-0.5 text-[9px] font-medium uppercase tracking-[0.16em] text-dos-text-muted/46">{groupLabels[group]}</div>
           {groupFields.map((field) => {
             const value = values[field.key];
             const source = sources[field.key] ?? 'scene';
 
             return (
-              <div key={field.key} className="rounded border border-white/5 bg-black/20 px-3 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.01)]">
+              <div key={field.key} className="rounded-md border border-[var(--m6-border-soft)] bg-panel/22 px-3 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.012)]">
                 <div className="flex items-start justify-between gap-2.5">
                   <div className="min-w-0">
-                    <div className="text-[10px] font-light tracking-[0.05em] text-neutral-400">{field.label}</div>
-                    {field.helperText ? <div className="mt-1 text-[9px] font-mono leading-relaxed text-neutral-600">{field.helperText}</div> : null}
+                    <div className="text-[10px] font-medium tracking-[0.05em] text-dos-text/78">{field.label}</div>
+                    {field.helperText ? <div className="mt-1 text-[9px] font-mono leading-relaxed text-dos-text-muted/42">{field.helperText}</div> : null}
                   </div>
-                  <span className={`shrink-0 rounded border px-1.5 py-0.5 text-[8px] font-mono uppercase tracking-[0.05em] ${sourceTone[source]}`}>{sourceLabels[source]}</span>
+                  <span className={`shrink-0 rounded border px-1.5 py-0.5 text-[8px] font-mono uppercase tracking-[0.06em] ${sourceTone[source]}`}>{sourceLabels[source]}</span>
                 </div>
                 {renderControl(field, value)}
               </div>

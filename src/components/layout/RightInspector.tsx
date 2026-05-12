@@ -581,14 +581,19 @@ export const RightInspector = memo(({
 
         {activeTab === 'pipeline' && postPipelineSummary ? (
           <div className="animate-in fade-in slide-in-from-right-1 duration-150">
-            <div className="mb-3 rounded-md border border-[var(--m6-border-soft)] bg-[linear-gradient(180deg,rgba(18,18,20,0.6)_0%,rgba(14,14,16,0.56)_100%)] px-3.5 py-3 text-[11px] text-slate-300/78 shadow-[0_8px_20px_rgba(2,6,23,0.1),inset_0_1px_0_rgba(255,255,255,0.02)]">
-              <div className="flex items-center justify-between gap-2">
-                <div className="text-[11px] font-medium text-slate-300/90">Post Pipeline Summary</div>
-                <span className="rounded border border-[var(--m6-border-soft)] bg-panel/22 px-1.5 py-0.5 text-[10px] text-slate-500/64">
+            <div className="mb-3 rounded-md border border-[var(--m6-border-soft)] bg-panel/26 px-3.5 py-3 text-[11px] text-dos-text-muted/72 shadow-[inset_0_1px_0_rgba(255,255,255,0.014)]">
+              <div className="flex items-start justify-between gap-3 border-b border-[var(--m6-border-soft)] pb-2.5">
+                <div className="min-w-0">
+                  <div className="text-[9px] font-medium uppercase tracking-[0.16em] text-dos-text-muted/42">Validation / Provenance</div>
+                  <div className="mt-0.5 text-[11px] font-medium text-dos-text/86">Pipeline Proof State</div>
+                </div>
+                <span className="rounded border border-[var(--m6-border-soft)] bg-panel/30 px-1.5 py-0.5 text-[9px] uppercase tracking-[0.08em] text-dos-text-muted/58">
                   {postPipelineCollapsed ? 'folded' : 'live'}
                 </span>
               </div>
-              <div className="mt-2 space-y-1.5 text-[11px] text-slate-300/72">
+
+              <div className="mt-3 space-y-1.5">
+                <div className="text-[9px] font-medium uppercase tracking-[0.14em] text-dos-text-muted/42">Stage evidence</div>
                 {postPipelineSummary.stages.map((stage) => {
                   const isActive = stage.status === 'active';
                   const isCompleted = ['approved', 'ready', 'completed'].includes(stage.status);
@@ -596,54 +601,62 @@ export const RightInspector = memo(({
                     <div
                       key={stage.stage}
                       className={`flex items-center justify-between rounded-md border px-2.5 py-1.5 ${isActive
-                        ? 'border-[var(--m6-state-focus-border)]/40 bg-panel/46 shadow-[inset_2px_0_0_var(--m6-state-focus-border)]'
+                        ? 'border-[var(--m6-state-focus-border)]/35 bg-dos-panel/42 shadow-[inset_2px_0_0_var(--m6-state-focus-border)]'
                         : isCompleted
-                          ? 'border-[var(--dos-border)] bg-panel/30 shadow-[inset_2px_0_0_var(--m6-state-active-fg)]/20'
-                          : 'border-[var(--m6-border-soft)] bg-panel/20'
+                          ? 'border-[var(--m6-state-active-border)]/45 bg-dos-panel/34 shadow-[inset_2px_0_0_var(--m6-state-active-fg)]/15'
+                          : 'border-[var(--m6-border-soft)] bg-dos-panel/24'
                         }`}
                     >
-                      <span className={isActive ? 'text-slate-100/84' : isCompleted ? 'text-slate-300/70' : 'text-slate-400/62'}>{stage.label}</span>
-                      <span className=" text-[10px] text-textMuted/50">{stage.status}</span>
+                      <span className={isActive ? 'text-dos-text/86' : isCompleted ? 'text-dos-text-muted/76' : 'text-dos-text-muted/58'}>{stage.label}</span>
+                      <span className="text-[9px] uppercase tracking-[0.08em] text-dos-text-muted/46">{stage.status}</span>
                     </div>
                   );
                 })}
               </div>
-              <div className="mt-2 grid grid-cols-[auto_1fr] gap-x-2 gap-y-1.5 pt-2 text-[11px]">
-                <span className="text-[10px] text-slate-500 mt-0.5">Active Stage</span>
-                <span className="text-slate-300">{postPipelineSummary.activeStage ?? 'none'}</span>
-                <span className="text-[10px] text-slate-500 mt-0.5">Completed</span>
-                <span className="text-slate-300">{postPipelineSummary.completedCount}/{postPipelineSummary.stages.length}</span>
-                <span className="text-[10px] text-slate-500 mt-0.5">Overall</span>
-                <span className="text-slate-300">{postPipelineSummary.overallStatus ?? 'waiting'}</span>
-                <span className="text-[10px] text-slate-500 mt-0.5">Export</span>
-                <span className="text-slate-300">{postPipelineSummary.exportFormat ?? 'mp4'}</span>
-                <span className="text-[10px] text-slate-500 mt-0.5">Delivery</span>
-                <span className="text-slate-300">{postPipelineSummary.deliveryTarget ?? 'internal screening'}</span>
-              </div>
-              <div className="mt-2 pt-2">
-                {postPipelineSummary.activeStage === 'Review' ? (
-                  <button onClick={() => onPostWorkflowAction?.('approve_review')} disabled={streamState === 'offline'} className="inline-flex items-center justify-center rounded bg-dos-sig-trust/10 px-2 py-1 text-[10px] text-dos-sig-trust transition-[background-color,color,box-shadow,transform] duration-180 ease-out hover:bg-dos-sig-trust/12 active:scale-[0.98] focus-visible:outline-none focus-visible:m6-focus-ring disabled:cursor-not-allowed disabled:opacity-35">Approve Review</button>
-                ) : null}
-                {postPipelineSummary.activeStage === 'Edit' ? (
-                  <button onClick={() => onPostWorkflowAction?.('complete_edit')} disabled={streamState === 'offline'} className="inline-flex items-center justify-center rounded bg-dos-sig-trust/10 px-2 py-1 text-[10px] text-dos-sig-trust transition-[background-color,color,box-shadow,transform] duration-180 motion-reduce:transition-none hover:bg-dos-sig-trust/12 active:bg-dos-sig-trust/10 focus-visible:outline-none focus-visible:m6-focus-ring disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:bg-dos-sig-trust/10">Approve Edit</button>
-                ) : null}
-                {postPipelineSummary.activeStage === 'Export' ? (
-                  <div className="flex items-center gap-1.5">
-                    <button onClick={() => onPostWorkflowAction?.('complete_export')} disabled={streamState === 'offline'} className="inline-flex items-center justify-center rounded bg-accent/10 px-2 py-1 text-[10px] text-accent transition-[background-color,color,box-shadow,transform] duration-180 motion-reduce:transition-none hover:bg-accent/12 active:bg-accent/10 focus-visible:outline-none focus-visible:m6-focus-ring disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:bg-accent/10">Approve Export</button>
-                    <button onClick={() => onPostWorkflowAction?.('fail_export')} disabled={streamState === 'offline'} className="inline-flex items-center justify-center rounded px-2 py-1 text-[10px] text-rose-100/80 transition-[color,background-color,box-shadow,transform] duration-180 motion-reduce:transition-none hover:text-rose-100/90 active:text-rose-100/84 focus-visible:outline-none focus-visible:m6-focus-ring disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:text-rose-100/80">Fail Export</button>
-                  </div>
-                ) : null}
-                {(postPipelineSummary.activeStage === 'Delivery' || postPipelineSummary.overallStatus?.includes('delivery ready')) ? (
-                  <button onClick={() => onPostWorkflowAction?.('complete_delivery')} disabled={streamState === 'offline'} className="inline-flex items-center justify-center rounded bg-dos-sig-trust/10 px-2 py-1 text-[10px] text-dos-sig-trust transition-[background-color,color,box-shadow,transform] duration-180 motion-reduce:transition-none hover:bg-dos-sig-trust/12 active:bg-dos-sig-trust/10 focus-visible:outline-none focus-visible:m6-focus-ring disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:bg-dos-sig-trust/10">Approve Delivery</button>
-                ) : null}
 
-                <details className="mt-2">
-                  <summary className="cursor-pointer rounded text-[10px] text-slate-500/64 focus-visible:outline-none focus-visible:m6-focus-ring">Advanced</summary>
+              <div className="mt-3 rounded-md border border-[var(--m6-border-soft)] bg-dos-panel/24 px-2.5 py-2.5">
+                <div className="mb-2 text-[9px] font-medium uppercase tracking-[0.14em] text-dos-text-muted/42">Provenance detail</div>
+                <div className="grid grid-cols-[auto_1fr] gap-x-2.5 gap-y-1.5 text-[11px]">
+                  <span className="text-[10px] text-dos-text-muted/46">Active Stage</span>
+                  <span className="text-dos-text/78">{postPipelineSummary.activeStage ?? 'none'}</span>
+                  <span className="text-[10px] text-dos-text-muted/46">Completed</span>
+                  <span className="text-dos-text/78">{postPipelineSummary.completedCount}/{postPipelineSummary.stages.length}</span>
+                  <span className="text-[10px] text-dos-text-muted/46">Overall</span>
+                  <span className="text-dos-text/78">{postPipelineSummary.overallStatus ?? 'waiting'}</span>
+                  <span className="text-[10px] text-dos-text-muted/46">Export</span>
+                  <span className="text-dos-text/78">{postPipelineSummary.exportFormat ?? 'mp4'}</span>
+                  <span className="text-[10px] text-dos-text-muted/46">Delivery</span>
+                  <span className="text-dos-text/78">{postPipelineSummary.deliveryTarget ?? 'internal screening'}</span>
+                </div>
+              </div>
+
+              <div className="mt-3 border-t border-[var(--m6-border-soft)] pt-2.5">
+                <div className="mb-1.5 text-[9px] font-medium uppercase tracking-[0.14em] text-dos-text-muted/42">Workflow controls</div>
+                <div className="flex flex-wrap items-center gap-1.5">
+                  {postPipelineSummary.activeStage === 'Review' ? (
+                    <button onClick={() => onPostWorkflowAction?.('approve_review')} disabled={streamState === 'offline'} className="inline-flex items-center justify-center rounded border border-dos-sig-trust/24 bg-dos-sig-trust/8 px-2 py-1 text-[10px] text-dos-sig-trust/82 transition-[background-color,color,box-shadow,transform] duration-180 ease-out hover:bg-dos-sig-trust/12 active:scale-[0.98] focus-visible:outline-none focus-visible:m6-focus-ring disabled:cursor-not-allowed disabled:opacity-35">Approve Review</button>
+                  ) : null}
+                  {postPipelineSummary.activeStage === 'Edit' ? (
+                    <button onClick={() => onPostWorkflowAction?.('complete_edit')} disabled={streamState === 'offline'} className="inline-flex items-center justify-center rounded border border-dos-sig-trust/24 bg-dos-sig-trust/8 px-2 py-1 text-[10px] text-dos-sig-trust/82 transition-[background-color,color,box-shadow,transform] duration-180 motion-reduce:transition-none hover:bg-dos-sig-trust/12 active:bg-dos-sig-trust/10 focus-visible:outline-none focus-visible:m6-focus-ring disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:bg-dos-sig-trust/10">Approve Edit</button>
+                  ) : null}
+                  {postPipelineSummary.activeStage === 'Export' ? (
+                    <>
+                      <button onClick={() => onPostWorkflowAction?.('complete_export')} disabled={streamState === 'offline'} className="inline-flex items-center justify-center rounded border border-accent/24 bg-accent/8 px-2 py-1 text-[10px] text-accent/82 transition-[background-color,color,box-shadow,transform] duration-180 motion-reduce:transition-none hover:bg-accent/12 active:bg-accent/10 focus-visible:outline-none focus-visible:m6-focus-ring disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:bg-accent/10">Approve Export</button>
+                      <button onClick={() => onPostWorkflowAction?.('fail_export')} disabled={streamState === 'offline'} className="inline-flex items-center justify-center rounded border border-[var(--m6-border-soft)] bg-panel/18 px-2 py-1 text-[10px] text-dos-text-muted/68 transition-[color,background-color,box-shadow,transform] duration-180 motion-reduce:transition-none hover:bg-panel/26 hover:text-dos-text-muted/82 active:text-dos-text-muted/76 focus-visible:outline-none focus-visible:m6-focus-ring disabled:cursor-not-allowed disabled:opacity-35">Fail Export</button>
+                    </>
+                  ) : null}
+                  {(postPipelineSummary.activeStage === 'Delivery' || postPipelineSummary.overallStatus?.includes('delivery ready')) ? (
+                    <button onClick={() => onPostWorkflowAction?.('complete_delivery')} disabled={streamState === 'offline'} className="inline-flex items-center justify-center rounded border border-dos-sig-trust/24 bg-dos-sig-trust/8 px-2 py-1 text-[10px] text-dos-sig-trust/82 transition-[background-color,color,box-shadow,transform] duration-180 motion-reduce:transition-none hover:bg-dos-sig-trust/12 active:bg-dos-sig-trust/10 focus-visible:outline-none focus-visible:m6-focus-ring disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:bg-dos-sig-trust/10">Approve Delivery</button>
+                  ) : null}
+                </div>
+
+                <details className="mt-2 rounded-md border border-[var(--m6-border-soft)] bg-panel/14 px-2 py-1.5">
+                  <summary className="cursor-pointer rounded text-[10px] uppercase tracking-[0.08em] text-dos-text-muted/46 focus-visible:outline-none focus-visible:m6-focus-ring">Advanced controls</summary>
                   <div className="mt-1.5 flex flex-wrap gap-1.5">
                     {postPipelineSummary.activeStage !== 'Export' ? (
-                      <button onClick={() => onPostWorkflowAction?.('fail_export')} className="inline-flex items-center justify-center rounded px-2 py-1 text-[10px] text-textMuted/85 transition-[color,background-color,box-shadow,transform] duration-180 motion-reduce:transition-none hover:text-text/80 active:text-text/76 focus-visible:outline-none focus-visible:m6-focus-ring disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:text-textMuted/85">Fail Export</button>
+                      <button onClick={() => onPostWorkflowAction?.('fail_export')} className="inline-flex items-center justify-center rounded border border-[var(--m6-border-soft)] bg-panel/16 px-2 py-1 text-[10px] text-dos-text-muted/66 transition-[color,background-color,box-shadow,transform] duration-180 motion-reduce:transition-none hover:bg-panel/24 hover:text-dos-text-muted/82 active:text-dos-text-muted/76 focus-visible:outline-none focus-visible:m6-focus-ring disabled:cursor-not-allowed disabled:opacity-35">Fail Export</button>
                     ) : null}
-                    <button onClick={() => onPostWorkflowAction?.('reset')} className="inline-flex items-center justify-center rounded px-2 py-1 text-[10px] text-textMuted/85 transition-[color,background-color,box-shadow,transform] duration-180 motion-reduce:transition-none hover:text-text/80 active:text-text/76 focus-visible:outline-none focus-visible:m6-focus-ring disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:text-textMuted/85">Reset Post Workflow</button>
+                    <button onClick={() => onPostWorkflowAction?.('reset')} className="inline-flex items-center justify-center rounded border border-[var(--m6-border-soft)] bg-panel/16 px-2 py-1 text-[10px] text-dos-text-muted/66 transition-[color,background-color,box-shadow,transform] duration-180 motion-reduce:transition-none hover:bg-panel/24 hover:text-dos-text-muted/82 active:text-dos-text-muted/76 focus-visible:outline-none focus-visible:m6-focus-ring disabled:cursor-not-allowed disabled:opacity-35">Reset Post Workflow</button>
                   </div>
                 </details>
               </div>
