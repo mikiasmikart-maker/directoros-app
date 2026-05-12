@@ -364,12 +364,12 @@ export const RightInspector = memo(({
 
   if (isCollapsed) {
     return (
-      <aside className={`h-full border-l border-dos-border bg-dos-bg-pure p-1 ${isFocusMode ? 'focus-dim' : ''}`}>
+      <aside className={`h-full border-l border-white/[0.022] bg-dos-bg/92 p-1 ${isFocusMode ? 'focus-dim' : ''}`}>
         <button
           type="button"
           aria-label="Expand inspector panel"
           onClick={onToggleCollapse}
-          className="group inline-flex h-full w-full items-center justify-center rounded-md border border-dos-border bg-white/[0.02] text-dos-text-muted transition-all hover:bg-white/[0.04] hover:text-dos-text active:scale-[0.98]"
+          className="group inline-flex h-full w-full items-center justify-center rounded-md border border-white/[0.022] bg-dos-panel/20 text-dos-text-muted transition-all hover:bg-dos-panel/30 hover:text-dos-text active:scale-[0.98]"
         >
           <span className="text-lg leading-none transition-transform duration-180 group-hover:-translate-x-[1px]">‹</span>
         </button>
@@ -378,9 +378,9 @@ export const RightInspector = memo(({
   }
 
   return (
-    <aside className={`h-full min-h-0 flex flex-col overflow-hidden border-l border-dos-border bg-dos-bg-pure ${isFocusMode ? 'focus-dim' : ''}`}>
+    <aside className={`h-full min-h-0 flex flex-col overflow-hidden border-l border-white/[0.022] bg-dos-bg/92 ${isFocusMode ? 'focus-dim' : ''}`}>
       {/* 1. UNIFIED HEADER */}
-      <header className="flex h-12 shrink-0 items-center justify-between border-b border-dos-border px-4 bg-black/20">
+      <header className="flex h-12 shrink-0 items-center justify-between border-b border-white/[0.022] px-4 bg-dos-panel/20">
         <div className="flex items-center gap-3">
           <button
             type="button"
@@ -406,7 +406,7 @@ export const RightInspector = memo(({
               Cancel Run
             </button>
           )}
-          <div className="flex items-center gap-1.5 rounded-full bg-black/40 px-2 py-0.5 border border-dos-border">
+          <div className="flex items-center gap-1.5 rounded-full bg-dos-panel/24 px-2 py-0.5 border border-white/[0.022]">
             <div className="h-1 w-1 rounded-full bg-dos-sig-continuity animate-pulse shadow-[0_0_5px_rgba(207,140,255,0.18)]" />
             <span className="text-[8px] font-mono text-dos-sig-continuity/80 uppercase tracking-widest font-bold">Proof Signal</span>
           </div>
@@ -414,7 +414,7 @@ export const RightInspector = memo(({
       </header>
 
       {/* 1b. HUD CONTEXT (Optional sub-header for telemetry) */}
-      <div className="flex flex-col border-b border-white/[0.02] bg-black/[0.08] px-4 py-2 gap-1">
+      <div className="flex flex-col border-b border-white/[0.02] bg-dos-panel/18 px-4 py-2 gap-1">
         <div className="text-[11px] font-mono text-white/80 truncate tracking-tighter">
           {scene?.name ?? 'No_Scene'} <span className="text-neutral-700 mx-1">//</span> {activeShot?.title ?? 'No_Shot'}
         </div>
@@ -427,7 +427,7 @@ export const RightInspector = memo(({
       </div>
 
       {/* 2. TABS: Manifest Navigation */}
-      <nav className="flex items-center border-b border-dos-border bg-black/20">
+      <nav className="flex items-center border-b border-white/[0.022] bg-dos-panel/18">
         {(['decision', 'intelligence', 'activity', 'pipeline'] as InspectorTab[]).map((tab) => {
           const tabLabel = tab === 'decision' ? 'proof' : tab;
           const isActive = activeTab === tab;
@@ -903,7 +903,7 @@ export const RightInspector = memo(({
                           <span>TECHNICAL SCHEMA</span>
                           <span className="text-[10px] transform group-open:rotate-90 transition-transform">›</span>
                         </summary>
-                        <div className="mt-2 p-2.5 rounded bg-black/60 border border-white/5 max-h-[140px] overflow-auto m6-scrollbar-thin">
+                        <div className="mt-2 p-2.5 rounded bg-dos-panel/24 border border-white/[0.022] max-h-[140px] overflow-auto m6-scrollbar-thin">
                           <pre className="text-[9px] font-mono leading-relaxed text-cyan-400/60 select-all whitespace-pre-wrap">
                             {JSON.stringify(deliveryManifest, null, 2)}
                           </pre>
@@ -925,7 +925,7 @@ export const RightInspector = memo(({
                       <span className="flex items-center gap-1.5 italic font-medium"><span className="h-1 w-1 rounded-full bg-slate-600" />Later Attempt</span>
                       <span className="flex items-center gap-1.5 italic font-medium opacity-60"><span className="h-1 w-1 rounded-full bg-slate-700" />Identity Ref: {shortJobId(productionFamily.currentWinnerJobId)}</span>
                     </div>
-                    <div className="mt-2.5 border-t border-white/5 pt-2 text-[9px] font-bold uppercase tracking-[0.08em] text-amber-300">
+                    <div className="mt-2.5 border-t border-white/[0.022] pt-2 text-[9px] font-bold uppercase tracking-[0.08em] text-amber-300">
                       Lineage Impact: Promotion will supersede existing Production Truth.
                     </div>
                   </div>
@@ -958,15 +958,15 @@ export const RightInspector = memo(({
               <div className="mt-3 border-t border-white/[0.04] pt-3">
                 <div className="mb-2 text-[9px] font-bold uppercase tracking-[0.12em] text-slate-500/50">Technical Manifest Truth</div>
                 <div className="space-y-1.5">
-                  <div className="flex items-center justify-between rounded bg-black/20 px-2 py-1.5 text-[10px]">
+                  <div className="flex items-center justify-between rounded bg-dos-panel/22 px-2 py-1.5 text-[10px]">
                     <span className="text-slate-500 uppercase tracking-wide">Route</span>
                     <span className="text-slate-200 font-mono italic">{selectedJobTelemetry?.activeRoute ?? 'Default'}</span>
                   </div>
-                  <div className="flex items-center justify-between rounded bg-black/20 px-2 py-1.5 text-[10px]">
+                  <div className="flex items-center justify-between rounded bg-dos-panel/22 px-2 py-1.5 text-[10px]">
                     <span className="text-slate-500 uppercase tracking-wide">Strategy</span>
                     <span className="text-slate-200 font-mono italic">{selectedJobTelemetry?.strategy ?? 'Standard'}</span>
                   </div>
-                  <div className="flex items-center justify-between rounded bg-black/20 px-2 py-1.5 text-[10px]">
+                  <div className="flex items-center justify-between rounded bg-dos-panel/22 px-2 py-1.5 text-[10px]">
                     <span className="text-slate-500 uppercase tracking-wide">Engine</span>
                     <span className="text-slate-200 font-mono italic">{engineTarget.toUpperCase()}</span>
                   </div>
@@ -1076,7 +1076,7 @@ export const RightInspector = memo(({
 
         {activeTab === 'intelligence' && (selectedJobTelemetry || productionFamily) ? (
           <div className="mt-2 rounded-md m6-tier-3 px-3 py-2.5 text-xs text-textMuted">
-            <div className="text-[10px] font-medium text-violet-300/80 ">{selectedJobTelemetry ? 'Render Read • Selected Job' : 'Render Read • Production Family'}</div>
+            <div className="text-[10px] font-medium text-dos-text-muted/72 ">{selectedJobTelemetry ? 'Render Read • Selected Job' : 'Render Read • Production Family'}</div>
             <div className="mt-2 flex flex-wrap gap-1.5 text-[10px] text-slate-500">
               <span className="rounded border border-[var(--m6-border-soft)] bg-panel/22 px-1.5 py-0.5 text-slate-500/64">status: {selectedJobTelemetry?.status ?? productionFamily?.familyState ?? 'idle'}</span>
               <span className="rounded border border-[var(--m6-border-soft)] bg-panel/22 px-1.5 py-0.5 text-slate-500/64">lifecycle: {selectedJobTelemetry?.lifecycle ?? productionFamily?.familyState ?? 'idle'}</span>
@@ -1239,8 +1239,8 @@ export const RightInspector = memo(({
         {activeTab === 'intelligence' && selectedGraphNode ? (
           <div className="mb-3 rounded-md m6-tier-3 px-3 py-2.5 text-xs text-slate-500/64">
             <div className="flex items-center justify-between gap-2">
-              <div className="text-[11px] font-medium text-accent">Graph Node Context</div>
-              <span className="rounded border border-accent/35 bg-accent/10 px-1.5 py-0.5 text-[10px]  text-accent/90">
+              <div className="text-[11px] font-medium text-dos-text-muted/82">Graph Node Context</div>
+              <span className="rounded border border-white/[0.025] bg-dos-panel/26 px-1.5 py-0.5 text-[10px]  text-dos-text-muted/86">
                 {selectedGraphNode.type.replace('_', ' ')}
               </span>
             </div>

@@ -1166,11 +1166,11 @@ export const CenterWorkspace = ({
                         </div>
 
                         {selectedPreviewSrc ? (
-                          <div className="mt-2 overflow-hidden rounded bg-black/30">
+                          <div className="mt-2 overflow-hidden rounded bg-dos-panel/24">
                             <img src={selectedPreviewSrc} alt={`${selectedJob.id}-selected-preview`} className="h-32 w-full object-cover" />
                           </div>
                         ) : selectedPreviewMediaSrc && selectedPreviewType === 'video' ? (
-                          <div className="relative mt-2 overflow-hidden rounded bg-black/30">
+                          <div className="relative mt-2 overflow-hidden rounded bg-dos-panel/24">
                             <video src={selectedPreviewMediaSrc} className="relative z-10 h-32 w-full object-cover pointer-events-auto" controls muted playsInline />
                           </div>
                         ) : null}
@@ -1316,7 +1316,7 @@ export const CenterWorkspace = ({
                                   );
                                 })}
                               </div>
-                              <div className="rounded bg-black/25 px-2 py-1.5 text-[10px] text-textMuted/80 break-all">{selectedOutputPath ?? selectedOutputCandidates[0]}</div>
+                              <div className="rounded bg-dos-panel/22 px-2 py-1.5 text-[10px] text-textMuted/80 break-all">{selectedOutputPath ?? selectedOutputCandidates[0]}</div>
                             </div>
                           ) : (
                             <div className="text-[10px] text-textMuted/66">No output paths recorded for this job yet.</div>
@@ -1396,14 +1396,14 @@ export const CenterWorkspace = ({
                                       <button 
                                         type="button" 
                                         onClick={() => onOpenEvidenceCandidate?.(candidate.jobId)} 
-                                        className={`rounded bg-panel/30 px-2 py-1 text-[9px] font-bold uppercase text-slate-400 transition-[background-color,color,border-color] duration-[120ms] hover:bg-panel/50 hover:text-slate-200 border border-white/5 active:scale-[0.99]`}
+                                        className={`rounded bg-panel/30 px-2 py-1 text-[9px] font-bold uppercase text-slate-400 transition-[background-color,color,border-color] duration-[120ms] hover:bg-panel/50 hover:text-slate-200 border border-white/[0.022] active:scale-[0.99]`}
                                       >
                                         Inspect
                                       </button>
                                       <button 
                                         type="button" 
                                         onClick={() => onToggleCompareCandidate?.(candidate.jobId)} 
-                                        className={`rounded bg-panel/30 px-2 py-1 text-[9px] font-bold uppercase text-slate-400 transition-[background-color,color,border-color] duration-[120ms] hover:bg-panel/50 hover:text-slate-200 border border-white/5 active:scale-[0.99]`}
+                                        className={`rounded bg-panel/30 px-2 py-1 text-[9px] font-bold uppercase text-slate-400 transition-[background-color,color,border-color] duration-[120ms] hover:bg-panel/50 hover:text-slate-200 border border-white/[0.022] active:scale-[0.99]`}
                                       >
                                         Compare
                                       </button>
@@ -1455,7 +1455,7 @@ export const CenterWorkspace = ({
                         
                         {/* Decision History Surface */}
                         {familyDecisionHistory && familyDecisionHistory.length > 0 && (
-                          <div className="mt-4 border-t border-white/5 pt-3">
+                          <div className="mt-4 border-t border-white/[0.022] pt-3">
                             <div className="mb-2 text-[9px] uppercase tracking-[0.1em] text-textMuted/50">Decision History</div>
                             <div className="space-y-2 max-h-[160px] overflow-y-auto pr-1">
                               {familyDecisionHistory.map((entry) => (
