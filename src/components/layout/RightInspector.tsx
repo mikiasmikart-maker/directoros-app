@@ -407,14 +407,14 @@ export const RightInspector = memo(({
             </button>
           )}
           <div className="flex items-center gap-1.5 rounded-full bg-black/40 px-2 py-0.5 border border-dos-border">
-            <div className="h-1 w-1 rounded-full bg-dos-sig-continuity animate-pulse shadow-[0_0_8px_rgba(207,140,255,0.4)]" />
+            <div className="h-1 w-1 rounded-full bg-dos-sig-continuity animate-pulse shadow-[0_0_5px_rgba(207,140,255,0.18)]" />
             <span className="text-[8px] font-mono text-dos-sig-continuity/80 uppercase tracking-widest font-bold">Proof Signal</span>
           </div>
         </div>
       </header>
 
       {/* 1b. HUD CONTEXT (Optional sub-header for telemetry) */}
-      <div className="flex flex-col border-b border-white/[0.03] bg-black/10 px-4 py-2 gap-1">
+      <div className="flex flex-col border-b border-white/[0.02] bg-black/[0.08] px-4 py-2 gap-1">
         <div className="text-[11px] font-mono text-white/80 truncate tracking-tighter">
           {scene?.name ?? 'No_Scene'} <span className="text-neutral-700 mx-1">//</span> {activeShot?.title ?? 'No_Shot'}
         </div>
@@ -581,7 +581,7 @@ export const RightInspector = memo(({
 
         {activeTab === 'pipeline' && postPipelineSummary ? (
           <div className="animate-in fade-in slide-in-from-right-1 duration-150">
-            <div className="mb-3 rounded-md border border-[var(--m6-border-soft)] bg-panel/26 px-3.5 py-3 text-[11px] text-dos-text-muted/72 shadow-[inset_0_1px_0_rgba(255,255,255,0.014)]">
+            <div className="mb-3 rounded-md border border-[var(--m6-border-soft)] bg-panel/24 px-3.5 py-3 text-[11px] text-dos-text-muted/72 shadow-[inset_0_1px_0_rgba(255,255,255,0.008)]">
               <div className="flex items-start justify-between gap-3 border-b border-[var(--m6-border-soft)] pb-2.5">
                 <div className="min-w-0">
                   <div className="text-[9px] font-medium uppercase tracking-[0.16em] text-dos-text-muted/42">Validation / Provenance</div>
@@ -601,9 +601,9 @@ export const RightInspector = memo(({
                     <div
                       key={stage.stage}
                       className={`flex items-center justify-between rounded-md border px-2.5 py-1.5 ${isActive
-                        ? 'border-[var(--m6-state-focus-border)]/35 bg-dos-panel/42 shadow-[inset_2px_0_0_var(--m6-state-focus-border)]'
+                        ? 'border-[var(--m6-state-focus-border)]/24 bg-dos-panel/30 shadow-[inset_2px_0_0_var(--m6-state-focus-border)]/60'
                         : isCompleted
-                          ? 'border-[var(--m6-state-active-border)]/45 bg-dos-panel/34 shadow-[inset_2px_0_0_var(--m6-state-active-fg)]/15'
+                          ? 'border-[var(--m6-state-active-border)]/28 bg-dos-panel/28 shadow-[inset_2px_0_0_var(--m6-state-active-fg)]/10'
                           : 'border-[var(--m6-border-soft)] bg-dos-panel/24'
                         }`}
                     >
@@ -666,8 +666,8 @@ export const RightInspector = memo(({
 
         {activeTab === 'decision' && (selectedJobTelemetry || productionFamily) ? (
           <div className="animate-in fade-in slide-in-from-right-1 duration-150">
-            <div className="mb-2 rounded-md border border-[var(--m6-border-soft)] bg-[linear-gradient(180deg,rgba(18,18,20,0.52)_0%,rgba(14,14,16,0.48)_100%)] px-2.5 py-2.5 text-[10px] text-slate-500/60 shadow-[0_6px_16px_rgba(2,6,23,0.06),inset_0_1px_0_rgba(255,255,255,0.008)]">
-              <div className={`rounded border px-2.5 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.008)] transition-[background-color,border-color,box-shadow] duration-180 ${isActionRequired ? 'border-accent/40 bg-accent/[0.04] shadow-[0_0_12px_rgba(120,160,255,0.05)]' : 'border-[var(--m6-border-soft)] bg-panel/12'}`}>
+            <div className="mb-2 rounded-md border border-white/[0.025] bg-[linear-gradient(180deg,rgba(18,18,20,0.38)_0%,rgba(14,14,16,0.34)_100%)] px-2.5 py-2.5 text-[10px] text-slate-500/60 shadow-[0_4px_12px_rgba(2,6,23,0.04),inset_0_1px_0_rgba(255,255,255,0.006)]">
+              <div className={`rounded border px-2.5 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.006)] transition-[background-color,border-color,box-shadow] duration-180 ${isActionRequired ? 'border-accent/28 bg-accent/[0.035] shadow-[0_0_8px_rgba(120,160,255,0.035)]' : 'border-white/[0.02] bg-panel/10'}`}>
                 <div className="flex items-center justify-between gap-1.5">
                   {decisionActionLabel ? (
                     <button
@@ -697,7 +697,7 @@ export const RightInspector = memo(({
                 )}
 
                 <div className="mt-2.5 flex flex-wrap items-center gap-1.5 text-[8px]">
-                  <span className={`m6-signal-elevated rounded border px-1.5 py-0.5 font-bold uppercase tracking-tight shadow-[0_0_8px_rgba(34,211,238,0.1)] border-cyan-400/40 bg-cyan-500/10 text-cyan-100`}>
+                  <span className={`m6-signal-elevated rounded border px-1.5 py-0.5 font-bold uppercase tracking-tight shadow-[0_0_5px_rgba(34,211,238,0.05)] border-cyan-400/24 bg-cyan-500/[0.07] text-cyan-100/86`}>
                     {mapTechnicalState(selectedJobTelemetry?.canonicalState ?? selectedJobTelemetry?.lifecycle ?? (hasActiveRender ? livePreview.mode : 'Idle State'))}
                   </span>
                   <span className={`m6-signal-ambient rounded border px-1.5 py-0.5 font-bold uppercase tracking-tight ${hasActiveRender ? 'border-transparent text-slate-700' : 'border-[var(--m6-border-soft)] text-slate-500'}`}>{focusStateLabel}</span>
@@ -720,7 +720,7 @@ export const RightInspector = memo(({
 
                 {/* Phase 4: Delivery Validation Section */}
                 {deliveryReadiness && (
-                  <div className={`mt-3 rounded-md border px-3 py-2.5 transition-all duration-180 shadow-[inset_0_1px_0_rgba(255,255,255,0.01)] ${deliveryReadiness.isReady ? 'border-[var(--dos-border)] bg-panel/24' : 'border-[var(--m6-border-soft)] bg-panel/12'}`}>
+                  <div className={`mt-3 rounded-md border px-3 py-2.5 transition-all duration-180 shadow-[inset_0_1px_0_rgba(255,255,255,0.006)] ${deliveryReadiness.isReady ? 'border-white/[0.025] bg-panel/20' : 'border-white/[0.02] bg-panel/10'}`}>
                     <div className="flex items-center justify-between">
                       <div className="text-[9px] font-bold uppercase tracking-[0.12em] text-slate-500/70">Delivery Validation</div>
                       <span className={`px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider ${deliveryReadiness.isReady ? 'm6-signal-elevated border-emerald-400/30 bg-emerald-500/10 text-emerald-100/90' : 'm6-signal-ambient border-slate-500/30 bg-slate-500/10 text-slate-400'}`}>
@@ -780,10 +780,10 @@ export const RightInspector = memo(({
                 
                 {/* Phase 4: Delivery Manifest (Export Logic) */}
                 {deliveryManifest && (
-                  <div className="mt-4 pt-4 border-t-2 border-dashed border-cyan-500/15 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                  <div className="mt-4 pt-4 border-t border-dashed border-cyan-500/10 animate-in fade-in slide-in-from-bottom-2 duration-300">
                     <div className="mb-4 flex items-center justify-between px-0.5">
-                      <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-cyan-400">
-                        <span className="h-1.5 w-1.5 rounded-full bg-cyan-500 shadow-[0_0_8px_rgba(34,211,238,0.4)]" />
+                      <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-cyan-400/70">
+                        <span className="h-1.5 w-1.5 rounded-full bg-cyan-500/70 shadow-[0_0_5px_rgba(34,211,238,0.18)]" />
                         Delivery Manifest
                       </div>
                       <div className="flex items-center gap-3">
@@ -801,13 +801,13 @@ export const RightInspector = memo(({
                           <button
                             type="button"
                             onClick={() => onJumpToShotFromLedger?.(nextMissingShot.shotId)}
-                            className="text-[9px] uppercase tracking-[0.12em] font-bold text-cyan-400/60 hover:text-cyan-300 transition-colors flex items-center gap-1 group"
+                            className="text-[9px] uppercase tracking-[0.12em] font-bold text-cyan-400/45 hover:text-cyan-300/80 transition-colors flex items-center gap-1 group"
                           >
                             <span>{formatShuttleLabel(nextMissingShot, 'Next')} · {missingCount} remaining</span>
                             <span className="text-[10px] transition-transform group-hover:translate-x-0.5">»</span>
                           </button>
                         )}
-                        <div className="px-2 py-0.5 rounded-sm bg-cyan-500/10 border border-cyan-500/20 text-[9px] font-mono text-cyan-400/80 tracking-wider">
+                        <div className="px-2 py-0.5 rounded-sm bg-cyan-500/[0.06] border border-cyan-500/14 text-[9px] font-mono text-cyan-400/62 tracking-wider">
                           {deliveryManifest.summary.finalizedShots.toString().padStart(2, '0')} / {deliveryManifest.summary.totalShots.toString().padStart(2, '0')} RESOLVED
                         </div>
                       </div>
@@ -843,14 +843,14 @@ export const RightInspector = memo(({
                           onClick={() => {
                             navigator.clipboard.writeText(JSON.stringify(deliveryManifest, null, 2));
                           }}
-                          className="flex items-center justify-center gap-2 py-2 rounded-md border border-cyan-500/30 bg-cyan-500/5 text-cyan-200/80 text-[10px] uppercase tracking-[0.08em] font-bold hover:bg-cyan-500/10 active:scale-[0.98] transition-all"
+                          className="flex items-center justify-center gap-2 py-2 rounded-md border border-cyan-500/18 bg-cyan-500/[0.035] text-cyan-200/70 text-[10px] uppercase tracking-[0.08em] font-bold hover:bg-cyan-500/8 active:scale-[0.98] transition-all"
                         >
                           <span>Copy JSON</span>
                           <span className="text-xs opacity-30">⎋</span>
                         </button>
                         <button
                           onClick={() => handleDownloadManifestJson(deliveryManifest)}
-                          className="flex items-center justify-center gap-2 py-2 rounded-md bg-cyan-500/15 border border-cyan-500/40 text-cyan-100 text-[10px] uppercase tracking-[0.08em] font-bold hover:bg-cyan-500/20 active:scale-[0.98] transition-all shadow-[0_2px_8px_rgba(34,211,238,0.1)]"
+                          className="flex items-center justify-center gap-2 py-2 rounded-md bg-cyan-500/10 border border-cyan-500/24 text-cyan-100/84 text-[10px] uppercase tracking-[0.08em] font-bold hover:bg-cyan-500/14 active:scale-[0.98] transition-all shadow-[0_2px_6px_rgba(34,211,238,0.05)]"
                         >
                           <span>Download</span>
                           <span className="text-xs opacity-50">↓</span>
@@ -1075,7 +1075,7 @@ export const RightInspector = memo(({
         ) : null}
 
         {activeTab === 'intelligence' && (selectedJobTelemetry || productionFamily) ? (
-          <div className="mt-2 rounded-md m6-tier-3 m6-surface-quiet bg-violet-500/10 px-3 py-2.5 text-xs text-textMuted">
+          <div className="mt-2 rounded-md m6-tier-3 px-3 py-2.5 text-xs text-textMuted">
             <div className="text-[10px] font-medium text-violet-300/80 ">{selectedJobTelemetry ? 'Render Read • Selected Job' : 'Render Read • Production Family'}</div>
             <div className="mt-2 flex flex-wrap gap-1.5 text-[10px] text-slate-500">
               <span className="rounded border border-[var(--m6-border-soft)] bg-panel/22 px-1.5 py-0.5 text-slate-500/64">status: {selectedJobTelemetry?.status ?? productionFamily?.familyState ?? 'idle'}</span>
@@ -1165,7 +1165,7 @@ export const RightInspector = memo(({
         )}
 
         {activeTab === 'activity' && activitySummary ? (
-          <div className="mb-3 rounded-md border border-[var(--m6-border-soft)] m6-tier-3 m6-surface-quiet bg-[rgba(18,18,20,0.58)] px-3 py-2.5 text-xs text-slate-500/64 shadow-[inset_0_1px_0_rgba(255,255,255,0.014)]">
+          <div className="mb-3 rounded-md m6-tier-3 px-3 py-2.5 text-xs text-slate-500/64">
             <div className="text-[11px] font-medium text-slate-300/90">Runtime Activity (Secondary)</div>
             <div className="mt-1.5 text-[11px] leading-relaxed text-slate-300/72">{activitySummary}</div>
           </div>
@@ -1173,16 +1173,16 @@ export const RightInspector = memo(({
 
 
         {activeTab === 'decision' && sceneReviewBoard ? (
-          <div className="mb-3 rounded-md border border-[var(--m6-border-soft)] m6-tier-3 m6-surface-quiet bg-[rgba(18,18,20,0.58)] px-3 py-2.5 text-xs text-slate-500/64 shadow-[inset_0_1px_0_rgba(255,255,255,0.014)]">
+          <div className="mb-3 rounded-md m6-tier-3 px-3 py-2.5 text-xs text-slate-500/64">
             <div className="flex items-center justify-between gap-2">
               <div className="text-[11px] font-medium text-slate-300/90">Scene Review Board (M4.1)</div>
               <span className="rounded border border-[var(--m6-border-soft)] bg-panel/22 px-1.5 py-0.5 text-[9px]  text-text/72">{sceneReviewBoard.status}</span>
             </div>
             <div className="mt-2 grid grid-cols-2 gap-1.5 text-[10px] ">
-              <span className="rounded bg-panel/30 px-1.5 py-1">pass-rate {Math.round(sceneReviewBoard.passRate.value * 100)}%</span>
-              <span className="rounded bg-panel/30 px-1.5 py-1">retry pressure {sceneReviewBoard.retryPressure.band}</span>
-              <span className="rounded bg-panel/30 px-1.5 py-1">best-known {Math.round(sceneReviewBoard.bestKnownCoverage.value * 100)}%</span>
-              <span className="rounded bg-panel/30 px-1.5 py-1">exceptions {sceneReviewBoard.shotExceptions.length}</span>
+              <span className="rounded bg-panel/24 px-1.5 py-1">pass-rate {Math.round(sceneReviewBoard.passRate.value * 100)}%</span>
+              <span className="rounded bg-panel/24 px-1.5 py-1">retry pressure {sceneReviewBoard.retryPressure.band}</span>
+              <span className="rounded bg-panel/24 px-1.5 py-1">best-known {Math.round(sceneReviewBoard.bestKnownCoverage.value * 100)}%</span>
+              <span className="rounded bg-panel/24 px-1.5 py-1">exceptions {sceneReviewBoard.shotExceptions.length}</span>
               <span className="rounded border border-[var(--m6-state-active-border)] bg-[var(--m6-state-active-bg)] px-1.5 py-1 text-[var(--m6-state-active-fg)]">approved {sceneReviewBoard.actionAggregates?.approved ?? 0}/{sceneReviewBoard.actionAggregates?.total ?? 0}</span>
               <span className="rounded border border-slate-500/25 bg-slate-500/5 px-1.5 py-1 text-slate-400/80">finalized {sceneReviewBoard.actionAggregates?.finalized ?? 0}/{sceneReviewBoard.actionAggregates?.total ?? 0}</span>
               <span className="rounded border border-[var(--m6-state-warn-border)] bg-[var(--m6-state-warn-bg)] px-1.5 py-1 text-[var(--m6-state-warn-fg)]">needs revision {sceneReviewBoard.actionAggregates?.needsRevision ?? 0}</span>
@@ -1192,9 +1192,9 @@ export const RightInspector = memo(({
         ) : null}
 
         {activeTab === 'decision' && sceneReviewBoard ? (
-          <div className="mb-3 rounded-md border border-[var(--m6-border-soft)] m6-tier-3 m6-surface-quiet bg-[rgba(18,18,20,0.58)] px-3 py-2.5 text-xs text-slate-500/64 shadow-[inset_0_1px_0_rgba(255,255,255,0.014)]">
+          <div className="mb-3 rounded-md m6-tier-3 px-3 py-2.5 text-xs text-slate-500/64">
             <div className="text-[11px] font-medium text-slate-300/90">Decision Trace</div>
-            <div className="mt-2 rounded-md border border-[var(--m6-border-soft)] bg-panel/28 px-2.5 py-1.5 text-[10px] shadow-[inset_0_1px_0_rgba(255,255,255,0.014)]">
+            <div className="mt-2 rounded-md border border-[var(--m6-border-soft)] bg-panel/24 px-2.5 py-1.5 text-[10px] shadow-[inset_0_1px_0_rgba(255,255,255,0.008)]">
               <div className="text-slate-300">{sceneReviewBoard.explanations.summary}</div>
               <div className="mt-1 text-slate-500/64">Why not approved: {sceneReviewBoard.explanations.whyNotApproved}</div>
               <div className="text-slate-500/64">Fastest path: {sceneReviewBoard.explanations.fastestPathToGreen}</div>
@@ -1203,7 +1203,7 @@ export const RightInspector = memo(({
         ) : null}
 
         {activeTab === 'activity' && normalizedShotQueue.length ? (
-          <div className="mb-3 rounded-md border border-[var(--m6-border-soft)] m6-tier-3 m6-surface-quiet bg-[rgba(18,18,20,0.58)] px-3 py-2.5 text-xs text-slate-500/64 shadow-[inset_0_1px_0_rgba(255,255,255,0.014)]">
+          <div className="mb-3 rounded-md m6-tier-3 px-3 py-2.5 text-xs text-slate-500/64">
             <div className="flex items-center justify-between gap-2">
               <div className="text-[11px] font-medium text-slate-300/90">Shot Queue</div>
               <span className="text-[10px]  text-slate-300/72">{activeShot?.title ?? 'no active shot'}</span>
@@ -1215,7 +1215,7 @@ export const RightInspector = memo(({
                 const isWaiting = shot.state === 'waiting';
 
                 return (
-                  <div key={shot.id} className={`m6-surface-quiet flex items-center justify-between rounded m6-tier-3 px-2.5 py-1.5 transition-[background-color,border-color,box-shadow] duration-180 ${isActive ? 'bg-accent/10 border-[var(--m6-state-focus-border)]/40 shadow-[0_0_0_1px_rgba(120,160,255,0.12)]' : isResolved ? 'bg-[var(--m6-state-active-bg)] border-[var(--m6-state-active-border)]' : isWaiting ? 'bg-panel/25 border-[var(--m6-border-soft)]' : 'bg-panel/35 border-[var(--m6-border-soft)]'}`}>
+                  <div key={shot.id} className={`flex items-center justify-between rounded m6-tier-3 px-2.5 py-1.5 transition-[background-color,border-color,box-shadow] duration-180 ${isActive ? 'bg-accent/8 border-[var(--m6-state-focus-border)]/28 shadow-[0_0_0_1px_rgba(120,160,255,0.06)]' : isResolved ? 'bg-[var(--m6-state-active-bg)] border-[var(--m6-state-active-border)]' : isWaiting ? 'bg-panel/22 border-[var(--m6-border-soft)]' : 'bg-panel/26 border-[var(--m6-border-soft)]'}`}>
                     <div className="min-w-0">
                       <div className={`truncate text-[11px] ${isActive ? 'text-text' : 'text-slate-300/72'}`}>
                         <span className="mr-1.5 text-slate-500/64">{shot.order}.</span>
@@ -1237,7 +1237,7 @@ export const RightInspector = memo(({
         ) : null}
 
         {activeTab === 'intelligence' && selectedGraphNode ? (
-          <div className="mb-3 rounded-md border border-[var(--m6-border-soft)] m6-tier-3 m6-surface-quiet bg-[rgba(18,18,20,0.58)] px-3 py-2.5 text-xs text-slate-500/64 shadow-[inset_0_1px_0_rgba(255,255,255,0.014)]">
+          <div className="mb-3 rounded-md m6-tier-3 px-3 py-2.5 text-xs text-slate-500/64">
             <div className="flex items-center justify-between gap-2">
               <div className="text-[11px] font-medium text-accent">Graph Node Context</div>
               <span className="rounded border border-accent/35 bg-accent/10 px-1.5 py-0.5 text-[10px]  text-accent/90">

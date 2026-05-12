@@ -872,7 +872,7 @@ export const CenterWorkspace = ({
                   <div
                     key={act.operatorId}
                     title={`${operator.name} intent: ${act.type.replace('_', ' ')}`}
-                    className={`flex items-center gap-1.5 rounded-full border border-[rgba(255,255,255,0.04)] bg-panel/34 px-1.5 py-0.5 text-[9px] transition-all hover:bg-panel/46 ${isActiveIntent ? 'border-amber-500/30 ring-1 ring-amber-500/10' : 'opacity-60'}`}
+                    className={`flex items-center gap-1.5 rounded-full border border-[rgba(255,255,255,0.025)] bg-panel/24 px-1.5 py-0.5 text-[9px] transition-all hover:bg-panel/34 ${isActiveIntent ? 'border-amber-500/20 ring-1 ring-amber-500/5' : 'opacity-60'}`}
                   >
                     <span className={`h-1.5 w-1.5 rounded-full ${act.type === 'viewing' ? 'animate-pulse' : ''}`} style={{ backgroundColor: operator.color }} />
                     <span className="font-medium text-textMuted/80">{operator.initials}</span>
@@ -934,7 +934,7 @@ export const CenterWorkspace = ({
 
             <div className="flex flex-col gap-3">
               {shootout?.active && (
-                <div className="rounded-md border border-cyan-400/20 bg-cyan-950/20 p-3 shadow-lg ring-1 ring-cyan-400/10">
+                <div className="rounded-md border border-cyan-400/14 bg-cyan-950/14 p-3 shadow-sm ring-1 ring-cyan-400/5">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <div className="flex h-1.5 w-1.5 animate-pulse rounded-full bg-cyan-400" />
@@ -963,7 +963,7 @@ export const CenterWorkspace = ({
                    const isConflict = conflicts.some((c) => c.operatorId === act.operatorId);
                    return (
                      <div key="peer-intent-banner" className={`mb-1 flex items-center gap-2 rounded border px-2.5 py-1.5 animate-in fade-in slide-in-from-top-1 duration-200 ${isConflict ? 'border-rose-500/40 bg-rose-500/10' : 'border-amber-500/20 bg-amber-500/5'}`}>
-                        <div className={`h-1 w-1 rounded-full animate-pulse ${isConflict ? 'bg-rose-500 shadow-[0_0_4px_rgba(244,63,94,0.4)]' : 'bg-amber-500 shadow-[0_0_4px_rgba(245,158,11,0.4)]'}`} />
+                        <div className={`h-1 w-1 rounded-full animate-pulse ${isConflict ? 'bg-rose-500 shadow-[0_0_3px_rgba(244,63,94,0.22)]' : 'bg-amber-500 shadow-[0_0_3px_rgba(245,158,11,0.22)]'}`} />
                         <span className={`text-[10px] font-medium tracking-tight ${isConflict ? 'text-rose-200' : 'text-amber-200/80'}`}>
                           {isConflict ? 'COORDINATION CONFLICT: ' : 'Active Intent: '}
                           <span className={isConflict ? 'font-bold text-rose-100' : 'text-amber-100'}>{operator?.name}</span> is {act.type === 'preparing_commit' ? 'preparing a commit' : 'comparing candidates'}
@@ -1008,9 +1008,9 @@ export const CenterWorkspace = ({
 
               <RuntimeOfflineStatus state={streamState} />
 
-              <div className={`rounded-md border p-4 transition-colors duration-[180ms] ease-out ${hasActiveRender ? 'border-dos-border bg-dos-panel/30' : 'border-dos-border bg-dos-panel/45'}`}>
-                <div className="mb-4 flex items-center justify-between border-b border-white/[0.04] pb-2 text-[10px]">
-                  <span className={`${hasActiveRender ? 'text-slate-500' : 'text-cyan-100/60'} font-bold uppercase tracking-[0.12em]`}>Next Action / Command Stage</span>
+              <div className={`rounded-md border p-4 transition-colors duration-[180ms] ease-out ${hasActiveRender ? 'border-white/[0.025] bg-dos-panel/26' : 'border-white/[0.02] bg-dos-panel/32'}`}>
+                <div className="mb-4 flex items-center justify-between border-b border-white/[0.022] pb-2 text-[10px]">
+                  <span className={`${hasActiveRender ? 'text-slate-500' : 'text-cyan-100/48'} font-bold uppercase tracking-[0.12em]`}>Next Action / Command Stage</span>
                   <div className="flex items-center gap-3 text-[9px] tracking-widest text-slate-500/50">
                     <span className="flex items-center gap-1"><span className="h-1 w-1 rounded-full bg-slate-500/30" /> active {queueStats.active}</span>
                     <span className="flex items-center gap-1"><span className="h-1 w-1 rounded-full bg-slate-500/30" /> queued {queueStats.queued}</span>
@@ -1064,7 +1064,7 @@ export const CenterWorkspace = ({
                           hasActiveRender || selectedJobPrimaryQuickAction.disabled ? 'bg-dos-panel/20 text-dos-text-muted/60 border-dos-border' : 
                           selectedJobPrimaryQuickAction.tone === 'success' ? 'bg-dos-sig-trust/10 text-dos-sig-trust hover:bg-dos-sig-trust/20 border-dos-sig-trust/30' :
                           selectedJobPrimaryQuickAction.tone === 'brand' ? 'bg-dos-sig-continuity/10 text-dos-sig-continuity hover:bg-dos-sig-continuity/20 border-dos-sig-continuity/30' :
-                          'bg-dos-panel/45 text-dos-text/90 border-dos-border hover:bg-dos-panel/52'
+                          'bg-dos-panel/30 text-dos-text/86 border-white/[0.025] hover:bg-dos-panel/38'
                         }`)}
                       >
                         {selectedJobPrimaryQuickAction.label}
@@ -1103,7 +1103,7 @@ export const CenterWorkspace = ({
 
                 {/* Layer 3: Output & Change */}
                 {(selectedJob || productionFamily) ? (
-                  <div className="grid grid-cols-2 gap-4 border-t border-white/[0.03] pt-4">
+                  <div className="grid grid-cols-2 gap-4 border-t border-white/[0.022] pt-4">
                     <div className="flex flex-col gap-1.5">
                       <span className="text-[9px] font-bold uppercase tracking-[0.12em] text-slate-500/60">Current Output</span>
                       <div className="text-[10px] font-medium text-slate-400">
@@ -1240,7 +1240,7 @@ export const CenterWorkspace = ({
                           </div>
                         ) : null}
 
-                        <div className={`mt-2 rounded p-2 transition-colors duration-200 ${conflicts.length > 0 ? 'border border-rose-500/30 bg-rose-500/10 ring-1 ring-rose-500/20' : 'bg-white/[0.03] border border-white/[0.02]'}`}>
+                        <div className={`mt-2 rounded p-2 transition-colors duration-200 ${conflicts.length > 0 ? 'border border-rose-500/24 bg-rose-500/8 ring-1 ring-rose-500/10' : 'bg-white/[0.02] border border-white/[0.015]'}`}>
                           <div className="mb-1 flex items-center justify-between text-[10px] uppercase tracking-wide text-white/40">
                             <span className={conflicts.length > 0 ? 'text-rose-200 font-bold' : ''}>
                               {conflicts.length > 0 ? 'Conflict Alert: Peer Path Overlap' : 'M5 Lineage Context'}
@@ -1326,7 +1326,7 @@ export const CenterWorkspace = ({
                     ) : productionFamily ? (
                       <div
                         ref={activeFamilyDecisionRef}
-                        className={`mt-2 rounded px-2.5 py-2.5 text-[11px] text-dos-text-muted/80 border border-dos-sig-continuity/20 bg-dos-panel/45 ${
+                        className={`mt-2 rounded px-2.5 py-2.5 text-[11px] text-dos-text-muted/80 border border-dos-sig-continuity/14 bg-dos-panel/28 ${
                           selectedFamilyRootId === returningPulseId ? 'm6-return-anchor' : ''
                         }`}
                       >
@@ -1348,7 +1348,7 @@ export const CenterWorkspace = ({
                         </div>
                         <div className="mt-1 text-[10px] text-slate-500/62">Default focus target: {productionFamily?.evidenceTargetJobId ? `${shortJobId(productionFamily.evidenceTargetJobId)} • ${productionFamily.evidenceReason ?? 'supporting output'}` : 'none'}</div>
                         {productionFamily?.rankedEvidenceCandidates?.length ? (
-                          <div className="mt-3 grid grid-cols-1 gap-2 border-t border-white/[0.04] pt-3">
+                          <div className="mt-3 grid grid-cols-1 gap-2 border-t border-white/[0.022] pt-3">
                             <div className="mb-1 text-[9px] font-bold uppercase tracking-[0.15em] text-slate-500/50">Evidence & Attempt Candidates</div>
                             {productionFamily?.rankedEvidenceCandidates?.map((candidate) => {
                               const isWinner = candidate.jobId === productionFamily.currentWinnerId;
@@ -1360,7 +1360,7 @@ export const CenterWorkspace = ({
                                     className={`group relative flex flex-col gap-2.5 rounded-md border p-3 transition-[border-color,background-color] duration-[180ms] ease-out ${
                                       isWinner ? 'border-dos-sig-trust/40 bg-dos-sig-trust/10' : 
                                       isLatest ? 'border-dos-sig-continuity/20 bg-dos-sig-continuity/10 hover:bg-dos-sig-continuity/15' :
-                                      'border-dos-border bg-dos-panel/30 hover:bg-dos-panel/45 hover:border-dos-border'
+                                      'border-white/[0.025] bg-dos-panel/24 hover:bg-dos-panel/32 hover:border-white/[0.035]'
                                     } ${
                                     candidate.jobId === returningPulseId ? 'm6-return-anchor' : ''
                                   } ${
@@ -1370,10 +1370,10 @@ export const CenterWorkspace = ({
                                   {/* Authority & Recency Badges */}
                                   <div className="absolute right-2 top-2 flex flex-col items-end gap-1.5">
                                     {isWinner && (
-                                      <div className="rounded-sm bg-cyan-600/90 px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wider text-white shadow-[0_0_8px_rgba(34,211,238,0.3)] ring-1 ring-cyan-400/30 backdrop-blur-sm">Winner Authority</div>
+                                      <div className="rounded-sm bg-cyan-600/72 px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wider text-cyan-50/90 shadow-[0_0_5px_rgba(34,211,238,0.16)] ring-1 ring-cyan-400/16">Winner Authority</div>
                                     )}
                                     {isLatest && !isWinner && (
-                                      <div className="rounded-sm bg-indigo-600/70 px-1.5 py-0.5 text-[7px] font-bold uppercase tracking-wider text-indigo-100/90 shadow-sm ring-1 ring-indigo-400/25 backdrop-blur-sm">Latest Attempt</div>
+                                      <div className="rounded-sm bg-indigo-600/50 px-1.5 py-0.5 text-[7px] font-bold uppercase tracking-wider text-indigo-100/82 ring-1 ring-indigo-400/14">Latest Attempt</div>
                                     )}
                                   </div>
 
@@ -1415,7 +1415,7 @@ export const CenterWorkspace = ({
                           </div>
                         ) : null}
                         <div className="mt-2 flex flex-wrap items-center gap-1 text-[10px] uppercase tracking-[0.06em]">
-                          <button type="button" onClick={onCompareSuggestedPair} disabled={!productionFamily?.suggestedPairPrimaryJobId || !productionFamily?.suggestedPairPartnerJobId} className="rounded bg-cyan-500/14 px-2 py-1 text-cyan-100 disabled:opacity-35">Compare Suggested Pair</button>
+                          <button type="button" onClick={onCompareSuggestedPair} disabled={!productionFamily?.suggestedPairPrimaryJobId || !productionFamily?.suggestedPairPartnerJobId} className="rounded bg-cyan-500/8 px-2 py-1 text-cyan-100/82 disabled:opacity-35">Compare Suggested Pair</button>
                         </div>
                         {familyInlineActionReceipt?.visible ? (
                           <div className={`mt-1.5 rounded border px-2 py-2 text-[10px] m6-animate-receipt-sharp ${familyInlineActionReceipt.tone === 'ok' ? 'border-emerald-300/20 bg-emerald-500/10 text-emerald-100/90' : 'border-rose-300/20 bg-rose-500/10 text-rose-100/90'}`}>

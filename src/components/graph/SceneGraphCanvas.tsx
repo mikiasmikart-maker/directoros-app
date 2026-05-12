@@ -532,10 +532,10 @@ export const SceneGraphCanvas = ({
   };
 
   return (
-    <section className="relative min-h-[500px] overflow-hidden rounded-md border border-dos-border bg-dos-bg py-10 shadow-panel">
+    <section className="relative min-h-[500px] overflow-hidden rounded-md border border-white/[0.025] bg-dos-bg py-10 shadow-[0_8px_20px_rgba(2,6,23,0.12)]">
       <GraphCanvasGrid />
-      <div className="absolute left-3 right-3 top-2 z-20 space-y-1 rounded-md border border-dos-border bg-dos-panel px-2.5 py-1.5 text-[11px] backdrop-blur-[12px] shadow-panel">
-        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/[0.035] pb-1.5 mb-1.5">
+      <div className="absolute left-3 right-3 top-2 z-20 space-y-1 rounded-md border border-white/[0.025] bg-dos-panel/72 px-2.5 py-1.5 text-[11px] backdrop-blur-[6px] shadow-[0_6px_14px_rgba(2,6,23,0.10)]">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/[0.022] pb-1.5 mb-1.5">
           <div className="flex flex-col gap-0.5">
             <span className="text-[9px] font-bold uppercase tracking-[0.18em] text-dos-text-muted/72">Workspace Map Authority</span>
             <span className="text-[10px] text-dos-text-muted/42">Graph owns structure, selection, and production topology.</span>
@@ -594,7 +594,7 @@ export const SceneGraphCanvas = ({
             </button>
           </div>
 
-          <div className="flex min-w-[280px] flex-1 items-center gap-1.5 overflow-x-auto rounded-md bg-black/16 border border-white/[0.02] px-1.5 py-1 shadow-[inset_0_1px_4px_rgba(0,0,0,0.14)]">
+          <div className="flex min-w-[280px] flex-1 items-center gap-1.5 overflow-x-auto rounded-md bg-black/10 border border-white/[0.015] px-1.5 py-1 shadow-[inset_0_1px_3px_rgba(0,0,0,0.10)]">
             {(['shot', 'environment', 'lighting', 'product', 'engine_target', 'review_node', 'edit_node', 'export_node', 'delivery_node'] as GraphNodeType[]).map((type) => (
               <button
                 key={type}
