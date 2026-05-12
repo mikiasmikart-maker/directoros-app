@@ -110,7 +110,7 @@ export const OverlaySurface = ({
       aria-hidden={false}
     >
       {layer === 'commandPanel' && (
-        <div className="absolute inset-0 bg-[rgb(8,12,20)]/80 backdrop-blur-[2px]" />
+        <div className="absolute inset-0 bg-[rgb(8,12,20)]/80 backdrop-blur-[2px] pointer-events-auto" />
       )}
       <div
         ref={surfaceRef}
