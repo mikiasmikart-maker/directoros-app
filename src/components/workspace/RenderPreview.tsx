@@ -112,7 +112,7 @@ export const RenderPreview: React.FC<RenderPreviewProps> = (props) => {
     role: props.authorityKind === 'none' ? 'SHOT' : props.authorityKind?.split('_')[0].toUpperCase() || 'SHOT',
   };
 
-  const { previewImage, previewType, state, id, role = "SHOT" } = job;
+  const { previewImage, previewType, state, id } = job;
 
   const isRunning = ['queued', 'preflight', 'running', 'packaging'].includes(state);
   const isFailed = state === 'failed';
@@ -122,7 +122,7 @@ export const RenderPreview: React.FC<RenderPreviewProps> = (props) => {
   const dotColorClass = isRunning ? 'bg-dos-sig-continuity' : isReady ? 'bg-dos-sig-trust' : (isFailed ? 'bg-dos-sig-warning' : 'bg-dos-panel/60');
   const dotShadowClass = isRunning ? 'shadow-[0_0_8px_rgba(207,140,255,0.2)]' : isReady ? 'shadow-[0_0_8px_rgba(130,201,161,0.2)]' : (isFailed ? 'shadow-[0_0_8px_rgba(255,140,140,0.2)]' : '');
 
-  const actionLabel = isRunning ? 'Signal Live' : (isFailed || isCancelled ? 'Initiate Recovery' : 'Render Scene');
+  const actionLabel = isRunning ? 'Media Signal Live' : (isFailed || isCancelled ? 'Open Recovery Path' : 'Render Output');
 
   return (
     <div className="relative flex-1 min-h-0 w-full bg-dos-bg/80 flex flex-col overflow-hidden group">
@@ -144,7 +144,7 @@ export const RenderPreview: React.FC<RenderPreviewProps> = (props) => {
         {/* ZONE 1: SYSTEM ORIGIN */}
         <div className="flex justify-between items-start border-l-2 border-dos-sig-continuity/60 pl-4 pointer-events-auto">
           <div className="flex flex-col">
-            <span className="text-[10px] font-light text-neutral-500 uppercase tracking-widest">Job_ID</span>
+            <span className="text-[10px] font-light text-neutral-500 uppercase tracking-widest">Media Job</span>
             <span className="text-xs font-mono text-white/90 tracking-tight">{id || 'NULL_PTR'}</span>
           </div>
 
@@ -165,7 +165,7 @@ export const RenderPreview: React.FC<RenderPreviewProps> = (props) => {
           </div>
 
           <div className="text-right flex flex-col items-end">
-             <span className="text-[10px] font-light text-neutral-500 uppercase tracking-widest">Runtime State</span>
+             <span className="text-[10px] font-light text-neutral-500 uppercase tracking-widest">Output State</span>
              <div className="flex items-center gap-2 mt-0.5">
                 <span className={`text-[10px] font-bold uppercase ${isFailed ? 'text-dos-sig-warning' : 'text-dos-text/90'}`}>
                   {mapTechnicalState(state || 'ready')}
@@ -184,7 +184,7 @@ export const RenderPreview: React.FC<RenderPreviewProps> = (props) => {
         <div className="flex flex-col space-y-1 max-w-3xl pointer-events-auto">
           <div className="flex items-center gap-2">
              <div className="w-1 h-3 bg-dos-sig-continuity/60" />
-             <span className="text-[10px] font-light text-dos-text-muted/80 tracking-widest uppercase">{role || 'Shot'} Context</span>
+             <span className="text-[10px] font-light text-dos-text-muted/80 tracking-widest uppercase">Media / Output Stage</span>
           </div>
           <div className="flex items-center gap-6">
             <h1 className="text-2xl lg:text-3xl font-bold tracking-tight text-dos-text/90 leading-none">
@@ -209,11 +209,11 @@ export const RenderPreview: React.FC<RenderPreviewProps> = (props) => {
         {/* ZONE 3: TECHNICAL MANIFEST */}
         <div className="grid grid-cols-3 gap-8 border-t border-white/5 pt-6">
           <div className="flex flex-col gap-1">
-            <span className="text-[9px] font-light text-neutral-500 tracking-widest uppercase">Instructor</span>
+            <span className="text-[9px] font-light text-neutral-500 tracking-widest uppercase">Engine</span>
             <span className="text-xs font-medium text-white uppercase">{job.engine || 'VEO'}</span>
           </div>
           <div className="flex flex-col gap-1">
-            <span className="text-[9px] font-light text-neutral-500 tracking-widest uppercase">Latency</span>
+            <span className="text-[9px] font-light text-neutral-500 tracking-widest uppercase">Signal Latency</span>
             <span className="text-xs font-medium text-white">42ms</span>
           </div>
           <div className="flex flex-col gap-1 items-end justify-end ml-auto">

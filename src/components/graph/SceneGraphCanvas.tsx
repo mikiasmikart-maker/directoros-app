@@ -536,6 +536,10 @@ export const SceneGraphCanvas = ({
       <GraphCanvasGrid />
       <div className="absolute left-3 right-3 top-2 z-20 space-y-1 rounded-md border border-dos-border bg-dos-panel px-2.5 py-1.5 text-[11px] backdrop-blur-[12px] shadow-panel">
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/[0.035] pb-1.5 mb-1.5">
+          <div className="flex flex-col gap-0.5">
+            <span className="text-[9px] font-bold uppercase tracking-[0.18em] text-dos-text-muted/72">Workspace Map Authority</span>
+            <span className="text-[10px] text-dos-text-muted/42">Graph owns structure, selection, and production topology.</span>
+          </div>
           <GraphMiniToolbar
             selectedShotId={selectedShotId}
             showConnections={showConnections}
@@ -570,7 +574,7 @@ export const SceneGraphCanvas = ({
 
         <div className="flex flex-wrap items-center gap-1.5">
           <div className="flex items-center gap-1.5 rounded bg-white/[0.03] px-2 py-1 text-[10px]">
-            <span className="uppercase tracking-[0.12em] text-dos-text-muted">Route Preset</span>
+            <span className="uppercase tracking-[0.12em] text-dos-text-muted">Map Route Preset</span>
             <select
               value={routePresetId ?? engineRoutePresets[0].id}
               onChange={(event) => onRoutePresetChange?.(event.target.value)}
@@ -664,7 +668,7 @@ export const SceneGraphCanvas = ({
         >
           <div className="pointer-events-none absolute inset-y-0 left-[6%] w-[72%] bg-[linear-gradient(90deg,transparent_0%,rgba(255,255,255,0.005)_26%,rgba(255,255,255,0.005)_66%,transparent_100%)]" />
 
-          <div className="pointer-events-none absolute left-[3%] top-4 text-[9px] font-semibold uppercase tracking-[0.2em] text-dos-text-muted/30">Scene Sources</div>
+          <div className="pointer-events-none absolute left-[3%] top-4 text-[9px] font-semibold uppercase tracking-[0.2em] text-dos-text-muted/30">Map Sources</div>
           <div className="pointer-events-none absolute left-[20.2%] top-4 text-[9px] font-bold uppercase tracking-[0.2em] text-dos-sig-runtime/20">Shot Logic</div>
           <div className="pointer-events-none absolute left-[35.2%] top-4 text-[9px] font-bold uppercase tracking-[0.2em] text-dos-sig-continuity/20">Prompt Compiler</div>
           <div className="pointer-events-none absolute left-[50.2%] top-4 text-[9px] font-bold uppercase tracking-[0.2em] text-dos-sig-trust/20">Engine Router + Targets</div>

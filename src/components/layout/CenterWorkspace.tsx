@@ -891,9 +891,9 @@ export const CenterWorkspace = ({
         </header>
         <div className="flex flex-col gap-3.5 flex-1 min-h-0 overflow-y-auto m6-scrollbar-thin p-4">
           <section className="px-1 py-2 flex flex-col group">
-            <span className="text-[9px] uppercase font-semibold tracking-[0.2em] text-neutral-600 mb-1.5">Active Scene</span>
+            <span className="text-[9px] uppercase font-semibold tracking-[0.2em] text-neutral-600 mb-1.5">Workspace Context</span>
             <h2 className="text-2xl font-bold text-white tracking-tighter leading-none">{scene?.name ?? 'No Scene Selected'}</h2>
-            <p className="mt-2.5 text-[12px] leading-[1.6] text-white/40 max-w-xl font-light">{scene?.prompt ?? 'Choose a scene from Scenes to activate cinematic workspace preview.'}</p>
+            <p className="mt-2.5 text-[12px] leading-[1.6] text-white/40 max-w-xl font-light">{scene?.prompt ?? 'Choose a scene from Scenes to activate the workspace map, media stage, and command flow.'}</p>
           </section>
 
           <div className={isFocusMode ? 'focus-dim' : ''}>
@@ -1010,7 +1010,7 @@ export const CenterWorkspace = ({
 
               <div className={`rounded-md border p-4 transition-colors duration-[180ms] ease-out ${hasActiveRender ? 'border-dos-border bg-dos-panel/30' : 'border-dos-border bg-dos-panel/45'}`}>
                 <div className="mb-4 flex items-center justify-between border-b border-white/[0.04] pb-2 text-[10px]">
-                  <span className={`${hasActiveRender ? 'text-slate-500' : 'text-cyan-100/60'} font-bold uppercase tracking-[0.12em]`}>Operator Context</span>
+                  <span className={`${hasActiveRender ? 'text-slate-500' : 'text-cyan-100/60'} font-bold uppercase tracking-[0.12em]`}>Next Action / Command Stage</span>
                   <div className="flex items-center gap-3 text-[9px] tracking-widest text-slate-500/50">
                     <span className="flex items-center gap-1"><span className="h-1 w-1 rounded-full bg-slate-500/30" /> active {queueStats.active}</span>
                     <span className="flex items-center gap-1"><span className="h-1 w-1 rounded-full bg-slate-500/30" /> queued {queueStats.queued}</span>
@@ -1023,7 +1023,7 @@ export const CenterWorkspace = ({
                     <div className="flex flex-col gap-2">
                        <div className="flex flex-col gap-1">
                         <div className="text-[10px] uppercase font-medium tracking-[0.15em] text-neutral-500 mb-1">
-                          Command Authority / Next Move
+                          Primary Next Action
                         </div>
                         <div className="text-xl font-bold text-white tracking-tighter leading-tight">
                           {nextBestAction.reason}
@@ -1050,7 +1050,7 @@ export const CenterWorkspace = ({
                     <div className="flex flex-col gap-2">
                       <div className="flex flex-col gap-1">
                         <div className="text-[9px] font-bold uppercase tracking-[0.12em] text-slate-500/70">
-                          Execution Control
+                          Selected Job Action
                         </div>
                         <div className="text-[13px] font-medium leading-[1.4] text-white/94">
                           {selectedFeedbackSummary.nextStep}
@@ -1072,7 +1072,7 @@ export const CenterWorkspace = ({
                     </div>
                   ) : (selectedJob || productionFamily) ? (
                     <div className="rounded-md border border-white/[0.015] bg-panel/10 p-4 text-center">
-                      <div className="text-[11px] font-medium text-slate-500/80 italic">Awaiting decision logic...</div>
+                      <div className="text-[11px] font-medium text-slate-500/80 italic">Awaiting command context...</div>
                     </div>
                   ) : null}
                 </div>
@@ -1128,7 +1128,7 @@ export const CenterWorkspace = ({
                     {selectedJob ? (
                       <>
                         <div className="rounded bg-panel/20 p-2">
-                          <div className="mb-1 text-[9px] font-medium uppercase tracking-[0.08em] text-textMuted/52">Support Actions</div>
+                          <div className="mb-1 text-[9px] font-medium uppercase tracking-[0.08em] text-textMuted/52">Secondary Commands</div>
                           <div className="flex flex-wrap gap-1 text-[9px]">
                             {(selectedJobSecondaryQuickActions ?? []).map((action: QuickActionItem) => (
                               <button
@@ -1177,7 +1177,7 @@ export const CenterWorkspace = ({
 
                         <div className="mt-2 rounded bg-panel/28 p-2.5">
                           <div className="mb-1.5 flex items-center justify-between text-[10px] font-medium uppercase tracking-[0.06em] text-textMuted/66">
-                            <span>Lifecycle Rail</span>
+                            <span>Lifecycle Proof</span>
                             <span className="text-textMuted/80">{formatElapsed(selectedJob.createdAt)}</span>
                           </div>
                           <div className="grid grid-cols-[repeat(7,minmax(0,1fr))] gap-1.5">
@@ -1333,7 +1333,7 @@ export const CenterWorkspace = ({
                         <div className="flex items-start justify-between gap-2">
                           <div className="min-w-0">
                             <div className="flex items-center gap-2">
-                              <span className="text-slate-100/90 font-medium">Family Lineage</span>
+                              <span className="text-slate-100/90 font-medium">Lineage Summary</span>
                               <span className={`text-[9px] font-semibold uppercase tracking-[0.06em] px-1.5 py-0.5 rounded border border-[rgba(255,255,255,0.04)] bg-panel/30 ${getFamilyHealth(productionFamily).tone}`}>
                                 {getFamilyHealth(productionFamily).label}
                               </span>

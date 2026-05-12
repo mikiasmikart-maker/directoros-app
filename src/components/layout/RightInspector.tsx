@@ -392,7 +392,7 @@ export const RightInspector = memo(({
           </button>
           <div className="flex items-center gap-2 text-[9px] font-mono uppercase tracking-[0.2em] text-dos-text-muted">
             <div className="w-1 h-3 bg-dos-sig-continuity" />
-            Inspector
+            Proof / Decision Detail
           </div>
         </div>
 
@@ -408,7 +408,7 @@ export const RightInspector = memo(({
           )}
           <div className="flex items-center gap-1.5 rounded-full bg-black/40 px-2 py-0.5 border border-dos-border">
             <div className="h-1 w-1 rounded-full bg-dos-sig-continuity animate-pulse shadow-[0_0_8px_rgba(207,140,255,0.4)]" />
-            <span className="text-[8px] font-mono text-dos-sig-continuity/80 uppercase tracking-widest font-bold">Signal Live</span>
+            <span className="text-[8px] font-mono text-dos-sig-continuity/80 uppercase tracking-widest font-bold">Proof Signal</span>
           </div>
         </div>
       </header>
@@ -419,7 +419,7 @@ export const RightInspector = memo(({
           {scene?.name ?? 'No_Scene'} <span className="text-neutral-700 mx-1">//</span> {activeShot?.title ?? 'No_Shot'}
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-[8px] font-mono text-dos-text-muted uppercase">Registry:</span>
+          <span className="text-[8px] font-mono text-dos-text-muted uppercase">Evidence Ref:</span>
           <span className="text-[8px] font-mono text-dos-text-muted/80">
             {selectedJobTelemetry?.selectedJobId ? formatOperatorId(selectedJobTelemetry.selectedJobId, 'JOB') : 'NONE_PTR'}
           </span>
@@ -429,6 +429,7 @@ export const RightInspector = memo(({
       {/* 2. TABS: Manifest Navigation */}
       <nav className="flex items-center border-b border-dos-border bg-black/20">
         {(['decision', 'intelligence', 'activity', 'pipeline'] as InspectorTab[]).map((tab) => {
+          const tabLabel = tab === 'decision' ? 'proof' : tab;
           const isActive = activeTab === tab;
           const hasSignal = tab === 'decision' && isActionRequired;
           return (
@@ -441,7 +442,7 @@ export const RightInspector = memo(({
                   : 'text-dos-text-muted hover:text-dos-text hover:bg-white/[0.01]'
               }`}
             >
-              {tab}
+              {tabLabel}
               {isActive && <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-dos-sig-continuity" />}
               {hasSignal && <span className="absolute right-2 top-2 h-1 w-1 rounded-full bg-dos-sig-continuity" />}
             </button>
@@ -456,16 +457,16 @@ export const RightInspector = memo(({
         {!hasExplicitSelection ? (
           <div className="flex flex-col px-6 pt-16 pb-8 h-full animate-in fade-in duration-1000 ease-out">
             <div className="mb-12">
-              <div className="mb-2 text-[9px] uppercase font-bold tracking-[0.3em] text-dos-text-muted/20 select-none">System Presence</div>
+              <div className="mb-2 text-[9px] uppercase font-bold tracking-[0.3em] text-dos-text-muted/20 select-none">Proof Panel Idle</div>
               <div className="text-[12px] text-dos-text-muted/40 leading-[1.7] font-light">
-                Awaiting operator selection to populate inspector fields. Use <span className="text-dos-text-muted/60 font-medium select-none">ESC</span> to clear focus stacks.
+                Awaiting operator selection to populate proof, lineage, and decision detail. Use <span className="text-dos-text-muted/60 font-medium select-none">ESC</span> to clear focus stacks.
               </div>
             </div>
 
             {inboxItems && inboxItems.length > 0 ? (
               <div className="space-y-6">
                 <div className="group">
-                  <div className="mb-2.5 text-[10px] uppercase tracking-[0.15em] text-textMuted/40 group-hover:text-textMuted/60 transition-colors">Pending Handoff</div>
+                  <div className="mb-2.5 text-[10px] uppercase tracking-[0.15em] text-textMuted/40 group-hover:text-textMuted/60 transition-colors">Pending Proof Handoff</div>
                   <div className="p-3.5 rounded bg-panel/20 border border-[var(--m6-border-soft)] shadow-sm">
                     <div className="flex items-center justify-between mb-1.5">
                       <div className="text-[11px] font-medium text-dos-text/90">{inboxItems[0].label}</div>
