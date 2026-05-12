@@ -48,23 +48,23 @@ export const M6_AppShell = ({
   onOpenInterventions,
 }: M6AppShellProps) => {
   return (
-    <div className="min-h-screen bg-bg text-text">
+    <div className="min-h-screen bg-dos-bg text-dos-text">
       <header className="sticky top-0 z-40 border-b border-white/[0.035] bg-dos-bg/86 backdrop-blur-[12px] shadow-m6tier1">
         <div className="mx-auto w-full max-w-[1880px] px-4 py-2.5">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div className="flex items-center gap-3">
               <img src="/mikart-logo.png" alt="Mikart" className="h-[29px] w-[29px] shrink-0 object-contain drop-shadow-md opacity-95" />
               <div className="flex flex-col justify-center gap-1">
-                <div className="text-[12px] font-semibold uppercase tracking-[0.08em] text-slate-100 leading-none translate-y-[1px]">MIKART DIRECTOROS</div>
-                <div className="text-[9.5px] font-normal tracking-normal text-slate-500/70 leading-none">Cinematic AI Production System</div>
+                <div className="text-[12px] font-semibold uppercase tracking-[0.08em] text-dos-text leading-none translate-y-[1px]">MIKART DIRECTOROS</div>
+                <div className="text-[9.5px] font-normal tracking-normal text-dos-text-muted leading-none">Cinematic AI Production System</div>
               </div>
             </div>
 
             <div className="flex flex-wrap items-center gap-1.5 text-[10px] uppercase tracking-[0.08em] opacity-[0.9]">
-              <span className="m6-surface-quiet rounded px-2 py-1 text-textMuted/62">health: <span className="font-medium text-text/92">{systemHealthLabel}</span></span>
-              <span className="m6-surface-quiet rounded px-2 py-1 text-textMuted/62">stream: <span className="font-medium text-text/92">{streamStateLabel}</span></span>
-              <span className="m6-surface-quiet rounded px-2 py-1 text-textMuted/62">queue: <span className="font-medium text-text/92">{queueModeLabel}</span></span>
-              <span className="m6-surface-quiet rounded px-2 py-1 text-textMuted/62">context: <span className="font-medium text-text/92">{activeContextLabel ?? 'none'}</span></span>
+              <span className="m6-surface-quiet rounded px-2 py-1 text-dos-text-muted">health: <span className="font-medium text-dos-text">{systemHealthLabel}</span></span>
+              <span className="m6-surface-quiet rounded px-2 py-1 text-dos-text-muted">stream: <span className="font-medium text-dos-text">{streamStateLabel}</span></span>
+              <span className="m6-surface-quiet rounded px-2 py-1 text-dos-text-muted">queue: <span className="font-medium text-dos-text">{queueModeLabel}</span></span>
+              <span className="m6-surface-quiet rounded px-2 py-1 text-dos-text-muted">context: <span className="font-medium text-dos-text">{activeContextLabel ?? 'none'}</span></span>
               <button
                 type="button"
                 onClick={() => {
@@ -88,7 +88,7 @@ export const M6_AppShell = ({
                     type="button"
                     onClick={() => onNavigate?.(item.key)}
                     data-active={isActive}
-                    className={`m6-tab-btn inline-flex items-center justify-center rounded px-2.5 py-1 transition-[color,background-color,box-shadow,opacity,transform] duration-180 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent/24 disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:text-textMuted/68 ${isActive ? 'text-accent shadow-[inset_0_-1px_0_rgba(120,160,255,0.38)]' : 'text-textMuted/68 opacity-70 hover:opacity-95 hover:text-text active:opacity-85'}`}
+                    className={`m6-tab-btn inline-flex items-center justify-center rounded px-2.5 py-1 transition-[color,background-color,box-shadow,opacity,transform] duration-180 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-dos-sig-runtime/24 disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:text-dos-text-muted ${isActive ? 'text-dos-text bg-white/[0.04] shadow-[inset_0_-1px_0_var(--dos-border)]' : 'text-dos-text-muted opacity-70 hover:opacity-95 hover:text-dos-text active:opacity-85'}`}
                   >
                     {item.label}
                   </button>
@@ -103,7 +103,7 @@ export const M6_AppShell = ({
         <section className={`mb-3 flex flex-wrap items-end justify-between gap-4 rounded-md bg-dos-panel/46 px-3 py-2.5 m6-tier-2 ${activeScreen === 'workspace' ? 'mx-0.5' : ''}`}>
           <div>
             <div className="m6-section-title">M6 Control Room</div>
-            <h1 className="text-[18px] font-semibold tracking-[0.02em] text-text">{screenTitle}</h1>
+            <h1 className="text-[18px] font-semibold tracking-[0.02em] text-dos-text">{screenTitle}</h1>
             {screenSubtitle ? <p className="m6-meta">{screenSubtitle}</p> : null}
           </div>
           {actionsSlot ? <div className="flex flex-wrap items-center gap-1.5">{actionsSlot}</div> : null}
@@ -116,16 +116,16 @@ export const M6_AppShell = ({
       </main>
       <footer className="sticky bottom-0 z-40 border-t border-white/[0.035] bg-dos-bg/94 backdrop-blur-[12px] py-2 px-6 shadow-[0_-8px_32px_rgba(0,0,0,0.5)]">
         <div className="mx-auto flex w-full max-w-[1880px] items-center justify-between gap-4">
-          <div className="flex items-center gap-4 text-[9px] uppercase tracking-[0.15em] text-slate-500/70 font-bold">
+          <div className="flex items-center gap-4 text-[9px] uppercase tracking-[0.15em] text-dos-text-muted font-bold">
             <span className="flex items-center gap-2"><span className="h-1.5 w-1.5 rounded-full bg-dos-sig-trust/40" />System Persistence Active</span>
-            <span className="flex items-center gap-2"><span className="h-1.5 w-1.5 rounded-full bg-slate-700" />VRAM Buffer: Guarded</span>
+            <span className="flex items-center gap-2"><span className="h-1.5 w-1.5 rounded-full bg-white/10" />VRAM Buffer: Guarded</span>
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-[9px] uppercase tracking-[0.12em] text-slate-500 font-bold">Live Throughput</span>
+            <span className="text-[9px] uppercase tracking-[0.12em] text-dos-text-muted font-bold">Live Throughput</span>
             <div className="flex items-center gap-1 rounded bg-black/40 border border-white/[0.03] px-2.5 py-1 text-[10px] font-mono shadow-[inset_0_1px_0_rgba(255,255,255,0.01)]">
               <span className="text-dos-sig-runtime font-bold">{queueModeLabel.split('/')[0].trim()}</span>
-              <span className="text-slate-600 px-1 opacity-40">/</span>
-              <span className="text-slate-400/80">{queueModeLabel.split('/')[1]?.trim() ?? '0 queued'}</span>
+              <span className="text-dos-text-muted px-1 opacity-40">/</span>
+              <span className="text-dos-text-muted/80">{queueModeLabel.split('/')[1]?.trim() ?? '0 queued'}</span>
             </div>
           </div>
         </div>
