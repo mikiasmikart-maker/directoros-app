@@ -119,13 +119,13 @@ export const RenderPreview: React.FC<RenderPreviewProps> = (props) => {
   const isCancelled = state === 'cancelled';
   const isReady = state === 'ready' || state === 'completed' || state === 'idle';
 
-  const dotColor = isRunning ? '#8144C0' : isReady ? '#10B981' : (isFailed ? '#F43F5E' : '#525252');
-  const dotShadow = isRunning ? 'shadow-[0_0_8px_#8144C0]' : isReady ? 'shadow-[0_0_8px_#10B981]' : (isFailed ? 'shadow-[0_0_8px_#F43F5E]' : '');
+  const dotColorClass = isRunning ? 'bg-dos-sig-continuity' : isReady ? 'bg-dos-sig-trust' : (isFailed ? 'bg-dos-sig-warning' : 'bg-dos-panel/60');
+  const dotShadowClass = isRunning ? 'shadow-[0_0_8px_rgba(207,140,255,0.2)]' : isReady ? 'shadow-[0_0_8px_rgba(130,201,161,0.2)]' : (isFailed ? 'shadow-[0_0_8px_rgba(255,140,140,0.2)]' : '');
 
   const actionLabel = isRunning ? 'Signal Live' : (isFailed || isCancelled ? 'Initiate Recovery' : 'Render Scene');
 
   return (
-    <div className="relative flex-1 min-h-0 w-full bg-[#0a0a0a] flex flex-col overflow-hidden group">
+    <div className="relative flex-1 min-h-0 w-full bg-dos-bg/80 flex flex-col overflow-hidden group">
       
       {/* VRAM ARMOR: Media Layer */}
       <div className="absolute inset-0 z-0">
@@ -142,7 +142,7 @@ export const RenderPreview: React.FC<RenderPreviewProps> = (props) => {
       <div className="relative z-10 flex flex-col h-full p-12 justify-between pointer-events-none">
         
         {/* ZONE 1: SYSTEM ORIGIN */}
-        <div className="flex justify-between items-start border-l-2 border-[#8144C0] pl-4 pointer-events-auto">
+        <div className="flex justify-between items-start border-l-2 border-dos-sig-continuity/60 pl-4 pointer-events-auto">
           <div className="flex flex-col">
             <span className="text-[10px] font-light text-neutral-500 uppercase tracking-widest">Job_ID</span>
             <span className="text-xs font-mono text-white/90 tracking-tight">{id || 'NULL_PTR'}</span>
@@ -167,16 +167,15 @@ export const RenderPreview: React.FC<RenderPreviewProps> = (props) => {
           <div className="text-right flex flex-col items-end">
              <span className="text-[10px] font-light text-neutral-500 uppercase tracking-widest">Runtime State</span>
              <div className="flex items-center gap-2 mt-0.5">
-                <span className={`text-[10px] font-bold uppercase ${isFailed ? 'text-rose-400' : 'text-white'}`}>
+                <span className={`text-[10px] font-bold uppercase ${isFailed ? 'text-dos-sig-warning' : 'text-dos-text/90'}`}>
                   {mapTechnicalState(state || 'ready')}
                 </span>
                 <div 
-                  className={`w-1.5 h-1.5 rounded-full ${dotShadow} ${isRunning ? 'animate-pulse' : ''}`} 
-                  style={{ backgroundColor: dotColor }} 
+                  className={`w-1.5 h-1.5 rounded-full ${dotColorClass} ${dotShadowClass} ${isRunning ? 'animate-pulse' : ''}`} 
                 />
              </div>
              {isFailed && props.livePreview.errorLabel && (
-               <span className="text-[9px] font-mono text-rose-500/80 mt-1 max-w-[200px] truncate">{props.livePreview.errorLabel}</span>
+               <span className="text-[9px] font-mono text-dos-sig-warning/80 mt-1 max-w-[200px] truncate">{props.livePreview.errorLabel}</span>
              )}
           </div>
         </div>
@@ -184,21 +183,21 @@ export const RenderPreview: React.FC<RenderPreviewProps> = (props) => {
         {/* ZONE 2: THE SUBJECT */}
         <div className="flex flex-col space-y-1 max-w-3xl pointer-events-auto">
           <div className="flex items-center gap-2">
-             <div className="w-1 h-3 bg-[#8144C0]" />
-             <span className="text-[10px] font-light text-neutral-400 tracking-widest uppercase">{role || 'Shot'} Context</span>
+             <div className="w-1 h-3 bg-dos-sig-continuity/60" />
+             <span className="text-[10px] font-light text-dos-text-muted/80 tracking-widest uppercase">{role || 'Shot'} Context</span>
           </div>
-          <div className="flex items-baseline gap-6">
-            <h1 className="text-5xl lg:text-6xl font-bold tracking-tighter text-white leading-none drop-shadow-xl">
+          <div className="flex items-center gap-6">
+            <h1 className="text-2xl lg:text-3xl font-bold tracking-tight text-dos-text/90 leading-none">
               {job.shotName || 'No Selection'}
             </h1>
             
             {/* PRIMARY RENDER ACTION */}
             <button
               onClick={props.onLaunch}
-              className={`px-6 py-2 text-[10px] font-bold tracking-[0.2em] uppercase border transition-all duration-[150ms] active:scale-[0.98] disabled:opacity-30 disabled:cursor-not-allowed shadow-[0_0_20px_rgba(129,68,192,0.2)] ${
+              className={`px-5 py-1.5 text-[10px] font-bold tracking-[0.15em] uppercase rounded border transition-all duration-[150ms] active:scale-[0.98] disabled:opacity-30 disabled:cursor-not-allowed ${
                 isFailed 
-                  ? 'bg-rose-500/10 border-rose-500/30 text-rose-400 hover:bg-rose-500/20' 
-                  : 'bg-[#8144C0] hover:bg-[#9359d1] text-white border-[#a166e2]'
+                  ? 'bg-dos-sig-warning/10 border-dos-sig-warning/30 text-dos-sig-warning hover:bg-dos-sig-warning/20' 
+                  : 'bg-dos-sig-continuity/10 border-dos-sig-continuity/30 text-dos-sig-continuity hover:bg-dos-sig-continuity/20 hover:border-dos-sig-continuity/50'
               }`}
               disabled={!props.launchReadiness.isReady || isRunning}
             >

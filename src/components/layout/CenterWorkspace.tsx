@@ -27,14 +27,14 @@ const shortJobId = (jobId?: string, prefix = 'Attempt') => {
 };
 
 const lifecycleTone: Record<string, string> = {
-  queued: 'm6-signal-ambient text-slate-500/40',
-  preflight: 'm6-signal-ambient text-slate-500/50',
-  running: 'm6-signal-ambient text-slate-400/60',
-  packaging: 'm6-signal-ambient text-slate-400/70',
-  completed: 'm6-signal-elevated text-[var(--m6-state-active-fg)] shadow-[0_0_8px_rgba(130,201,161,0.05)]',
-  failed: 'm6-signal-urgent text-[var(--m6-state-critical-fg)] shadow-[0_0_12px_rgba(180,132,132,0.15)]',
-  cancelled: 'm6-signal-ambient text-[var(--m6-state-warn-fg)] opacity-50',
-  focusing: 'm6-signal-ambient text-slate-500/40',
+  queued: 'text-dos-text-muted/40',
+  preflight: 'text-dos-text-muted/50',
+  running: 'text-dos-sig-runtime/70',
+  packaging: 'text-dos-sig-runtime/80',
+  completed: 'text-dos-sig-trust/90',
+  failed: 'text-dos-sig-warning/90',
+  cancelled: 'text-dos-sig-warning/50',
+  focusing: 'text-dos-text-muted/40',
 };
 
 const formatElapsed = (createdAt: number) => {
@@ -1008,7 +1008,7 @@ export const CenterWorkspace = ({
 
               <RuntimeOfflineStatus state={streamState} />
 
-              <div className={`rounded-xl border p-4 shadow-[0_12px_32px_rgba(2,6,23,0.18),inset_0_1px_0_rgba(255,255,255,0.02)] transition-[border-color,background-color,box-shadow] duration-[180ms] ease-out ${hasActiveRender ? 'border-white/[0.04] bg-[linear-gradient(180deg,rgba(22,22,22,0.52)_0%,rgba(18,18,18,0.48)_100%)]' : 'border-white/[0.06] bg-[linear-gradient(180deg,rgba(25,25,25,0.72)_0%,rgba(20,20,20,0.68)_100%)]'}`}>
+              <div className={`rounded-md border p-4 transition-colors duration-[180ms] ease-out ${hasActiveRender ? 'border-dos-border bg-dos-panel/30' : 'border-dos-border bg-dos-panel/45'}`}>
                 <div className="mb-4 flex items-center justify-between border-b border-white/[0.04] pb-2 text-[10px]">
                   <span className={`${hasActiveRender ? 'text-slate-500' : 'text-cyan-100/60'} font-bold uppercase tracking-[0.12em]`}>Operator Context</span>
                   <div className="flex items-center gap-3 text-[9px] tracking-widest text-slate-500/50">
@@ -1034,12 +1034,12 @@ export const CenterWorkspace = ({
                         type="button"
                         onClick={onNextBestAction}
                         disabled={streamState === 'offline' || hasActiveRender}
-                        className={interactionClass('primary', `mt-3 flex w-full items-center justify-center gap-3 rounded-lg px-4 py-3 text-[13px] font-bold uppercase tracking-widest shadow-lg m6-animate-entry-sharp m6-pulse-once active:scale-[0.98] transition-[background-color,border-color,transform,box-shadow,opacity] duration-[180ms] ${
-                          hasActiveRender ? 'bg-panel/20 text-slate-500' : 
-                          nextBestAction.accent === 'rose' ? 'bg-rose-500/20 text-rose-400 hover:bg-rose-500/30 border border-rose-500/30 shadow-rose-900/10' :
-                          nextBestAction.accent === 'emerald' ? 'bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 border border-emerald-500/30 shadow-emerald-900/10' :
-                          nextBestAction.accent === 'amber' ? 'bg-amber-500/20 text-amber-400 hover:bg-amber-500/30 border border-amber-500/30 shadow-amber-900/10' :
-                          'bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30 border border-cyan-500/30 shadow-cyan-900/10'
+                        className={interactionClass('primary', `mt-3 flex w-full items-center justify-center gap-3 rounded-md px-4 py-2.5 text-[11px] font-bold uppercase tracking-[0.15em] m6-animate-entry-sharp active:scale-[0.98] transition-colors duration-[180ms] border ${
+                          hasActiveRender ? 'bg-dos-panel/20 text-dos-text-muted/60 border-dos-border' : 
+                          nextBestAction.accent === 'rose' ? 'bg-dos-sig-warning/10 text-dos-sig-warning hover:bg-dos-sig-warning/20 border-dos-sig-warning/30' :
+                          nextBestAction.accent === 'emerald' ? 'bg-dos-sig-trust/10 text-dos-sig-trust hover:bg-dos-sig-trust/20 border-dos-sig-trust/30' :
+                          nextBestAction.accent === 'amber' ? 'bg-dos-sig-drift/10 text-dos-sig-drift hover:bg-dos-sig-drift/20 border-dos-sig-drift/30' :
+                          'bg-dos-sig-continuity/10 text-dos-sig-continuity hover:bg-dos-sig-continuity/20 border-dos-sig-continuity/30'
                         }`)}
                       >
                         {nextBestAction.cta}
@@ -1060,11 +1060,11 @@ export const CenterWorkspace = ({
                         type="button"
                         onClick={selectedJobPrimaryQuickAction.onTrigger}
                         disabled={selectedJobPrimaryQuickAction.disabled || streamState === 'offline'}
-                        className={interactionClass('primary', `mt-1 flex w-full items-center justify-center rounded-lg px-4 py-3 text-[13px] font-bold uppercase tracking-wider border m6-animate-entry-sharp active:scale-[0.98] transition-[background-color,border-color,transform,opacity] duration-[180ms] ${
-                          hasActiveRender || selectedJobPrimaryQuickAction.disabled ? 'bg-panel/14 text-slate-500 border-transparent' : 
-                          selectedJobPrimaryQuickAction.tone === 'success' ? 'bg-emerald-500/15 text-emerald-100 border-emerald-500/30 hover:bg-emerald-500/25' :
-                          selectedJobPrimaryQuickAction.tone === 'brand' ? 'bg-cyan-500/15 text-cyan-100 border-cyan-500/30 hover:bg-cyan-500/25' :
-                          'bg-panel/32 text-white/90 border-white/10 hover:bg-panel/42'
+                        className={interactionClass('primary', `mt-1 flex w-full items-center justify-center rounded-md px-4 py-2.5 text-[11px] font-bold uppercase tracking-[0.15em] border m6-animate-entry-sharp active:scale-[0.98] transition-colors duration-[180ms] ${
+                          hasActiveRender || selectedJobPrimaryQuickAction.disabled ? 'bg-dos-panel/20 text-dos-text-muted/60 border-dos-border' : 
+                          selectedJobPrimaryQuickAction.tone === 'success' ? 'bg-dos-sig-trust/10 text-dos-sig-trust hover:bg-dos-sig-trust/20 border-dos-sig-trust/30' :
+                          selectedJobPrimaryQuickAction.tone === 'brand' ? 'bg-dos-sig-continuity/10 text-dos-sig-continuity hover:bg-dos-sig-continuity/20 border-dos-sig-continuity/30' :
+                          'bg-dos-panel/45 text-dos-text/90 border-dos-border hover:bg-dos-panel/52'
                         }`)}
                       >
                         {selectedJobPrimaryQuickAction.label}
@@ -1326,7 +1326,7 @@ export const CenterWorkspace = ({
                     ) : productionFamily ? (
                       <div
                         ref={activeFamilyDecisionRef}
-                        className={`mt-2 rounded px-2.5 py-2.5 text-[11px] text-textMuted/80 border border-[rgba(103,232,249,0.16)] bg-[linear-gradient(180deg,rgba(25,25,25,0.72)_0%,rgba(18,18,18,0.72)_100%)] shadow-[0_0_0_1px_rgba(56,189,248,0.06),0_10px_28px_rgba(8,24,40,0.22)] ${
+                        className={`mt-2 rounded px-2.5 py-2.5 text-[11px] text-dos-text-muted/80 border border-dos-sig-continuity/20 bg-dos-panel/45 ${
                           selectedFamilyRootId === returningPulseId ? 'm6-return-anchor' : ''
                         }`}
                       >
@@ -1356,12 +1356,12 @@ export const CenterWorkspace = ({
                               
                               return (
                                 <div 
-                                  key={candidate.jobId} 
-                                  className={`group relative flex flex-col gap-2.5 rounded-lg border p-3 transition-[border-color,background-color,box-shadow,transform] duration-[180ms] ease-out ${
-                                    isWinner ? 'border-cyan-500/40 bg-cyan-500/10 shadow-[0_4px_16px_rgba(34,211,238,0.12)]' : 
-                                    isLatest ? 'border-indigo-500/20 bg-indigo-500/5 hover:bg-indigo-500/8' :
-                                    'border-white/[0.04] bg-panel/22 hover:bg-panel/32 hover:border-white/[0.08]'
-                                  } ${
+                                    key={candidate.jobId} 
+                                    className={`group relative flex flex-col gap-2.5 rounded-md border p-3 transition-[border-color,background-color] duration-[180ms] ease-out ${
+                                      isWinner ? 'border-dos-sig-trust/40 bg-dos-sig-trust/10' : 
+                                      isLatest ? 'border-dos-sig-continuity/20 bg-dos-sig-continuity/10 hover:bg-dos-sig-continuity/15' :
+                                      'border-dos-border bg-dos-panel/30 hover:bg-dos-panel/45 hover:border-dos-border'
+                                    } ${
                                     candidate.jobId === returningPulseId ? 'm6-return-anchor' : ''
                                   } ${
                                     candidate.jobId === winnerFlashId ? 'm6-winner-pivot' : ''
