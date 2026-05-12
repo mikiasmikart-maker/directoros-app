@@ -60,42 +60,56 @@ export const GraphConnection = ({
   const isRuntimeFailed = connection.runtimeState === 'failed' || connection.runtimeState === 'blocked';
 
   const baseStroke = isRuntimeFailed
-    ? 'rgba(244, 63, 94, 0.58)'
+    ? 'var(--dos-sig-warning)'
     : isRuntimeActive
-      ? 'rgba(125, 211, 252, 0.86)'
+      ? 'var(--dos-sig-runtime)'
       : isRoutePath
-        ? 'rgba(77, 163, 255, 0.76)'
+        ? 'var(--dos-sig-runtime)'
         : isCompilerToRender
-          ? 'rgba(86, 104, 132, 0.62)'
+          ? 'var(--dos-text-muted)'
           : isPostPipelinePath
-            ? 'rgba(98, 112, 132, 0.34)'
-            : 'rgba(63, 77, 101, 0.42)';
-  const stroke = isFaded ? 'rgba(63, 77, 101, 0.18)' : isRelated ? 'rgba(102, 124, 158, 0.8)' : baseStroke;
-  const strokeWidth = isCompilerToRender ? (isRelated ? '1.28' : '1.16') : isRelated ? '1.02' : '0.88';
-  const strokeOpacity = isFaded ? 0.64 : 1;
+            ? 'var(--dos-text-muted)'
+            : 'var(--dos-text-muted)';
+
+  const stroke = isFaded ? 'var(--dos-text-muted)' : isRelated ? 'var(--dos-sig-continuity)' : baseStroke;
+  const strokeWidth = isCompilerToRender ? (isRelated ? '1.2' : '1.1') : isRelated ? '1.0' : '0.85';
+  
+  const strokeOpacity = isFaded 
+    ? 0.15 
+    : isRuntimeActive 
+      ? 0.65 
+      : isRuntimeFailed 
+        ? 0.45 
+        : isRoutePath 
+          ? 0.4 
+          : isRelated 
+            ? 0.8 
+            : isPostPipelinePath 
+              ? 0.22 
+              : 0.32;
 
   return (
     <g>
-      {isCompilerToRender ? <path d={path} fill="none" stroke="rgba(54, 70, 96, 0.19)" strokeWidth="1.75" opacity={isFaded ? 0.35 : 0.72} /> : null}
-      {isRuntimeActive && !isFaded ? <path d={path} fill="none" stroke="rgba(125, 211, 252, 0.2)" strokeWidth="2.8" opacity={0.45} /> : null}
+      {isCompilerToRender ? <path d={path} fill="none" stroke="var(--dos-text-muted)" strokeWidth="1.5" opacity={isFaded ? 0.1 : 0.25} /> : null}
+      {isRuntimeActive && !isFaded ? <path d={path} fill="none" stroke="var(--dos-sig-runtime)" strokeWidth="2.5" opacity={0.15} /> : null}
       <path
         d={path}
         fill="none"
         stroke={stroke}
         strokeWidth={strokeWidth}
-        strokeDasharray={isRuntimeActive ? '7 6' : isCompilerToRender ? '0' : '2.1 3.4'}
-        opacity={strokeOpacity}
+        strokeDasharray={isRuntimeActive ? '6 5' : isCompilerToRender ? '0' : '2 3'}
+        strokeOpacity={strokeOpacity}
         className={isRuntimeActive ? 'graph-connection-flow' : undefined}
       />
       <path d={path} fill="none" stroke="transparent" strokeWidth="10" className="cursor-pointer" onClick={() => onDelete?.(connection.id)} />
-      <circle cx={endX} cy={endY} r={isCompilerToRender ? '2.7' : '2.05'} fill={isCompilerToRender ? 'rgba(112, 132, 162, 0.8)' : 'rgba(94, 113, 146, 0.65)'} opacity={isFaded ? 0.45 : isRelated ? 0.9 : 0.72} />
+      <circle cx={endX} cy={endY} r={isCompilerToRender ? '2.5' : '2'} fill={isRuntimeFailed ? 'var(--dos-sig-warning)' : isRuntimeActive ? 'var(--dos-sig-runtime)' : 'var(--dos-text-muted)'} opacity={isFaded ? 0.2 : isRelated ? 0.9 : 0.6} />
       {showLabels && connection.label ? (
         <text
           x={(startX + endX) / 2}
           y={(startY + endY) / 2 - 6}
           textAnchor="middle"
-          fill={isCompilerToRender ? 'rgba(155, 174, 204, 0.72)' : 'rgba(132, 148, 176, 0.62)'}
-          opacity={isFaded ? 0.45 : 0.82}
+          fill="var(--dos-text-muted)"
+          opacity={isFaded ? 0.3 : 0.7}
           fontSize="9"
           fontWeight={isCompilerToRender ? '600' : '500'}
           letterSpacing="0.02em"
