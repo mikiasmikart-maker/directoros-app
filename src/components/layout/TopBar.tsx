@@ -37,14 +37,14 @@ export const TopBar = ({ renderStatus, streamState = 'offline', lastEventAt, cur
   const focusBreadcrumb = focusCrumbs.length > 0 ? focusCrumbs.join(' › ') : null;
 
   return (
-    <header key={statusKey} className="border-b border-[var(--m6-border-soft)] bg-panel/76 px-4 py-1.5 backdrop-blur-md transition-[background-color,border-color] duration-200 ease-out">
+    <header key={statusKey} className="border-b border-[var(--m6-border-soft)] bg-panel/62 px-4 py-1.5 backdrop-blur-sm transition-[background-color,border-color] duration-200 ease-out">
       <div className="flex min-h-[28px] items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-2.5">
           <div className="leading-tight text-[9px] uppercase tracking-[0.14em] text-textMuted/42">Workspace Operations</div>
           {focusBreadcrumb && (
             <span
               aria-label="Current operator focus"
-              className="hidden sm:inline-flex items-center rounded border border-[var(--m6-border-soft)] bg-panel/20 px-1.5 py-0.5 text-[9px] tracking-[0.06em] text-textMuted/38 select-none max-w-[260px] truncate"
+              className="hidden sm:inline-flex items-center rounded border border-[var(--m6-border-soft)] bg-panel/14 px-1.5 py-0.5 text-[9px] tracking-[0.06em] text-textMuted/38 select-none max-w-[260px] truncate"
               title={focusBreadcrumb}
             >
               {focusBreadcrumb}
@@ -53,14 +53,14 @@ export const TopBar = ({ renderStatus, streamState = 'offline', lastEventAt, cur
         </div>
 
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-2 rounded-md border border-[var(--dos-border)] bg-panel/40 px-2.5 py-1.5">
+          <div className="flex items-center gap-2 rounded-md border border-[var(--dos-border)] bg-panel/30 px-2.5 py-1.5">
             <StatusBadge label={streamLabel} tone={streamTone} />
             <div className="leading-tight">
               <div className="text-[11px] font-semibold tracking-[0.08em] text-text">{runtimeLabel}</div>
               <div className="text-[10px] text-textMuted/62" title={streamHint}>{streamHint}</div>
             </div>
           </div>
-          <span className="rounded-md border border-[var(--m6-border-soft)] bg-panel/30 px-2 py-1 text-[10px] font-medium tracking-[0.08em] text-textMuted/64">
+          <span className="rounded-md border border-[var(--m6-border-soft)] bg-panel/22 px-2 py-1 text-[10px] font-medium tracking-[0.08em] text-textMuted/64">
             Current Output Monitor
           </span>
         </div>
