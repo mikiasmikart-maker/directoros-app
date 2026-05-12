@@ -534,7 +534,7 @@ export const SceneGraphCanvas = ({
   return (
     <section className="relative min-h-[500px] overflow-hidden rounded-md border border-dos-border bg-dos-bg py-10 shadow-panel">
       <GraphCanvasGrid />
-      <div className="absolute left-3 right-3 top-2 z-20 space-y-1 rounded-md border border-dos-border bg-dos-panel px-2 py-1 text-[11px] backdrop-blur-[12px] shadow-panel">
+      <div className="absolute left-3 right-3 top-2 z-20 space-y-1 rounded-md border border-dos-border bg-dos-panel px-2.5 py-1.5 text-[11px] backdrop-blur-[12px] shadow-panel">
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/[0.035] pb-1.5 mb-1.5">
           <GraphMiniToolbar
             selectedShotId={selectedShotId}

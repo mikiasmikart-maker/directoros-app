@@ -252,6 +252,32 @@ body {
   }
 }
 
+@layer utilities {
+  .m6-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: var(--dos-border) transparent;
+  }
+  
+  .m6-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  
+  .m6-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .m6-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--dos-border);
+    border-radius: 12px;
+    transition: background-color 180ms var(--m6-easing);
+  }
+  
+  .m6-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.12);
+  }
+}
+
 @keyframes graph-flow-dash {
   from {
     stroke-dashoffset: 0;

@@ -450,7 +450,7 @@ export const RightInspector = memo(({
       </nav>
 
       {/* 3. CONTENT ZONE */}
-      <div className="flex-1 min-h-0 overflow-y-auto m6-scrollbar-thin p-3 space-y-4">
+      <div className="flex-1 min-h-0 overflow-y-auto m6-scrollbar p-3 space-y-4">
         <RuntimeOfflineStatus state={streamState} />
 
         {!hasExplicitSelection ? (

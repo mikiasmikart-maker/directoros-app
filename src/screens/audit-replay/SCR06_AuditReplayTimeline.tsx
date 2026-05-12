@@ -112,7 +112,7 @@ export const SCR06_AuditReplayTimeline = ({
                 <button type="button" onClick={onFilterByOutcome} className="rounded bg-dos-panel/45 px-2 py-1 text-dos-text-muted hover:bg-dos-panel/52 hover:text-dos-text/88">outcome</button>
               </div>
             </div>
-            <div className="max-h-[56vh] space-y-1.5 overflow-auto pr-0.5 font-mono text-[10px]">
+            <div className="max-h-[56vh] space-y-1.5 overflow-auto m6-scrollbar pr-0.5 font-mono text-[10px]">
               {events.length ? (
                 events.map((event) => {
                   const selectedRow = selected?.id === event.id;
