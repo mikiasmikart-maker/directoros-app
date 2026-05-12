@@ -532,9 +532,9 @@ export const SceneGraphCanvas = ({
   };
 
   return (
-    <section className="relative min-h-[500px] overflow-hidden rounded-md border border-white/[0.03] py-10 shadow-[0_4px_14px_rgba(0,0,0,0.15)]" style={{ background: 'radial-gradient(circle at center, rgba(15,25,45,0.2), rgba(5,7,12,0.98))' }}>
+    <section className="relative min-h-[500px] overflow-hidden rounded-md border border-dos-border bg-dos-bg py-10 shadow-panel">
       <GraphCanvasGrid />
-      <div className="absolute left-3 right-3 top-2 z-20 space-y-1 rounded-md border border-white/[0.02] bg-[rgba(5,7,12,0.64)] px-2 py-1 text-[11px] backdrop-blur-[8px] shadow-[0_8px_20px_rgba(0,0,0,0.2)]">
+      <div className="absolute left-3 right-3 top-2 z-20 space-y-1 rounded-md border border-dos-border bg-dos-panel px-2 py-1 text-[11px] backdrop-blur-[12px] shadow-panel">
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/[0.035] pb-1.5 mb-1.5">
           <GraphMiniToolbar
             selectedShotId={selectedShotId}
@@ -570,7 +570,7 @@ export const SceneGraphCanvas = ({
 
         <div className="flex flex-wrap items-center gap-1.5">
           <div className="flex items-center gap-1.5 rounded bg-white/[0.03] px-2 py-1 text-[10px]">
-            <span className="uppercase tracking-[0.12em] text-textMuted">Route Preset</span>
+            <span className="uppercase tracking-[0.12em] text-dos-text-muted">Route Preset</span>
             <select
               value={routePresetId ?? engineRoutePresets[0].id}
               onChange={(event) => onRoutePresetChange?.(event.target.value)}
@@ -662,13 +662,13 @@ export const SceneGraphCanvas = ({
             transformOrigin: 'top left',
           }}
         >
-          <div className="pointer-events-none absolute inset-y-0 left-[6%] w-[72%] bg-[linear-gradient(90deg,transparent_0%,rgba(140,174,220,0.012)_26%,rgba(120,196,201,0.012)_66%,transparent_100%)]" />
+          <div className="pointer-events-none absolute inset-y-0 left-[6%] w-[72%] bg-[linear-gradient(90deg,transparent_0%,rgba(255,255,255,0.005)_26%,rgba(255,255,255,0.005)_66%,transparent_100%)]" />
 
-          <div className="pointer-events-none absolute left-[3%] top-4 text-[9px] font-semibold uppercase tracking-[0.2em] text-white/20">Scene Sources</div>
-          <div className="pointer-events-none absolute left-[20.2%] top-4 text-[9px] font-bold uppercase tracking-[0.2em] text-sky-400/25">Shot Logic</div>
-          <div className="pointer-events-none absolute left-[35.2%] top-4 text-[9px] font-bold uppercase tracking-[0.2em] text-violet-400/25">Prompt Compiler</div>
-          <div className="pointer-events-none absolute left-[50.2%] top-4 text-[9px] font-bold uppercase tracking-[0.2em] text-teal-400/25">Engine Router + Targets</div>
-          <div className="pointer-events-none absolute left-[74%] top-4 text-[9px] font-semibold uppercase tracking-[0.2em] text-cyan-400/20">
+          <div className="pointer-events-none absolute left-[3%] top-4 text-[9px] font-semibold uppercase tracking-[0.2em] text-dos-text-muted/30">Scene Sources</div>
+          <div className="pointer-events-none absolute left-[20.2%] top-4 text-[9px] font-bold uppercase tracking-[0.2em] text-dos-sig-runtime/20">Shot Logic</div>
+          <div className="pointer-events-none absolute left-[35.2%] top-4 text-[9px] font-bold uppercase tracking-[0.2em] text-dos-sig-continuity/20">Prompt Compiler</div>
+          <div className="pointer-events-none absolute left-[50.2%] top-4 text-[9px] font-bold uppercase tracking-[0.2em] text-dos-sig-trust/20">Engine Router + Targets</div>
+          <div className="pointer-events-none absolute left-[74%] top-4 text-[9px] font-semibold uppercase tracking-[0.2em] text-dos-sig-runtime/15">
             {postPipelineCollapsed ? 'Post Pipeline (Folded)' : 'Post Pipeline'}
           </div>
 
