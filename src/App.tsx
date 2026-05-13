@@ -3524,7 +3524,7 @@ function App() {
     <div className="flex h-full min-h-0 flex-col bg-bg text-text">
       <TopBar renderStatus={previewState.mode} streamState={streamState} lastEventAt={lastStreamEventAt} currentFocus={currentFocus} />
       <div
-        className="grid min-h-0 flex-1 grid-rows-[minmax(0,1fr)_auto] gap-x-0 bg-[#050505] transition-[grid-template-columns] duration-200"
+        className="grid min-h-0 flex-1 grid-rows-[minmax(0,1fr)_auto] gap-x-0 bg-[#050505] transition-[grid-template-columns] duration-200 pb-20"
         style={{ gridTemplateColumns: `${isLeftPanelCollapsed ? '3rem' : 'clamp(210px, 18vw, 16rem)'} minmax(0, 1fr) ${isRightPanelCollapsed ? '3rem' : 'clamp(270px, 24vw, 20rem)'}` }}
       >
         <LeftSidebar
